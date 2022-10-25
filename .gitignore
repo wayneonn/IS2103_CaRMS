@@ -21,32 +21,26 @@
 
 # User defined
 nbproject/private/
-nbproject/
 build/
 dist/
 
 CaRMS-HolidayReservationSystem/nbproject/private/
-CaRMS-HolidayReservationSystem/nbproject/
 CaRMS-HolidayReservationSystem/build/
 CaRMS-HolidayReservationSystem/dist/
 
 CaRMS-Library/nbproject/private/
-CaRMS-Library/nbproject/
 CaRMS-Library/build/
 CaRMS-Library/dist/
 
 CaRMS-ReservationClient/nbproject/private/
-CaRMS-ReservationClient/nbproject/
 CaRMS-ReservationClient/build/
 CaRMS-ReservationClient/dist/
 
 CaRMS-ManagementClient/nbproject/private/
-CaRMS-ManagementClient/nbproject/
 CaRMS-ManagementClient/build/
 CaRMS-ManagementClient/dist/
 
 CaRMS-ejb/nbproject/private/
-CaRMS-ejb/nbproject/
 CaRMS-ejb/build/
 CaRMS-ejb/dist/
 
