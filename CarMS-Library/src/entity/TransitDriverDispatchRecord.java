@@ -7,8 +7,8 @@ package entity;
 
 import enumerations.EmployeeEnum;
 import java.io.Serializable;
+import java.sql.Time;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -45,9 +47,15 @@ public class TransitDriverDispatchRecord implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dispatchedId;
+    //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime pickupDateTime;
+    //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime returnDateTime;
-    private LocalTime closingHour;
+    //@Temporal(TemporalType.TIME) 
+    private Time closingHour;
+    //@Temporal(TemporalType.TIME) 
+    private Time openingHour;
+    //@Temporal(TemporalType.DATE)
     private Date transitDate;
     private boolean isComplete;
 
@@ -121,14 +129,14 @@ public class TransitDriverDispatchRecord implements Serializable {
     /**
      * @return the closingHour
      */
-    public LocalTime getClosingHour() {
+    public Time getClosingHour() {
         return closingHour;
     }
 
     /**
      * @param closingHour the closingHour to set
      */
-    public void setClosingHour(LocalTime closingHour) {
+    public void setClosingHour(Time closingHour) {
         this.closingHour = closingHour;
     }
 

@@ -47,3 +47,8 @@ CaRMS-ejb/dist/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /CaRMS-ReservationClient/nbproject/private/
+/CarMS-HolidayManagementSystem/nbproject/private/
+/CarMS-ManagementClient/nbproject/private/
+/CarMS-ejb/nbproject/private/
+/CarMS-ReservationClient/nbproject/private/
+/CarMS-Library/nbproject/private/
