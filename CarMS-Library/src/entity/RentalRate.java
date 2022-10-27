@@ -6,17 +6,23 @@
 package entity;
 
 import enumerations.EmployeeEnum;
+import enumerations.RentalRateTypeEnum;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 // RentalRate
 /**
@@ -36,7 +42,11 @@ public class RentalRate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalRateId;
-    private String rentalRateType;
+    private RentalRateTypeEnum rentalRateType;
+    @Column(nullable = false, precision = 11, scale = 2)
+    @NotNull
+    @DecimalMin("0.00")
+    @Digits(integer = 9, fraction = 2)
     private Double rateCost;
 
     public RentalRate() {
@@ -85,15 +95,8 @@ public class RentalRate implements Serializable {
     /**
      * @return the rentalRateType
      */
-    public String getRentalRateType() {
+    public RentalRateTypeEnum getRentalRateType() {
         return rentalRateType;
-    }
-
-    /**
-     * @param rentalRateType the rentalRateType to set
-     */
-    public void setRentalRateType(String rentalRateType) {
-        this.rentalRateType = rentalRateType;
     }
 
     /**

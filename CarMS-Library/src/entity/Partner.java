@@ -8,12 +8,15 @@ package entity;
 import enumerations.CarStateEnumeration;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -30,7 +33,13 @@ public class Partner implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long partnerId;
+    @Column(nullable = false, unique = true, length = 30)
+    @NotNull
+    @Size(min = 1, max = 30)
     private String partnerUsername;
+    @Column(nullable = false, unique = true, length = 30)
+    @NotNull
+    @Size(min = 8, max = 30)
     private String partnerPassword;
 
     public Partner() {

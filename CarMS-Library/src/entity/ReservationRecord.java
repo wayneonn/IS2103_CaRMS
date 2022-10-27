@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -44,10 +51,23 @@ public class ReservationRecord implements Serializable { //reservation record
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
+    //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime pickupDateTime;
+    //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime returnDateTime;
+    @Column(nullable = false, precision = 11, scale = 2)
+    @NotNull
+    @DecimalMin("0.00")
+    @Digits(integer = 9, fraction = 2)
     private Double amtPaid;
+    @Column(nullable = false, unique = true, length = 16)
+    @NotNull
+    @Size(min = 13, max = 16)
     private String creditCardNum;
+    @Column(nullable = false, precision = 11, scale = 2)
+    @NotNull
+    @DecimalMin("0.00")
+    @Digits(integer = 9, fraction = 2)
     private Double refundAmount;
 
     /**
