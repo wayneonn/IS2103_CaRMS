@@ -8,6 +8,7 @@ package entity;
 import enumerations.CarStateEnumeration;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -29,6 +33,9 @@ public class Customer implements Serializable {
     @OneToMany(mappedBy="customer")
     @JoinColumn(nullable = false)
     private List<ReservationRecord> reservationRecords;
+    
+    @OneToOne(mappedBy ="customer")
+    private Cars car;
 
     public Customer() {
     }
@@ -37,9 +44,25 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
+    
+    @Column(nullable = false, length = 32)
+    @NotNull
+    @Size(min = 1, max = 32)
     private String firstName;
+    
+    @Column(nullable = false, length = 32)
+    @NotNull
+    @Size(min = 1, max = 32)
     private String lastName;
+    
+    @Column(nullable = false, length = 32)
+    @NotNull
+    @Size(min = 1, max = 32)
     private String email;
+    
+    @Column(nullable = false, length = 16)
+    @NotNull
+    @Size(min=16, max=16)
     private String creditCardNumber;
 
     public Long getCustomerId() {

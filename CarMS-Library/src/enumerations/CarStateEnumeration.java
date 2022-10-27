@@ -11,6 +11,7 @@ package enumerations;
  */
 public enum CarStateEnumeration {
     AVAILABLE,
+    ONRENTAL,
     SERVICING,
     REPAIRING,
     TRANSITING;

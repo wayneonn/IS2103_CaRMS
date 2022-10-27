@@ -8,12 +8,17 @@ package entity;
 import enumerations.EmployeeEnum;
 import java.io.Serializable;
 import java.time.LocalTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -26,10 +31,27 @@ public class Employee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
+
+    @Column(nullable = false, unique = true, length = 32)
+    @NotNull
+    @Size(min = 6, max = 32)
     private String employeeUsername;
+
+    @Column(nullable = false, length = 32)
+    @NotNull
+    @Size(min = 8, max = 32)
     private String employeePassword;
-    private LocalTime employeeName;
+
+    @Column(nullable = false, length = 64)
+    @NotNull
+    @Size(min = 1, max = 64)
+    private String employeeName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @NotNull
     private EmployeeEnum accessRights;
+
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Outlet outlet;
@@ -64,7 +86,7 @@ public class Employee implements Serializable {
     public void setEmployeeUsername(String employeeUsername) {
         this.employeeUsername = employeeUsername;
     }
-    
+
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -77,14 +99,14 @@ public class Employee implements Serializable {
         }
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (employeeId != null ? employeeId.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public String toString() {
         return "entity.Employee[ id=" + employeeId + " ]";
@@ -107,14 +129,14 @@ public class Employee implements Serializable {
     /**
      * @return the employeeName
      */
-    public LocalTime getEmployeeName() {
+    public String getEmployeeName() {
         return employeeName;
     }
 
     /**
      * @param employeeName the employeeName to set
      */
-    public void setEmployeeName(LocalTime employeeName) {
+    public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
     }
 

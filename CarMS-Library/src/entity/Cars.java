@@ -8,7 +8,10 @@ package entity;
 import enumerations.CarStateEnumeration;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +19,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -28,10 +36,32 @@ public class Cars implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long carId;
+    
+    @Column(nullable = false, unique = true, length = 20)
+    @NotNull
+    @Size(min = 1, max = 20)
     private String licenseNumber;
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @NotNull
     private CarStateEnumeration carState;
+    
+    @Column(nullable = false, length = 64)
+    @NotNull
+    @Size(min = 1, max = 64)
     private String make;
-    private double quantity;
+    
+    @Column(nullable = false, length = 64)
+    @NotNull
+    @Size(min = 1, max = 64)
+    private String location;
+    
+    @Column(nullable = false, length = 64)
+    @NotNull
+    @Size(min = 1, max = 64)
+    private String colour;
+    
     @ManyToMany
     @JoinColumn(nullable = false)
     private List<RentalRate> rentalRates;
@@ -47,6 +77,9 @@ public class Cars implements Serializable {
     @JoinColumn(nullable = false)
     private Category category;
 
+    @OneToOne
+    private Customer customer; 
+    
     public Cars() {
     }
 
@@ -54,11 +87,10 @@ public class Cars implements Serializable {
         return carId;
     }
 
-    public Cars(String licenseNumber, CarStateEnumeration carState, String make, double quantity) {
+    public Cars(String licenseNumber, CarStateEnumeration carState, String make) {
         this.licenseNumber = licenseNumber;
         this.carState = carState;
         this.make = make;
-        this.quantity = quantity;
     }
 
     public void setCarId(Long carId) {
@@ -133,17 +165,32 @@ public class Cars implements Serializable {
     }
 
     /**
-     * @return the quantity
+     * @return the location
      */
-    public double getQuantity() {
-        return quantity;
+    public String getLocation() {
+        return location;
     }
 
     /**
-     * @param quantity the quantity to set
+     * @param location the location to set
      */
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
+    public void setLocation(String location) {
+        this.location = location;
     }
+
+    /**
+     * @return the colour
+     */
+    public String getColour() {
+        return colour;
+    }
+
+    /**
+     * @param colour the colour to set
+     */
+    public void setColour(String colour) {
+        this.colour = colour;
+    }
+
     
 }
