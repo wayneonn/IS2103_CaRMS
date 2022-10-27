@@ -36,10 +36,10 @@ public class Model implements Serializable {
     @Size(min = 1, max = 64)
     private String make;
 
-    @Column(nullable = false, length = 64)
-    @NotNull
-    @Size(min = 1, max = 64)
-    private String name;
+    public Model(String model, String make) {
+        this.model = model;
+        this.make = make;
+    }
     
 
     public Model() {
@@ -106,18 +106,5 @@ public class Model implements Serializable {
         this.make = make;
     }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
 
 }

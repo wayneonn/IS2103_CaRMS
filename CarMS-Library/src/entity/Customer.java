@@ -62,7 +62,7 @@ public class Customer implements Serializable {
     
     @Column(nullable = false, length = 16)
     @NotNull
-    @Size(min=16, max=16)
+    @Size(min=16, max=16) // Business rule - Credit Card must have 16 Digits
     private String creditCardNumber;
 
     public Long getCustomerId() {

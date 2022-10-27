@@ -6,11 +6,10 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.CarSessionBeanLocal;
-import ejb.session.stateless.CategorySessionBean;
 import ejb.session.stateless.CategorySessionBeanLocal;
-import entity.Cars;
+import ejb.session.stateless.ModelSessionBeanLocal;
 import entity.Category;
-import enumerations.CarStateEnumeration;
+import entity.Model;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -30,6 +29,9 @@ import javax.persistence.PersistenceContext;
 public class DataInitSessionBean {
 
     @EJB
+    private ModelSessionBeanLocal modelSessionBean;
+
+    @EJB
     private CategorySessionBeanLocal categorySessionBean;
 
     @PersistenceContext(unitName = "CarMS-ejbPU")
@@ -47,10 +49,14 @@ public class DataInitSessionBean {
 //        }
 
         if (em.find(Category.class, 1l) == null) {
-            categorySessionBean.createNewCategory(new Category("Sedan"));
-            categorySessionBean.createNewCategory(new Category("SUV"));
-            categorySessionBean.createNewCategory(new Category("Van"));
-            categorySessionBean.createNewCategory(new Category("Pickup Truck"));
+            categorySessionBean.createNewCategory(new Category("Standard Sedan"));
+            categorySessionBean.createNewCategory(new Category("Family Sedan"));
+            categorySessionBean.createNewCategory(new Category("Luxury Sedan"));
+            categorySessionBean.createNewCategory(new Category("SUV/Minivan"));
+        }
+        
+        if (em.find(Model.class, 1l) == null) {
+            modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis"));
         }
     }
 

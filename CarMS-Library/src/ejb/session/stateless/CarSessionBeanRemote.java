@@ -16,7 +16,7 @@ import javax.ejb.Remote;
 @Remote
 public interface CarSessionBeanRemote {
 
-    public Long createNewCar(Cars car);
+    public Long createNewModel(Cars car);
 
     public List<Cars> retrieveAllCars();
 }

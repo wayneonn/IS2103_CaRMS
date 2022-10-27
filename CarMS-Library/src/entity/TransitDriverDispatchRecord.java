@@ -47,15 +47,15 @@ public class TransitDriverDispatchRecord implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dispatchedId;
-    //@Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime pickupDateTime;
-    //@Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime returnDateTime;
-    //@Temporal(TemporalType.TIME) 
-    private Time closingHour;
-    //@Temporal(TemporalType.TIME) 
-    private Time openingHour;
-    //@Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date pickupDateTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date returnDateTime;
+    @Temporal(TemporalType.TIMESTAMP) 
+    private Date closingHour;
+    @Temporal(TemporalType.TIMESTAMP) 
+    private Date openingHour;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date transitDate;
     private boolean isComplete;
 
@@ -101,35 +101,35 @@ public class TransitDriverDispatchRecord implements Serializable {
     /**
      * @return the pickupDateTime
      */
-    public LocalDateTime getPickupDateTime() {
+    public Date getPickupDateTime() {
         return pickupDateTime;
     }
 
     /**
      * @param pickupDateTime the pickupDateTime to set
      */
-    public void setPickupDateTime(LocalDateTime pickupDateTime) {
+    public void setPickupDateTime(Date pickupDateTime) {
         this.pickupDateTime = pickupDateTime;
     }
 
     /**
      * @return the returnDateTime
      */
-    public LocalDateTime getReturnDateTime() {
+    public Date getReturnDateTime() {
         return returnDateTime;
     }
 
     /**
      * @param returnDateTime the returnDateTime to set
      */
-    public void setReturnDateTime(LocalDateTime returnDateTime) {
+    public void setReturnDateTime(Date returnDateTime) {
         this.returnDateTime = returnDateTime;
     }
 
     /**
      * @return the closingHour
      */
-    public Time getClosingHour() {
+    public Date getClosingHour() {
         return closingHour;
     }
 
@@ -166,6 +166,20 @@ public class TransitDriverDispatchRecord implements Serializable {
      */
     public void setIsComplete(boolean isComplete) {
         this.isComplete = isComplete;
+    }
+
+    /**
+     * @return the openingHour
+     */
+    public Date getOpeningHour() {
+        return openingHour;
+    }
+
+    /**
+     * @param openingHour the openingHour to set
+     */
+    public void setOpeningHour(Date openingHour) {
+        this.openingHour = openingHour;
     }
 
 }
