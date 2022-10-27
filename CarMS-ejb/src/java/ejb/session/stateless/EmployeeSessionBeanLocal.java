@@ -5,7 +5,8 @@
  */
 package ejb.session.stateless;
 
-import entity.Cars;
+import entity.Customer;
+import entity.Employee;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -14,9 +15,9 @@ import javax.ejb.Local;
  * @author Wayne
  */
 @Local
-public interface CarSessionBeanLocal {
+public interface EmployeeSessionBeanLocal {
 
-    public Long createNewCar(Cars car);
+    public Long createNewEmployee(Employee employee);
 
-    public List<Cars> retrieveAllCars();
+    public List<Employee> retrieveAllEmployees();
 }

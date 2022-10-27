@@ -47,10 +47,6 @@ public class Cars implements Serializable {
     @NotNull
     private CarStateEnumeration carState;
     
-    @Column(nullable = false, length = 64)
-    @NotNull
-    @Size(min = 1, max = 64)
-    private String make;
     
     @Column(nullable = false, length = 64)
     @NotNull
@@ -87,10 +83,9 @@ public class Cars implements Serializable {
         return carId;
     }
 
-    public Cars(String licenseNumber, CarStateEnumeration carState, String make) {
+    public Cars(String licenseNumber, CarStateEnumeration carState) {
         this.licenseNumber = licenseNumber;
         this.carState = carState;
-        this.make = make;
     }
 
     public void setCarId(Long carId) {
@@ -148,20 +143,6 @@ public class Cars implements Serializable {
      */
     public void setCarState(CarStateEnumeration carState) {
         this.carState = carState;
-    }
-
-    /**
-     * @return the make
-     */
-    public String getMake() {
-        return make;
-    }
-
-    /**
-     * @param make the make to set
-     */
-    public void setMake(String make) {
-        this.make = make;
     }
 
     /**

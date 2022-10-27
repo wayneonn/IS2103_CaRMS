@@ -6,17 +6,19 @@
 package ejb.session.stateless;
 
 import entity.Cars;
+import entity.Category;
+import entity.Customer;
+import entity.Employee;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Remote;
 
 /**
  *
  * @author Wayne
  */
-@Local
-public interface CarSessionBeanLocal {
+@Remote
+public interface EmployeeSessionBeanRemote {
+    public Long createNewEmployee(Employee employee);
 
-    public Long createNewCar(Cars car);
-
-    public List<Cars> retrieveAllCars();
+    public List<Employee> retrieveAllEmployees();
 }

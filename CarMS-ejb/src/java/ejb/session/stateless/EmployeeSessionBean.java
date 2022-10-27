@@ -5,7 +5,8 @@
  */
 package ejb.session.stateless;
 
-import entity.Cars;
+import entity.Customer;
+import entity.Employee;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,7 +18,7 @@ import javax.persistence.Query;
  * @author Wayne
  */
 @Stateless
-public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal {
+public class EmployeeSessionBean implements EmployeeSessionBeanLocal, EmployeeSessionBeanRemote {
 
     @PersistenceContext(unitName = "CarMS-ejbPU")
     private EntityManager em;
@@ -25,21 +26,18 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewCar(Cars car) {
-        em.persist(car);
+    public Long createNewEmployee(Employee employee) {
+        em.persist(employee);
         em.flush();
 
-        return car.getCarId();
+        return employee.getEmployeeId();
     }
 
     @Override
-    public List<Cars> retrieveAllCars() {
-        Query query = em.createQuery("SELECT c FROM Car c");
+    public List<Employee> retrieveAllEmployees() {
+        Query query = em.createQuery("SELECT e FROM Employee e");
 
         return query.getResultList();
     }
 
-    public void persist(Object object) {
-        em.persist(object);
-    }
 }

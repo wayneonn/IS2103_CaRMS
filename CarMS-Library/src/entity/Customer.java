@@ -65,6 +65,13 @@ public class Customer implements Serializable {
     @Size(min=16, max=16) // Business rule - Credit Card must have 16 Digits
     private String creditCardNumber;
 
+    public Customer(String firstName, String lastName, String email, String creditCardNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.creditCardNumber = creditCardNumber;
+    }
+
     public Long getCustomerId() {
         return customerId;
     }

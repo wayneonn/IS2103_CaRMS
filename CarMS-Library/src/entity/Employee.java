@@ -63,6 +63,13 @@ public class Employee implements Serializable {
         return employeeId;
     }
 
+    public Employee(String employeeUsername, String employeePassword, String employeeName, EmployeeEnum accessRights) {
+        this.employeeUsername = employeeUsername;
+        this.employeePassword = employeePassword;
+        this.employeeName = employeeName;
+        this.accessRights = accessRights;
+    }
+
     public Employee() {
     }
 

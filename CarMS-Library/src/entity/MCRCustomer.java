@@ -24,25 +24,29 @@ public class MCRCustomer extends Customer implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    @Column(nullable = false, unique = true, length = 32)
-    @NotNull
-    @Size(min = 6, max = 32)
+    @Column(nullable = true, unique = true, length = 32)
+    @Size(max = 32)
     private String custUsername;
     
-    @Column(nullable = false, length = 32)
-    @NotNull
-    @Size(min = 8, max = 32)
+    @Column(nullable = true, length = 32)
+    @Size(max = 32)
     private String custPassword;
     
-    @Column(nullable = false, length = 32)
-    @NotNull
-    @Size(min = 1, max = 32)
+    @Column(nullable = true, length = 32)
+    @Size(max = 32)
     private String idNumber;
     
-    @Column(nullable = false)
-    @NotNull
+    @Column(nullable = true)
     @Min(1)
     private String phoneNumber;
+
+    public MCRCustomer(String custUsername, String custPassword, String idNumber, String phoneNumber, String firstName, String lastName, String email, String creditCardNumber) {
+        super(firstName, lastName, email, creditCardNumber);
+        this.custUsername = custUsername;
+        this.custPassword = custPassword;
+        this.idNumber = idNumber;
+        this.phoneNumber = phoneNumber;
+    }
 
     public MCRCustomer() {
     }
