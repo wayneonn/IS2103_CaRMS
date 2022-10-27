@@ -8,6 +8,11 @@ package ejb.session.singleton;
 import ejb.session.stateless.CarSessionBeanLocal;
 import ejb.session.stateless.CategorySessionBeanLocal;
 import ejb.session.stateless.ModelSessionBeanLocal;
+import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
+import ejb.session.stateless.RentalRateSessionBeanRemote;
+import ejb.session.stateless.ReservationRecordSessionBeanRemote;
+import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanLocal;
 import entity.Category;
 import entity.Model;
 import javax.annotation.PostConstruct;
@@ -27,6 +32,21 @@ import javax.persistence.PersistenceContext;
 @Startup
 
 public class DataInitSessionBean {
+
+    @EJB
+    private TransitDriverDispatchRecordSessionBeanLocal transitDriverDispatchRecordSessionBean;
+
+    @EJB
+    private ReservationRecordSessionBeanRemote reservationRecordSessionBean;
+
+    @EJB
+    private RentalRateSessionBeanRemote rentalRateSessionBean;
+
+    @EJB
+    private PartnerSessionBeanRemote partnerSessionBean;
+
+    @EJB
+    private OutletSessionBeanRemote outletSessionBean;
 
     @EJB
     private ModelSessionBeanLocal modelSessionBean;
@@ -59,5 +79,7 @@ public class DataInitSessionBean {
             modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis"));
         }
     }
+  
+    
 
 }
