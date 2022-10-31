@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,9 +20,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -66,12 +64,9 @@ public class Cars implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Outlet outlet;
-    @OneToOne
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Model model;
-    @OneToOne
-    @JoinColumn(nullable = false)
-    private Category category;
 
     @OneToOne
     private Customer customer; 
@@ -83,9 +78,10 @@ public class Cars implements Serializable {
         return carId;
     }
 
-    public Cars(String licenseNumber, CarStateEnumeration carState) {
+    public Cars(String licenseNumber, CarStateEnumeration carState, String colour) {
         this.licenseNumber = licenseNumber;
         this.carState = carState;
+        this.colour = colour;
     }
 
     public void setCarId(Long carId) {
@@ -172,6 +168,36 @@ public class Cars implements Serializable {
     public void setColour(String colour) {
         this.colour = colour;
     }
+
+    /**
+     * @return the outlet
+     */
+    public Outlet getOutlet() {
+        return outlet;
+    }
+
+    /**
+     * @param outlet the outlet to set
+     */
+    public void setOutlet(Outlet outlet) {
+        this.outlet = outlet;
+    }
+
+    /**
+     * @return the model
+     */
+    public Model getModel() {
+        return model;
+    }
+
+    /**
+     * @param model the model to set
+     */
+    public void setModel(Model model) {
+        this.model = model;
+    }
+    
+    
 
     
 }

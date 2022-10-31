@@ -7,6 +7,9 @@ package ejb.session.stateless;
 
 import entity.Cars;
 import entity.Model;
+import exception.CategoryNotFoundException;
+import exception.InputDataValidationException;
+import exception.ModelNotFoundException;
 import java.util.List;
 import javax.ejb.Remote;
 import exception.ModelNotFoundException;
@@ -18,7 +21,7 @@ import exception.ModelNotFoundException;
 @Remote
 public interface ModelSessionBeanRemote {
 
-    public Long createNewModel(Model model);
+    public Long createNewModel(Model model, Long categoryId) throws InputDataValidationException, CategoryNotFoundException;
 
     public List<Model> retrieveAllModels();
     

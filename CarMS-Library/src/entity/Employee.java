@@ -160,4 +160,18 @@ public class Employee implements Serializable {
     public void setAccessRights(EmployeeEnum accessRights) {
         this.accessRights = accessRights;
     }
+
+    /**
+     * @return the outlet
+     */
+    public Outlet getOutlet() {
+        return outlet;
+    }
+
+    /**
+     * @param outlet the outlet to set
+     */
+    public void setOutlet(Outlet outlet) {
+        this.outlet = outlet;
+    }
 }

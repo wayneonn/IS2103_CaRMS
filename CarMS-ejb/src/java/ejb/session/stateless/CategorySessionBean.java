@@ -7,6 +7,9 @@ package ejb.session.stateless;
 
 import entity.Cars;
 import entity.Category;
+import entity.Outlet;
+import exception.CategoryNotFoundException;
+import exception.OutletNotFoundException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -27,10 +30,23 @@ public class CategorySessionBean implements CategorySessionBeanRemote, CategoryS
     // "Insert Code > Add Business Method")
     @Override
     public Long createNewCategory(Category category) {
+        
         em.persist(category);
         em.flush();
 
         return category.getCategoryId();
+    }
+    
+    @Override
+    public Category retrieveCategoryById(Long categoryId) throws CategoryNotFoundException {
+        
+        Category category = em.find(Category.class, categoryId);
+        
+        if (category != null){
+            return category;
+        } else {
+            throw new CategoryNotFoundException("Category ID " + categoryId + " does not exist!");
+        }
     }
 
     @Override

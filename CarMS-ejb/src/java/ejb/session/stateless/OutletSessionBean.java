@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Outlet;
+import exception.OutletNotFoundException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -31,11 +32,17 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
 
         return outlet.getOutletId();
     }
-
+    
     @Override
-    public Outlet retrieveOutletById(Long outletId) {
+    public Outlet retrieveOutletById(Long outletId) throws OutletNotFoundException{
+        
         Outlet outlet = em.find(Outlet.class, outletId);
-        return outlet;
+        
+        if (outlet != null){
+            return outlet;
+        } else {
+            throw new OutletNotFoundException("Outlet ID " + outletId + " does not exist!");
+        }
     }
    
     @Override
@@ -44,7 +51,7 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
     }
     
     @Override
-    public void deleteOutlet(Long outletId){
+    public void deleteOutlet(Long outletId) throws OutletNotFoundException {
         Outlet outletToRemove = retrieveOutletById(outletId); 
         em.remove(outletToRemove);
     }

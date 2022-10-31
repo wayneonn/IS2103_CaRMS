@@ -6,6 +6,11 @@
 package ejb.session.stateless;
 
 import entity.Cars;
+import exception.InputDataValidationException;
+import exception.LicenseNumberExsistsException;
+import exception.ModelNotFoundException;
+import exception.OutletNotFoundException;
+import exception.UnknownPersistenceException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,7 +21,7 @@ import javax.ejb.Local;
 @Local
 public interface CarSessionBeanLocal {
 
-    public Long createNewCar(Cars car);
+     public Long createNewCar(Cars car, Long outletId, Long modelId) throws OutletNotFoundException, ModelNotFoundException, InputDataValidationException, LicenseNumberExsistsException, UnknownPersistenceException;
 
     public List<Cars> retrieveAllCars();
 }
