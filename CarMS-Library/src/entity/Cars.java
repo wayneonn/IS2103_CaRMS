@@ -196,6 +196,8 @@ public class Cars implements Serializable {
     public void setModel(Model model) {
         this.model = model;
     }
+    
+    
 
     
 }

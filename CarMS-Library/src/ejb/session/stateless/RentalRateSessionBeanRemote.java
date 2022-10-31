@@ -6,7 +6,11 @@
 package ejb.session.stateless;
 
 import entity.RentalRate;
+import exception.CategoryNotFoundException;
+import exception.InputDataValidationException;
+import exception.UnknownPersistenceException;
 import java.util.List;
+import javax.persistence.PersistenceException;
 
 /**
  *
@@ -14,6 +18,6 @@ import java.util.List;
  */
 public interface RentalRateSessionBeanRemote {
     
-    public Long createNewRentalRate(RentalRate rentalRate);
+    public Long createNewRentalRate(RentalRate rentalRate, Long categoryId) throws CategoryNotFoundException, InputDataValidationException, UnknownPersistenceException, PersistenceException;
     public List<RentalRate> retrieveRentalRates();
 }

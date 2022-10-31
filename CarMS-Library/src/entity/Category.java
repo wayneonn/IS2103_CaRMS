@@ -92,4 +92,16 @@ public class Category implements Serializable {
         this.categoryName = name;
     }
     
+    public void addRentalRate(RentalRate rentalRate) {
+        if (!this.rentalRates.contains(rentalRate)) {
+            this.rentalRates.add(rentalRate);
+        }
+    }
+
+    public void removeRentalRate(RentalRate rentalRate) {
+        if (this.rentalRates.contains(rentalRate)) {
+            this.rentalRates.remove(rentalRate);
+        }
+    }
+    
 }

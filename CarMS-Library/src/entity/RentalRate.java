@@ -48,6 +48,12 @@ public class RentalRate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalRateId;
+    
+    @Column(nullable = false, length = 128)
+    @NotNull
+    @Size(max = 128)
+    private String rentalRateDescription;
+    
     private RentalRateTypeEnum rentalRateType;
     @Column(nullable = false, precision = 11, scale = 2)
     @NotNull
@@ -55,9 +61,9 @@ public class RentalRate implements Serializable {
     @Digits(integer = 9, fraction = 2)
     private Double rateCost;
     
-    @Column(nullable = true) // minimum start date is day before
+    @Column(nullable = true) 
     private Date startDate;
-    @Column(nullable = true) // minimum start date is day before
+    @Column(nullable = true) 
     private Date endDate;
 
     public RentalRate() {
@@ -69,6 +75,12 @@ public class RentalRate implements Serializable {
      */
     public Long getRentalRateId() {
         return rentalRateId;
+    }
+
+    public RentalRate(String rentalRateDescription, RentalRateTypeEnum rentalRateType, Double rateCost) {
+        this.rentalRateDescription = rentalRateDescription;
+        this.rentalRateType = rentalRateType;
+        this.rateCost = rateCost;
     }
 
     /**
@@ -123,6 +135,64 @@ public class RentalRate implements Serializable {
     public void setRateCost(Double rateCost) {
         this.rateCost = rateCost;
     }
+
+    /**
+     * @return the rentalRateDescription
+     */
+    public String getRentalRateDescription() {
+        return rentalRateDescription;
+    }
+
+    /**
+     * @param rentalRateDescription the rentalRateDescription to set
+     */
+    public void setRentalRateDescription(String rentalRateDescription) {
+        this.rentalRateDescription = rentalRateDescription;
+    }
+
+    /**
+     * @return the startDate
+     */
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    /**
+     * @param startDate the startDate to set
+     */
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    /**
+     * @return the endDate
+     */
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    /**
+     * @param endDate the endDate to set
+     */
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    /**
+     * @return the category
+     */
+    public Category getCategory() {
+        return category;
+    }
+
+    /**
+     * @param category the category to set
+     */
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+    
+    
 
     
 }

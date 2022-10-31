@@ -19,15 +19,20 @@ import entity.Category;
 import entity.Employee;
 import entity.Model;
 import entity.Outlet;
+import entity.RentalRate;
 import enumerations.CarStateEnumeration;
 import enumerations.EmployeeEnum;
+import enumerations.RentalRateTypeEnum;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
 import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
 import exception.OutletNotFoundException;
 import exception.UnknownPersistenceException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -155,6 +160,26 @@ public class DataInitSessionBean {
         } catch (InputDataValidationException ex) {
             System.out.println(ex.getMessage());
         } catch (LicenseNumberExsistsException ex) {
+            System.out.println(ex.getMessage());
+        } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            Date startDateTime = df.parse("31/10/2022 00:00");
+            Date endDateTime = df.parse("04/11/2022 00:00");
+            RentalRate standardSedanNonPeakRate = new RentalRate("Standard Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK ,100.0);
+            
+            standardSedanNonPeakRate.setStartDate(startDateTime);
+            standardSedanNonPeakRate.setEndDate(endDateTime);
+            rentalRateSessionBean.createNewRentalRate(standardSedanNonPeakRate, outletAId);
+            
+        } catch (ParseException ex) {
+            System.out.println(ex.getMessage());
+        } catch (CategoryNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InputDataValidationException ex) {
             System.out.println(ex.getMessage());
         } catch (UnknownPersistenceException ex) {
             System.out.println(ex.getMessage());
