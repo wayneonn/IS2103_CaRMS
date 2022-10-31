@@ -9,6 +9,7 @@ import entity.Cars;
 import entity.Category;
 import entity.Customer;
 import entity.Employee;
+import exception.OutletNotFoundException;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -18,7 +19,7 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface EmployeeSessionBeanRemote {
-    public Long createNewEmployee(Employee employee);
+    public Long createNewEmployee(Employee employee, Long outletId) throws OutletNotFoundException ;
 
     public List<Employee> retrieveAllEmployees();
 }

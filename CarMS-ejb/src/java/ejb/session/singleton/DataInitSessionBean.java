@@ -7,6 +7,7 @@ package ejb.session.singleton;
 
 import ejb.session.stateless.CarSessionBeanLocal;
 import ejb.session.stateless.CategorySessionBeanLocal;
+import ejb.session.stateless.EmployeeSessionBeanLocal;
 import ejb.session.stateless.ModelSessionBeanLocal;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
@@ -14,7 +15,12 @@ import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationRecordSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanLocal;
 import entity.Category;
+import entity.Employee;
 import entity.Model;
+import entity.Outlet;
+import enumerations.EmployeeEnum;
+import exception.OutletNotFoundException;
+import java.time.LocalTime;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -32,6 +38,12 @@ import javax.persistence.PersistenceContext;
 @Startup
 
 public class DataInitSessionBean {
+
+    @EJB
+    private EmployeeSessionBeanLocal employeeSessionBean;
+
+    @EJB
+    private OutletSessionBeanRemote outletSessionBean1;
 
     @EJB
     private TransitDriverDispatchRecordSessionBeanLocal transitDriverDispatchRecordSessionBean;
@@ -60,6 +72,10 @@ public class DataInitSessionBean {
     @EJB
     private CarSessionBeanLocal carSessionBean;
 
+    
+    Long outletAId;
+    Long outletBId;
+    Long outletCId;
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @PostConstruct
@@ -67,6 +83,25 @@ public class DataInitSessionBean {
 //        if (em.find(Cars.class, 1l) == null) {
 //            carSessionBean.createNewCar(new Cars("TESTING", CarStateEnumeration.AVAILABLE, "Toyota", 5));
 //        }
+            LocalTime openingHour = LocalTime.parse("10:00");
+            LocalTime closingHour = LocalTime.parse("22:00");
+
+        if (em.find(Outlet.class, 1l) == null) {
+            outletAId = outletSessionBean.createNewOutlet(new Outlet("Kent Ridge Drive", "Outlet A", openingHour, closingHour));
+            outletBId = outletSessionBean.createNewOutlet(new Outlet("Holland Village Drive", "Outlet B", openingHour, closingHour));
+            outletCId = outletSessionBean.createNewOutlet(new Outlet("Lentor Plains", "Outlet C", openingHour, closingHour));
+        }
+        
+        try{
+        if (em.find(Employee.class, 1l) == null) {
+            employeeSessionBean.createNewEmployee(new Employee("EmployeeA1","password","A1",EmployeeEnum.SALESMANAGER), outletAId);
+            employeeSessionBean.createNewEmployee(new Employee("EmployeeB1","password","B1",EmployeeEnum.OPERATIONSMANAGER), outletBId);
+            employeeSessionBean.createNewEmployee(new Employee("EmployeeC1","password","C1",EmployeeEnum.CUSTSERVICEEXEC), outletCId);
+        }
+        } catch (OutletNotFoundException ex) {
+            ex.getMessage();
+        }
+        
 
         if (em.find(Category.class, 1l) == null) {
             categorySessionBean.createNewCategory(new Category("Standard Sedan"));
