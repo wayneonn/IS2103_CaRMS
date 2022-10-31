@@ -31,6 +31,7 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
         
+        //Testing CODE
         System.out.println(modelSessionBean.retrieveAllModels());
         System.out.println(customerSessionBeanRemote.retrieveAllCustomers());
         System.out.println(categorySessionBean.retrieveAllCategories());
