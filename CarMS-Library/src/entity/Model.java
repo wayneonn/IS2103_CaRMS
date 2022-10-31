@@ -145,5 +145,16 @@ public class Model implements Serializable {
         this.category = category;
     }
 
+    public void addCar(Cars car) {
+        if (!this.cars.contains(car)) {
+            this.cars.add(car);
+        }
+    }
+
+    public void removeCar(Cars car) {
+        if (this.cars.contains(car)) {
+            this.cars.remove(car);
+        }
+    }
 
 }

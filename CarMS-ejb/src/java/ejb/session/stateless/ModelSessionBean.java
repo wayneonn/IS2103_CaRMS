@@ -7,8 +7,11 @@ package ejb.session.stateless;
 
 import entity.Category;
 import entity.Model;
+import entity.Outlet;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
+import exception.ModelNotFoundException;
+import exception.OutletNotFoundException;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -73,6 +76,18 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
         }
 
         return msg;
+    }
+    
+    @Override
+    public Model retrieveModelById(Long modelId) throws ModelNotFoundException{
+        
+        Model model = em.find(Model.class, modelId);
+        
+        if (model != null){
+            return model;
+        } else {
+            throw new ModelNotFoundException("Model ID " + modelId + " does not exist!");
+        }
     }
 
     @Override

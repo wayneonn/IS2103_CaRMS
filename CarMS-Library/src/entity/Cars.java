@@ -78,9 +78,10 @@ public class Cars implements Serializable {
         return carId;
     }
 
-    public Cars(String licenseNumber, CarStateEnumeration carState) {
+    public Cars(String licenseNumber, CarStateEnumeration carState, String colour) {
         this.licenseNumber = licenseNumber;
         this.carState = carState;
+        this.colour = colour;
     }
 
     public void setCarId(Long carId) {

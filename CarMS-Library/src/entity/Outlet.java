@@ -153,4 +153,15 @@ public class Outlet implements Serializable {
         this.cars = cars;
     }
     
+    public void addCar(Cars car) {
+        if (!this.cars.contains(car)) {
+            this.cars.add(car);
+        }
+    }
+
+    public void removeCar(Cars car) {
+        if (this.cars.contains(car)) {
+            this.cars.remove(car);
+        }
+    }
 }

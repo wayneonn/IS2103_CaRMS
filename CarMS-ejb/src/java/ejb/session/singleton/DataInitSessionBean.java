@@ -14,14 +14,19 @@ import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationRecordSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanLocal;
+import entity.Cars;
 import entity.Category;
 import entity.Employee;
 import entity.Model;
 import entity.Outlet;
+import enumerations.CarStateEnumeration;
 import enumerations.EmployeeEnum;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
+import exception.LicenseNumberExsistsException;
+import exception.ModelNotFoundException;
 import exception.OutletNotFoundException;
+import exception.UnknownPersistenceException;
 import java.time.LocalTime;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -77,11 +82,17 @@ public class DataInitSessionBean {
     Long outletAId;
     Long outletBId;
     Long outletCId;
+    Long outletDId;
 
     Long categoryStandardSedanId;
     Long categoryFamilySedanId;
     Long categoryLuxurySedanId;
     Long categoryMinivanSuvId;
+
+    Long modelAId;
+    Long modelBId;
+    Long modelCId;
+    Long modelDId;
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -97,6 +108,7 @@ public class DataInitSessionBean {
             outletAId = outletSessionBean.createNewOutlet(new Outlet("Kent Ridge Drive", "Outlet A", openingHour, closingHour));
             outletBId = outletSessionBean.createNewOutlet(new Outlet("Holland Village Drive", "Outlet B", openingHour, closingHour));
             outletCId = outletSessionBean.createNewOutlet(new Outlet("Lentor Plains", "Outlet C", openingHour, closingHour));
+            outletDId = outletSessionBean.createNewOutlet(new Outlet("Buona Vista Drive", "Outlet D", openingHour, closingHour));
         }
 
         try {
@@ -104,6 +116,7 @@ public class DataInitSessionBean {
                 employeeSessionBean.createNewEmployee(new Employee("EmployeeA1", "password", "A1", EmployeeEnum.SALESMANAGER), outletAId);
                 employeeSessionBean.createNewEmployee(new Employee("EmployeeB1", "password", "B1", EmployeeEnum.OPERATIONSMANAGER), outletBId);
                 employeeSessionBean.createNewEmployee(new Employee("EmployeeC1", "password", "C1", EmployeeEnum.CUSTSERVICEEXEC), outletCId);
+                employeeSessionBean.createNewEmployee(new Employee("EmployeeD1", "password", "D1", EmployeeEnum.CUSTSERVICEEXEC), outletDId);
             }
         } catch (OutletNotFoundException ex) {
             ex.getMessage();
@@ -118,16 +131,35 @@ public class DataInitSessionBean {
 
         try {
             if (em.find(Model.class, 1l) == null) {
-                modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis"), categoryStandardSedanId);
-                modelSessionBean.createNewModel(new Model("Mercedes Benz", "E200"), categoryLuxurySedanId);
-                modelSessionBean.createNewModel(new Model("Nissan", "Qashqai"), categoryMinivanSuvId);
-                modelSessionBean.createNewModel(new Model("Toyota", "Picnic"), categoryFamilySedanId);
+                modelAId = modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis"), categoryStandardSedanId);
+                modelBId = modelSessionBean.createNewModel(new Model("Mercedes Benz", "E200"), categoryLuxurySedanId);
+                modelCId = modelSessionBean.createNewModel(new Model("Nissan", "Qashqai"), categoryMinivanSuvId);
+                modelDId = modelSessionBean.createNewModel(new Model("Toyota", "Picnic"), categoryFamilySedanId);
             }
         } catch (CategoryNotFoundException ex) {
             System.out.println(ex.getMessage());
         } catch (InputDataValidationException ex) {
             System.out.println(ex.getMessage());
         }
+        try {
+            if (em.find(Cars.class, 1l) == null) {
+                carSessionBean.createNewCar(new Cars("SKU1856P", CarStateEnumeration.AVAILABLE, "Red"), outletAId, modelAId);
+                carSessionBean.createNewCar(new Cars("SPV2132U", CarStateEnumeration.AVAILABLE, "Blue"), outletBId, modelBId);
+                carSessionBean.createNewCar(new Cars("SGD6421Z", CarStateEnumeration.AVAILABLE, "Yellow"), outletCId, modelCId);
+                carSessionBean.createNewCar(new Cars("SID4221L", CarStateEnumeration.AVAILABLE, "Green"), outletDId, modelDId);
+            }
+        } catch (OutletNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        } catch (ModelNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InputDataValidationException ex) {
+            System.out.println(ex.getMessage());
+        } catch (LicenseNumberExsistsException ex) {
+            System.out.println(ex.getMessage());
+        } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
+        }
+
     }
 
 }
