@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.Category;
+import entity.Outlet;
+import exception.CategoryNotFoundException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,6 +19,8 @@ import javax.ejb.Local;
 public interface CategorySessionBeanLocal {
 
     public Long createNewCategory(Category category);
+    
+    public Category retrieveCategoryById(Long categoryId) throws CategoryNotFoundException;
 
     public List<Category> retrieveAllCategories();
 }

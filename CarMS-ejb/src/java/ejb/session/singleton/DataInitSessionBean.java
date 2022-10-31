@@ -19,6 +19,8 @@ import entity.Employee;
 import entity.Model;
 import entity.Outlet;
 import enumerations.EmployeeEnum;
+import exception.CategoryNotFoundException;
+import exception.InputDataValidationException;
 import exception.OutletNotFoundException;
 import java.time.LocalTime;
 import javax.annotation.PostConstruct;
@@ -72,10 +74,15 @@ public class DataInitSessionBean {
     @EJB
     private CarSessionBeanLocal carSessionBean;
 
-    
     Long outletAId;
     Long outletBId;
     Long outletCId;
+
+    Long categoryStandardSedanId;
+    Long categoryFamilySedanId;
+    Long categoryLuxurySedanId;
+    Long categoryMinivanSuvId;
+
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @PostConstruct
@@ -83,38 +90,44 @@ public class DataInitSessionBean {
 //        if (em.find(Cars.class, 1l) == null) {
 //            carSessionBean.createNewCar(new Cars("TESTING", CarStateEnumeration.AVAILABLE, "Toyota", 5));
 //        }
-            LocalTime openingHour = LocalTime.parse("10:00");
-            LocalTime closingHour = LocalTime.parse("22:00");
+        LocalTime openingHour = LocalTime.parse("10:00");
+        LocalTime closingHour = LocalTime.parse("22:00");
 
         if (em.find(Outlet.class, 1l) == null) {
             outletAId = outletSessionBean.createNewOutlet(new Outlet("Kent Ridge Drive", "Outlet A", openingHour, closingHour));
             outletBId = outletSessionBean.createNewOutlet(new Outlet("Holland Village Drive", "Outlet B", openingHour, closingHour));
             outletCId = outletSessionBean.createNewOutlet(new Outlet("Lentor Plains", "Outlet C", openingHour, closingHour));
         }
-        
-        try{
-        if (em.find(Employee.class, 1l) == null) {
-            employeeSessionBean.createNewEmployee(new Employee("EmployeeA1","password","A1",EmployeeEnum.SALESMANAGER), outletAId);
-            employeeSessionBean.createNewEmployee(new Employee("EmployeeB1","password","B1",EmployeeEnum.OPERATIONSMANAGER), outletBId);
-            employeeSessionBean.createNewEmployee(new Employee("EmployeeC1","password","C1",EmployeeEnum.CUSTSERVICEEXEC), outletCId);
-        }
+
+        try {
+            if (em.find(Employee.class, 1l) == null) {
+                employeeSessionBean.createNewEmployee(new Employee("EmployeeA1", "password", "A1", EmployeeEnum.SALESMANAGER), outletAId);
+                employeeSessionBean.createNewEmployee(new Employee("EmployeeB1", "password", "B1", EmployeeEnum.OPERATIONSMANAGER), outletBId);
+                employeeSessionBean.createNewEmployee(new Employee("EmployeeC1", "password", "C1", EmployeeEnum.CUSTSERVICEEXEC), outletCId);
+            }
         } catch (OutletNotFoundException ex) {
             ex.getMessage();
         }
-        
 
         if (em.find(Category.class, 1l) == null) {
-            categorySessionBean.createNewCategory(new Category("Standard Sedan"));
-            categorySessionBean.createNewCategory(new Category("Family Sedan"));
-            categorySessionBean.createNewCategory(new Category("Luxury Sedan"));
-            categorySessionBean.createNewCategory(new Category("SUV/Minivan"));
+            categoryStandardSedanId = categorySessionBean.createNewCategory(new Category("Standard Sedan"));
+            categoryFamilySedanId = categorySessionBean.createNewCategory(new Category("Family Sedan"));
+            categoryLuxurySedanId = categorySessionBean.createNewCategory(new Category("Luxury Sedan"));
+            categoryMinivanSuvId = categorySessionBean.createNewCategory(new Category("SUV/Minivan"));
         }
-        
-        if (em.find(Model.class, 1l) == null) {
-            modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis"));
+
+        try {
+            if (em.find(Model.class, 1l) == null) {
+                modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis"), categoryStandardSedanId);
+                modelSessionBean.createNewModel(new Model("Mercedes Benz", "E200"), categoryLuxurySedanId);
+                modelSessionBean.createNewModel(new Model("Nissan", "Qashqai"), categoryMinivanSuvId);
+                modelSessionBean.createNewModel(new Model("Toyota", "Picnic"), categoryFamilySedanId);
+            }
+        } catch (CategoryNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InputDataValidationException ex) {
+            System.out.println(ex.getMessage());
         }
     }
-  
-    
 
 }

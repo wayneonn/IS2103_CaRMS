@@ -7,6 +7,8 @@ package ejb.session.stateless;
 
 import entity.Cars;
 import entity.Model;
+import exception.CategoryNotFoundException;
+import exception.InputDataValidationException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,7 +19,7 @@ import javax.ejb.Local;
 @Local
 public interface ModelSessionBeanLocal {
 
-    public Long createNewModel(Model model);
+    public Long createNewModel(Model model, Long categoryId) throws InputDataValidationException, CategoryNotFoundException;
 
     public List<Model> retrieveAllModels();
 }
