@@ -14,9 +14,11 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.DecimalMin;
@@ -38,6 +40,10 @@ public class RentalRate implements Serializable {
     @ManyToMany(mappedBy="rentalRates")
     private List<Cars> cars;
     
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
+    private Category category;
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +54,11 @@ public class RentalRate implements Serializable {
     @DecimalMin("0.00")
     @Digits(integer = 9, fraction = 2)
     private Double rateCost;
+    
+    @Column(nullable = true) // minimum start date is day before
+    private Date startDate;
+    @Column(nullable = true) // minimum start date is day before
+    private Date endDate;
 
     public RentalRate() {
     }

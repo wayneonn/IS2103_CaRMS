@@ -11,6 +11,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 /**
  *
@@ -19,6 +22,14 @@ import javax.persistence.Query;
 @Stateless
 public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal {
 
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
+    
+    public CarSessionBean() {
+        this.validatorFactory = Validation.buildDefaultValidatorFactory();
+        this.validator = validatorFactory.getValidator();
+    }
+
     @PersistenceContext(unitName = "CarMS-ejbPU")
     private EntityManager em;
 
@@ -26,6 +37,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     // "Insert Code > Add Business Method")
     @Override
     public Long createNewCar(Cars car) {
+        
         em.persist(car);
         em.flush();
 
