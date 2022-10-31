@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import exception.ModelNotFoundException;
 
 /**
  *
@@ -39,5 +40,29 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
 
         return query.getResultList();
     }
+    
+    @Override
+    public Model retrieveModelById(Long modelId) throws ModelNotFoundException {
+        Model model = em.find(Model.class, modelId);
+        
+        if(model != null)
+        {
+            return model;
+        }
+        else
+        {
+            throw new ModelNotFoundException("Customer does not exist: " + modelId);
+        }
+    }
+    
+    @Override 
+    public Model updateModel(Model updatedModel){
+        return em.merge(updatedModel);
+    }
 
+    @Override
+    public void deleteModel(Long modelId)throws ModelNotFoundException{
+        Model modelToRemove = retrieveModelById(modelId); //check if in use
+        em.remove(modelToRemove); //mark as disabled
+    }
 }

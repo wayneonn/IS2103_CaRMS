@@ -33,10 +33,19 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
     }
 
     @Override
-    public List<Outlet> retrieveOutlet() {
-        Query query = em.createQuery("SELECT T FROM Outlet t");
-
-        return query.getResultList();
+    public Outlet retrieveOutletById(Long outletId) {
+        Outlet outlet = em.find(Outlet.class, outletId);
+        return outlet;
     }
    
+    @Override
+    public Outlet updateOutlet(Outlet updatedOutlet) {
+        return em.merge(updatedOutlet);
+    }
+    
+    @Override
+    public void deleteOutlet(Long outletId){
+        Outlet outletToRemove = retrieveOutletById(outletId); 
+        em.remove(outletToRemove);
+    }
 }

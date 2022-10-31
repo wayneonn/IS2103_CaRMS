@@ -15,4 +15,5 @@ import java.util.List;
 public interface RentalRateSessionBeanLocal {
     public Long createNewRentalRate(RentalRate rentalRate);
     public List<RentalRate> retrieveRentalRates();
+    //public String viewRentalRates();
 }

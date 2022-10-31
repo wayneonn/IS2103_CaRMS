@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import exception.PartnerNotFoundException;
 import entity.Partner;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -33,10 +34,27 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     }
 
     @Override
-    public List<Partner> retrievePartner() {
-        Query query = em.createQuery("SELECT P FROM Outlet p");
-
-        return query.getResultList();
+    public Partner retrievePartnerById(Long partnerId) throws PartnerNotFoundException {
+        Partner partner = em.find(Partner.class, partnerId);
+        
+        if(partner != null)
+        {
+            return partner;
+        }
+        else
+        {
+            throw new PartnerNotFoundException("Partner does not exist: " + partnerId);
+        }
+    }
+    
+    @Override
+    public Partner updatePartner(Partner updatedPartner){
+        return em.merge(updatedPartner);
     }
    
+    @Override
+    public void deleteOutlet(Long partnerId) throws PartnerNotFoundException{
+        Partner partnerToRemove = retrievePartnerById(partnerId); 
+        em.remove(partnerToRemove);
+    }
 }

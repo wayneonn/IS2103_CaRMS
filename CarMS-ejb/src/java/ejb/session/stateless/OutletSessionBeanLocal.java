@@ -15,8 +15,7 @@ import javax.ejb.Local;
 public interface OutletSessionBeanLocal {
     
     public Long createNewOutlet(Outlet outlet);
-    public List<Outlet> retrieveOutlet();
-    //public Outlet deleteOutlet(Outlet outlet);
-    
-    
+    public Outlet retrieveOutletById(Long outletId);
+    public void deleteOutlet(Long outletId);
+    public Outlet updateOutlet(Outlet updatedOutlet);
 }

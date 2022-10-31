@@ -9,6 +9,7 @@ import entity.Cars;
 import entity.Model;
 import java.util.List;
 import javax.ejb.Remote;
+import exception.ModelNotFoundException;
 
 /**
  *
@@ -20,4 +21,10 @@ public interface ModelSessionBeanRemote {
     public Long createNewModel(Model model);
 
     public List<Model> retrieveAllModels();
+    
+    public Model retrieveModelById(Long modelId) throws ModelNotFoundException;
+    
+    public Model updateModel(Model updatedModel);
+    
+    public void deleteModel(Long modelId)throws ModelNotFoundException;
 }
