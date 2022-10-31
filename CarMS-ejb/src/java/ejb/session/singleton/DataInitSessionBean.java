@@ -9,11 +9,9 @@ import ejb.session.stateless.CarSessionBeanLocal;
 import ejb.session.stateless.CategorySessionBeanLocal;
 import ejb.session.stateless.EmployeeSessionBeanLocal;
 import ejb.session.stateless.ModelSessionBeanLocal;
-import ejb.session.stateless.OutletSessionBeanRemote;
-import ejb.session.stateless.PartnerSessionBeanRemote;
-import ejb.session.stateless.RentalRateSessionBeanRemote;
-import ejb.session.stateless.ReservationRecordSessionBeanRemote;
-import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanLocal;
+import ejb.session.stateless.OutletSessionBeanLocal;
+import ejb.session.stateless.PartnerSessionBeanLocal;
+import ejb.session.stateless.RentalRateSessionBeanLocal;
 import entity.Cars;
 import entity.Category;
 import entity.Employee;
@@ -55,22 +53,13 @@ public class DataInitSessionBean {
     private EmployeeSessionBeanLocal employeeSessionBean;
 
     @EJB
-    private OutletSessionBeanRemote outletSessionBean1;
+    private RentalRateSessionBeanLocal rentalRateSessionBean;
 
     @EJB
-    private TransitDriverDispatchRecordSessionBeanLocal transitDriverDispatchRecordSessionBean;
+    private PartnerSessionBeanLocal partnerSessionBean;
 
     @EJB
-    private ReservationRecordSessionBeanRemote reservationRecordSessionBean;
-
-    @EJB
-    private RentalRateSessionBeanRemote rentalRateSessionBean;
-
-    @EJB
-    private PartnerSessionBeanRemote partnerSessionBean;
-
-    @EJB
-    private OutletSessionBeanRemote outletSessionBean;
+    private OutletSessionBeanLocal outletSessionBean;
 
     @EJB
     private ModelSessionBeanLocal modelSessionBean;
@@ -171,9 +160,11 @@ public class DataInitSessionBean {
             Date endDateTime = df.parse("04/11/2022 00:00");
             RentalRate standardSedanNonPeakRate = new RentalRate("Standard Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK ,100.0);
             
-            standardSedanNonPeakRate.setStartDate(startDateTime);
-            standardSedanNonPeakRate.setEndDate(endDateTime);
-            rentalRateSessionBean.createNewRentalRate(standardSedanNonPeakRate, outletAId);
+            if(em.find(RentalRate.class, 1l) == null){
+                standardSedanNonPeakRate.setStartDate(startDateTime);
+                standardSedanNonPeakRate.setEndDate(endDateTime);
+                rentalRateSessionBean.createNewRentalRate(standardSedanNonPeakRate, outletAId);
+            }
             
         } catch (ParseException ex) {
             System.out.println(ex.getMessage());

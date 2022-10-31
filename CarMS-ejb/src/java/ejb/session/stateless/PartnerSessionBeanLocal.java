@@ -8,11 +8,13 @@ package ejb.session.stateless;
 import exception.PartnerNotFoundException;
 import entity.Partner;
 import java.util.List;
+import javax.ejb.Local;
 
 /**
  *
  * @author User
  */
+@Local
 public interface PartnerSessionBeanLocal {
     
     public Long createNewPartner(Partner partner);

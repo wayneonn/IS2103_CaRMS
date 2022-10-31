@@ -7,11 +7,13 @@ package ejb.session.stateless;
 
 import entity.TransitDriverDispatchRecord;
 import java.util.List;
+import javax.ejb.Remote;
 
 /**
  *
  * @author User
  */
+@Remote
 public interface TransitDriverDispatchRecordSessionBeanRemote {
     public Long createNewTransitDriverDispatchRecord (TransitDriverDispatchRecord reservationRecord);
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecord();

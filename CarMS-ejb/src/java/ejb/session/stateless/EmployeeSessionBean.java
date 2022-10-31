@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.Customer;
 import entity.Employee;
 import entity.Outlet;
+import exception.EmployeeNotFoundException;
+import exception.InvalidLoginException;
 import exception.OutletNotFoundException;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,6 +17,8 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -53,6 +57,34 @@ public class EmployeeSessionBean implements EmployeeSessionBeanLocal, EmployeeSe
         Query query = em.createQuery("SELECT e FROM Employee e");
 
         return query.getResultList();
+    }
+    
+    @Override
+    public Employee retrieveStaffByUsername(String username) throws EmployeeNotFoundException {
+        Query query = em.createQuery("SELECT e FROM Employee e WHERE e.employeeUsername = :inUsername");
+        query.setParameter("inUsername", username);
+
+        try {
+            return (Employee) query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException ex) {
+            throw new EmployeeNotFoundException("Employee username " + username + " not found in system.");
+        }
+    }
+
+    @Override
+    public Employee staffLogin(String username, String password) throws InvalidLoginException {
+
+        try {
+            Employee employee = retrieveStaffByUsername(username);
+
+            if (employee.getEmployeePassword().equals(password)) {
+                return employee;
+            } else {
+                throw new InvalidLoginException("Username does not exist or invalid password!");
+            }
+        } catch (EmployeeNotFoundException ex) {
+            throw new InvalidLoginException("Username does not exist or invalid password!");
+        }
     }
 
 }

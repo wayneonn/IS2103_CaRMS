@@ -8,11 +8,13 @@ package ejb.session.stateless;
 import entity.Partner;
 import exception.PartnerNotFoundException;
 import java.util.List;
+import javax.ejb.Remote;
 
 /**
  *
  * @author User
  */
+@Remote
 public interface PartnerSessionBeanRemote {
     
     public Long createNewPartner(Partner partner);

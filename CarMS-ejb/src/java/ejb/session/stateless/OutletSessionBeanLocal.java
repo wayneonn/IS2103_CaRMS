@@ -13,6 +13,7 @@ import javax.ejb.Local;
  *
  * @author User
  */
+@Local
 public interface OutletSessionBeanLocal {
     
     public Long createNewOutlet(Outlet outlet);

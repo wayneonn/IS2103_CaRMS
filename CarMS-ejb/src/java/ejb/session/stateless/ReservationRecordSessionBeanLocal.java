@@ -7,11 +7,13 @@ package ejb.session.stateless;
 
 import entity.ReservationRecord;
 import java.util.List;
+import javax.ejb.Local;
 
 /**
  *
  * @author User
  */
+@Local
 public interface ReservationRecordSessionBeanLocal {
     
     public Long createNewReservationRecord (ReservationRecord reservationRecord);

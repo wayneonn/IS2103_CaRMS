@@ -8,11 +8,13 @@ package ejb.session.stateless;
 import entity.Outlet;
 import exception.OutletNotFoundException;
 import java.util.List;
+import javax.ejb.Remote;
 
 /**
  *
  * @author User
  */
+@Remote
 public interface OutletSessionBeanRemote {
     
     public Long createNewOutlet(Outlet outlet);

@@ -10,12 +10,14 @@ import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
 import exception.UnknownPersistenceException;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.persistence.PersistenceException;
 
 /**
  *
  * @author User
  */
+@Remote
 public interface RentalRateSessionBeanRemote {
     
     public Long createNewRentalRate(RentalRate rentalRate, Long categoryId) throws CategoryNotFoundException, InputDataValidationException, UnknownPersistenceException, PersistenceException;

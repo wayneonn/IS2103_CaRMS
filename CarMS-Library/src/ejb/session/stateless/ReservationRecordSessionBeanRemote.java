@@ -7,11 +7,13 @@ package ejb.session.stateless;
 
 import entity.ReservationRecord;
 import java.util.List;
+import javax.ejb.Remote;
 
 /**
  *
  * @author User
  */
+@Remote
 public interface ReservationRecordSessionBeanRemote {
     
     public Long createNewReservationRecord (ReservationRecord reservationRecord);
