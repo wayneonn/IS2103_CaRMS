@@ -34,6 +34,9 @@ public class MainApp {
 
     private Employee employee;
 
+    private SalesManagementModule salesManagementModule;
+    private CustomerServiceModule customerServiceModule;
+
     /**
      * @param args the command line arguments
      */
@@ -118,10 +121,26 @@ public class MainApp {
             System.out.println("1: Sales Management");
             System.out.println("2: Customer Service");
             System.out.println("3: Logout\n");
+            choice = 0;
 
             while (choice < 1 || choice > 3) {
                 System.out.print(" >> ");
                 choice = scanner.nextInt();
+                if (choice == 1) {
+                    salesManagementModule = new SalesManagementModule(modelSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
+                            customerSessionBeanRemote, reservationRecordSessionBeanRemote, employeeSessionBeanRemote,
+                            outletSessionBeanRemote, categorySessionBeanRemote, carSessionBeanRemote);
+                    salesManagementModule.runApp();
+                } else if (choice == 2) {
+                    customerServiceModule = new CustomerServiceModule(modelSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
+                            customerSessionBeanRemote, reservationRecordSessionBeanRemote, employeeSessionBeanRemote,
+                            outletSessionBeanRemote, categorySessionBeanRemote, carSessionBeanRemote);
+                    customerServiceModule.runApp();
+                } else if (choice == 3) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
             }
             if (choice == 3) {
                 break;
