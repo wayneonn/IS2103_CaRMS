@@ -217,6 +217,20 @@ public class RentalRate implements Serializable {
     public void setRentalRateType(RentalRateTypeEnum rentalRateType) {
         this.rentalRateType = rentalRateType;
     }
+
+    /**
+     * @return the reservationRecords
+     */
+    public List<ReservationRecord> getReservationRecords() {
+        return reservationRecords;
+    }
+
+    /**
+     * @param reservationRecords the reservationRecords to set
+     */
+    public void setReservationRecords(List<ReservationRecord> reservationRecords) {
+        this.reservationRecords = reservationRecords;
+    }
     
     
 

@@ -7,8 +7,10 @@ package ejb.session.stateless;
 
 import entity.Category;
 import entity.RentalRate;
+import entity.ReservationRecord;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
+import exception.RentalRateNotFoundException;
 import exception.UnknownPersistenceException;
 import java.util.List;
 import java.util.Set;
@@ -73,8 +75,7 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
             }
         }
     }
-    
-    
+
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<RentalRate>> constraintViolations) {
         String msg = "Input data validation error!:";
 
@@ -86,9 +87,68 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     }
 
     @Override
+    public RentalRate retrieveRentalRateById(Long rentalRateId) throws RentalRateNotFoundException {
+
+        RentalRate rentalRate = em.find(RentalRate.class, rentalRateId);
+
+        if (rentalRate != null) {
+            return rentalRate;
+        } else {
+            throw new RentalRateNotFoundException("Rental Rate ID " + rentalRateId + " does not exist!");
+        }
+    }
+
+    @Override
     public List<RentalRate> retrieveRentalRates() {
         Query query = em.createQuery("SELECT r FROM RentalRate r");
         query.getResultList().size();
         return query.getResultList();
+    }
+
+    @Override
+    public void updateRentalRate(RentalRate rentalRate) throws RentalRateNotFoundException, InputDataValidationException {
+        if (rentalRate != null && rentalRate.getRentalRateId() != null) {
+            Set<ConstraintViolation<RentalRate>> constraintViolations = validator.validate(rentalRate);
+
+            if (constraintViolations.isEmpty()) {
+                RentalRate rentalRateToUpdate = retrieveRentalRateById(rentalRate.getRentalRateId());
+                rentalRateToUpdate.setRentalRateDescription(rentalRate.getRentalRateDescription());
+                rentalRateToUpdate.setRateCost(rentalRate.getRateCost());
+                rentalRateToUpdate.setStartDate(rentalRate.getStartDate());
+                rentalRateToUpdate.setEndDate(rentalRate.getEndDate());
+                rentalRateToUpdate.setCategory(rentalRate.getCategory());
+            } else {
+                throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
+            }
+        } else {
+            throw new RentalRateNotFoundException("Rental Rate Id not provided for rental rate to be updated");
+        }
+    }
+
+    @Override
+    public void deleteRentalRate(Long rentalRateId) throws RentalRateNotFoundException {
+        try {
+            RentalRate rentalRateToRemove = retrieveRentalRateById(rentalRateId);
+            if (rentalRateInUse(rentalRateId).isEmpty()) {
+                em.remove(rentalRateToRemove);
+            } else {
+                rentalRateToRemove.setIsEnabled(false);
+            }
+        } catch (RentalRateNotFoundException ex) {
+            throw new RentalRateNotFoundException("Rental rate of ID: " + rentalRateId + " not found!");
+        }
+    }
+
+    @Override
+    public List<ReservationRecord> rentalRateInUse(Long rentalRateId) throws RentalRateNotFoundException {
+        try {
+            RentalRate rentalRate = retrieveRentalRateById(rentalRateId);
+            List<ReservationRecord> reservationRecords;
+            rentalRate.getReservationRecords().size();
+            reservationRecords = rentalRate.getReservationRecords();
+            return reservationRecords;
+        } catch (RentalRateNotFoundException ex) {
+            throw new RentalRateNotFoundException("Rental Rate ID " + rentalRateId + " does not exist!");
+        }
     }
 }

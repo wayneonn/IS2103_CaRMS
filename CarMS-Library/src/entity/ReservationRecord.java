@@ -179,5 +179,61 @@ public class ReservationRecord implements Serializable { //reservation record
         this.refundAmount = refundAmount;
     }
 
+    /**
+     * @return the customer
+     */
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    /**
+     * @param customer the customer to set
+     */
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    /**
+     * @return the rentalRates
+     */
+    public List<RentalRate> getRentalRates() {
+        return rentalRates;
+    }
+
+    /**
+     * @param rentalRates the rentalRates to set
+     */
+    public void setRentalRates(List<RentalRate> rentalRates) {
+        this.rentalRates = rentalRates;
+    }
+
+    /**
+     * @return the car
+     */
+    public Cars getCar() {
+        return car;
+    }
+
+    /**
+     * @param car the car to set
+     */
+    public void setCar(Cars car) {
+        this.car = car;
+    }
+
+    /**
+     * @return the transitDriverDispatchRecord
+     */
+    public TransitDriverDispatchRecord getTransitDriverDispatchRecord() {
+        return transitDriverDispatchRecord;
+    }
+
+    /**
+     * @param transitDriverDispatchRecord the transitDriverDispatchRecord to set
+     */
+    public void setTransitDriverDispatchRecord(TransitDriverDispatchRecord transitDriverDispatchRecord) {
+        this.transitDriverDispatchRecord = transitDriverDispatchRecord;
+    }
+
     
 }

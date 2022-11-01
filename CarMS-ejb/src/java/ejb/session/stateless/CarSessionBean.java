@@ -103,7 +103,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
 
     @Override
     public List<Cars> retrieveAllCars() {
-        Query query = em.createQuery("SELECT c FROM Car c");
+        Query query = em.createQuery("SELECT c FROM Cars c");
 
         return query.getResultList();
     }
