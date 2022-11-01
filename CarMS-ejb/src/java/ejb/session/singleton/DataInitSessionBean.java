@@ -158,7 +158,7 @@ public class DataInitSessionBean {
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             Date startDateTime = df.parse("31/10/2022 00:00");
             Date endDateTime = df.parse("04/11/2022 00:00");
-            RentalRate standardSedanNonPeakRate = new RentalRate("Standard Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK ,100.0);
+            RentalRate standardSedanNonPeakRate = new RentalRate("Standard Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK ,100.0, true);
             
             if(em.find(RentalRate.class, 1l) == null){
                 standardSedanNonPeakRate.setStartDate(startDateTime);

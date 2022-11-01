@@ -52,7 +52,8 @@ public class CategorySessionBean implements CategorySessionBeanRemote, CategoryS
     @Override
     public List<Category> retrieveAllCategories() {
         Query query = em.createQuery("SELECT c FROM Category c");
-
+        query.getResultList().size();
+        
         return query.getResultList();
     }
 

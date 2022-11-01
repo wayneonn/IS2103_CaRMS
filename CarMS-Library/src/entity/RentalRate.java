@@ -65,6 +65,10 @@ public class RentalRate implements Serializable {
     private Date startDate;
     @Column(nullable = true) 
     private Date endDate;
+    
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isEnabled;
 
     public RentalRate() {
     }
@@ -77,10 +81,11 @@ public class RentalRate implements Serializable {
         return rentalRateId;
     }
 
-    public RentalRate(String rentalRateDescription, RentalRateTypeEnum rentalRateType, Double rateCost) {
+    public RentalRate(String rentalRateDescription, RentalRateTypeEnum rentalRateType, Double rateCost, Boolean isEnabled) {
         this.rentalRateDescription = rentalRateDescription;
         this.rentalRateType = rentalRateType;
         this.rateCost = rateCost;
+        this.isEnabled = isEnabled;
     }
 
     /**
@@ -190,6 +195,27 @@ public class RentalRate implements Serializable {
      */
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    /**
+     * @return the isEnabled
+     */
+    public Boolean getIsEnabled() {
+        return isEnabled;
+    }
+
+    /**
+     * @param isEnabled the isEnabled to set
+     */
+    public void setIsEnabled(Boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+
+    /**
+     * @param rentalRateType the rentalRateType to set
+     */
+    public void setRentalRateType(RentalRateTypeEnum rentalRateType) {
+        this.rentalRateType = rentalRateType;
     }
     
     

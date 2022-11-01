@@ -11,9 +11,11 @@ import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationRecordSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
 import entity.Employee;
+import exception.InvalidAccessRightException;
 import exception.InvalidLoginException;
 import java.util.Scanner;
 
@@ -31,6 +33,7 @@ public class MainApp {
     private CategorySessionBeanRemote categorySessionBeanRemote;
     private CarSessionBeanRemote carSessionBeanRemote;
     private CustomerSessionBeanRemote customerSessionBeanRemote;
+    private RentalRateSessionBeanRemote rentalRateSessionBeanRemote;
 
     private Employee employee;
 
@@ -47,7 +50,7 @@ public class MainApp {
     public MainApp(ModelSessionBeanRemote modelSessionBean, TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBean,
             CustomerSessionBeanRemote customerSessionBean, ReservationRecordSessionBeanRemote reservationRecordSessionBean,
             EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean,
-            CategorySessionBeanRemote categorySessionBean, CarSessionBeanRemote carSessionBean) {
+            CategorySessionBeanRemote categorySessionBean, CarSessionBeanRemote carSessionBean, RentalRateSessionBeanRemote rentalRateSessionBeanRemote) {
         this();
 
         this.modelSessionBeanRemote = modelSessionBean;
@@ -58,7 +61,7 @@ public class MainApp {
         this.outletSessionBeanRemote = outletSessionBean;
         this.categorySessionBeanRemote = categorySessionBean;
         this.carSessionBeanRemote = carSessionBean;
-
+        this.rentalRateSessionBeanRemote = rentalRateSessionBeanRemote;
     }
 
     public void runApp() {
@@ -83,6 +86,14 @@ public class MainApp {
                     }
                 } else if (choice == 2) {
                     break;
+                } else if (choice == 3) {
+                    try {
+                        bypassLogin();
+                        System.out.println("Login successful!\n");
+                        mainMenu();
+                    } catch (InvalidLoginException ex) {
+                        System.out.println("Invalid login credentials " + ex.getMessage());
+                    }
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
@@ -92,6 +103,24 @@ public class MainApp {
             }
         }
 
+    }
+
+    private void bypassLogin() throws InvalidLoginException { // TESTING
+        //Scanner sc = new Scanner(System.in);
+        String username = "";
+        String password = "";
+        System.out.println("Bypass Login.\n");
+        //System.out.print("Enter username >> ");
+        username = "EmployeeA1";
+        //System.out.print("Enter password >> ");
+        password = "password";
+
+        if (username.length() > 0 && password.length() > 0) {
+            employee = employeeSessionBeanRemote.staffLogin(username, password);
+        } else {
+            throw new InvalidLoginException("Missing login credential!");
+        }
+        System.out.println("");
     }
 
     private void doLogin() throws InvalidLoginException {
@@ -126,20 +155,25 @@ public class MainApp {
             while (choice < 1 || choice > 3) {
                 System.out.print(" >> ");
                 choice = scanner.nextInt();
-                if (choice == 1) {
-                    salesManagementModule = new SalesManagementModule(modelSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
-                            customerSessionBeanRemote, reservationRecordSessionBeanRemote, employeeSessionBeanRemote,
-                            outletSessionBeanRemote, categorySessionBeanRemote, carSessionBeanRemote);
-                    salesManagementModule.runApp();
-                } else if (choice == 2) {
-                    customerServiceModule = new CustomerServiceModule(modelSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
-                            customerSessionBeanRemote, reservationRecordSessionBeanRemote, employeeSessionBeanRemote,
-                            outletSessionBeanRemote, categorySessionBeanRemote, carSessionBeanRemote);
-                    customerServiceModule.runApp();
-                } else if (choice == 3) {
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
+                
+                try {
+                    if (choice == 1) {
+                        salesManagementModule = new SalesManagementModule(employee, modelSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
+                                customerSessionBeanRemote, reservationRecordSessionBeanRemote, employeeSessionBeanRemote,
+                                outletSessionBeanRemote, categorySessionBeanRemote, carSessionBeanRemote, rentalRateSessionBeanRemote);
+                        salesManagementModule.accessRightAllocator();
+                    } else if (choice == 2) {
+                        customerServiceModule = new CustomerServiceModule(employee, modelSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
+                                customerSessionBeanRemote, reservationRecordSessionBeanRemote, employeeSessionBeanRemote,
+                                outletSessionBeanRemote, categorySessionBeanRemote, carSessionBeanRemote);
+                        customerServiceModule.runApp();
+                    } else if (choice == 3) {
+                        break;
+                    } else {
+                        System.out.println("Invalid option, please try again!\n");
+                    }
+                } catch (InvalidAccessRightException ex) {
+                    System.out.println(ex.getMessage());
                 }
             }
             if (choice == 3) {

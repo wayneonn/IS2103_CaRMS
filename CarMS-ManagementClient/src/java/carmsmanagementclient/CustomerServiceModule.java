@@ -41,12 +41,13 @@ public class CustomerServiceModule {
 
     }
 
-    public CustomerServiceModule(ModelSessionBeanRemote modelSessionBean, TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBean,
+    public CustomerServiceModule(Employee employee, ModelSessionBeanRemote modelSessionBean, TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBean,
             CustomerSessionBeanRemote customerSessionBean, ReservationRecordSessionBeanRemote reservationRecordSessionBean,
             EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean,
             CategorySessionBeanRemote categorySessionBean, CarSessionBeanRemote carSessionBean) {
         this();
-
+        
+        this.employee = employee;
         this.modelSessionBeanRemote = modelSessionBean;
         this.transitDriverDispatchRecordSessionBeanRemote = transitDriverDispatchRecordSessionBean;
         this.customerSessionBeanRemote = customerSessionBean;
