@@ -227,6 +227,7 @@ public class SalesManagementModule {
         }
         System.out.print("\nPress any key to continue...> ");
         scanner.nextLine();
+        
     }
 
     private void viewRentalRateDetails() {
