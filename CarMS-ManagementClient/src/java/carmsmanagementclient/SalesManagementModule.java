@@ -202,7 +202,31 @@ public class SalesManagementModule {
     }
 
     private void viewAllRentalRates() {
-
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("***   CarMS Management Client || Operations Manager Menu || View All Rental Rates  ***\n");
+        List<RentalRate> rentalRates = rentalRateSessionBeanRemote.retrieveRentalRates();
+        System.out.printf("%4s%50s%32s%16s%16s%20s%20s\n", "ID", "Rental Rate Description", "Car Category", "Rate Per Day", "Is Enabled?", "Start Period", "End Period");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        for (RentalRate rentalRate : rentalRates) {
+            
+            String isEnabled = "false";
+            if (rentalRate.getIsEnabled()) {
+                isEnabled = "true";
+            }
+            String startDate = "NOT SET";
+            if (rentalRate.getStartDate() != null) {
+                startDate = sdf.format(rentalRate.getStartDate());
+            }
+            String endDate = "NOT SET";
+            if (rentalRate.getEndDate() != null) {
+                endDate = sdf.format(rentalRate.getEndDate());
+            }
+            System.out.printf("%4s%50s%32s%16s%16s%20s%20s\n", rentalRate.getRentalRateId(),
+                    rentalRate.getRentalRateDescription(), rentalRate.getCategory().getCategoryName(),
+                    rentalRate.getRateCost(), isEnabled, startDate, endDate);
+        }
+        System.out.print("\nPress any key to continue...> ");
+        scanner.nextLine();
     }
 
     private void viewRentalRateDetails() {
