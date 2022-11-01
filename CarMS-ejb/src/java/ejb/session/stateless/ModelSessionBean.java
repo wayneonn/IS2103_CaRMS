@@ -95,7 +95,7 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
 
     @Override
     public List<Model> retrieveAllModels() {
-        Query query = em.createQuery("SELECT m FROM Model m");
+        Query query = em.createQuery("SELECT m FROM Model m ORDER BY m.category, m.model, m.make ASC");
 
         return query.getResultList();
     }
@@ -125,7 +125,7 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
                 modelToRemove.setIsEnabled(false);
             }
         } catch (ModelNotFoundException ex) {
-            throw new ModelNotFoundException("Model of ID: " + modelId + " not found!");
+            throw new ModelNotFoundException("Rental rate of ID: " + modelId + " not found!");
         }
     }
     

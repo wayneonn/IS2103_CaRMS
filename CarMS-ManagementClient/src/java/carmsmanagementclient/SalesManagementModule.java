@@ -14,6 +14,7 @@ import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationRecordSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
+import entity.Cars;
 import entity.Category;
 import entity.Employee;
 import entity.Model;
@@ -128,20 +129,19 @@ public class SalesManagementModule {
             System.out.println("***    Car Rental Management System || Operations manager module    ***\n");
             System.out.println("1: Create New Make And Model");
             System.out.println("2: View All Make And Models");
-            System.out.println("3: Update Make and Models");
-            System.out.println("4: Delete Make and Models");
+            System.out.println("3: View Make and Model Details");
             System.out.println("===============================");
-            System.out.println("5: Create New Car");
-            System.out.println("6: View All Cars");
-            System.out.println("7: View Car Details");
+            System.out.println("4: Create New Car");
+            System.out.println("5: View All Cars");
+            System.out.println("6: View Car Details");
             System.out.println("===============================");
-            System.out.println("8: View Transit Driver Dispatch Record For Current Day Reservation");
-            System.out.println("9: Assign Transit Driver");
-            System.out.println("10: Update Transit As Complete");
-            System.out.println("11: Log out\n");
+            System.out.println("7: View Transit Driver Dispatch Record For Current Day Reservation");
+            System.out.println("8: Assign Transit Driver");
+            System.out.println("9: Update Transit As Complete");
+            System.out.println("10: Log out\n");
             response = 0;
 
-            while (response < 1 || response > 11) {
+            while (response < 1 || response > 10) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -153,27 +153,25 @@ public class SalesManagementModule {
                 } else if (response == 3) {
                     viewModelDetail();
                 } else if (response == 4) {
-                    viewModelDetail();
-                } else if (response == 5) {
                     createNewCar();
-                } else if (response == 6) {
+                } else if (response == 5) {
                     viewAllCars();
-                } else if (response == 7) {
+                } else if (response == 6) {
                     viewCarDetails();
-                } else if (response == 8) {
+                } else if (response == 7) {
                     viewTransitDriverDispatchRecords();
-                } else if (response == 9) {
+                } else if (response == 8) {
                     assignTransitDriver();
-                } else if (response == 10) {
+                } else if (response == 9) {
                     updateTransitAsComplete();
-                } else if (response == 11) {
+                } else if (response == 10) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
 
-            if (response == 11) {
+            if (response == 10) {
                 break;
             }
         }
@@ -215,11 +213,11 @@ public class SalesManagementModule {
         Scanner scanner = new Scanner(System.in);
         System.out.println("***   CarMS Management Client || Operations Manager Menu || View All Rental Rates  ***\n");
         List<Model> models = modelSessionBeanRemote.retrieveAllModels();
-        System.out.printf("%4s%40s%40s\n", "ID", "Make", "Model");
+        System.out.printf("%4s%40s%40s%40s\n", "ID", "Category", "Make", "Model");
 
         for (Model model : models) {
-            System.out.printf("%4s%40s%40s\n", model.getModelId(),
-                    model.getMake(), model.getModel());
+            System.out.printf("%4s%40s%40s%40s\n", model.getModelId(),
+                    model.getCategory().getCategoryName(), model.getMake(), model.getModel());
         }
 
         System.out.print("\nPress any key to continue...> ");
@@ -231,26 +229,26 @@ public class SalesManagementModule {
         Integer choice = 0;
         System.out.println("***   CarMS Management Client || Operations Manager Menu || View Model Details  ***\n");
         List<Model> models = modelSessionBeanRemote.retrieveAllModels();
-         System.out.print("This is the list of types of models you are able to choose from. Please enter"
+        System.out.print("This is the list of types of models you are able to choose from. Please enter"
                 + " the ID you would like to choose from.\n\n");
-        System.out.printf("%4s%40s%40s\n", "ID", "Make", "Model");
+        System.out.printf("%4s%40s%40s%40s\n", "ID", "Category", "Make", "Model");
 
         for (Model model : models) {
-            System.out.printf("%4s%40s%40s\n", model.getModelId(),
-                    model.getMake(), model.getModel());
+            System.out.printf("%4s%40s%40s%40s\n", model.getModelId(),
+                    model.getCategory().getCategoryName(), model.getMake(), model.getModel());
         }
-        
+
         System.out.print("Enter Model ID > ");
         Long modelId = scanner.nextLong();
-        
+
         try {
             Model model = modelSessionBeanRemote.retrieveModelById(modelId);
 
             System.out.println("You have chosen ID: " + modelId + " and its details are shown below.\n");
 
-            System.out.printf("%4s%40s%40s\n", "ID", "Make", "Model");
-            System.out.printf("%4s%40s%40s\n", model.getModelId(),
-                    model.getMake(), model.getModel());
+            System.out.printf("%4s%40s%40s%40s\n", "ID", "Category", "Make", "Model");
+            System.out.printf("%4s%40s%40s%40s\n", model.getModelId(),
+                    model.getCategory().getCategoryName(), model.getMake(), model.getModel());
             System.out.println("------------------------");
             System.out.println("1: Update Model");
             System.out.println("2: Delete Model");
@@ -271,7 +269,7 @@ public class SalesManagementModule {
     private void updateModel(Model model) {
         Scanner scanner = new Scanner(System.in);
         Long modelId = model.getModelId();
-        
+
         System.out.println("*** CarMS Management Client || Sales Management || Update Model***\n");
         System.out.print("Enter Make name> ");
         model.setMake(scanner.nextLine().trim());
@@ -324,7 +322,16 @@ public class SalesManagementModule {
     }
 
     private void viewAllCars() {
-
+//        Scanner sc = new Scanner(System.in);
+//
+//        List<Cars> cars = carSessionBeanRemote.retrieveAllCars();
+//        System.out.printf("%8s%20s%20s%20s%20s%20s\n", "Id", "Car Category", "Make", "Model", "Status", "License Plate Number");
+//        for (Cars car : cars) {
+//            System.out.printf("%8s%20s%20s%20s%20s%20s\n", car.getCarId(), car.getModelEntity().getCategoryEntity().getName(), car.getMake(), car.getModel(), car.getStatus(), car.getPlateNumber());
+//        }
+//
+//        System.out.print("Press any key to continue...> ");
+//        sc.nextLine();
     }
 
     private void viewCarDetails() {

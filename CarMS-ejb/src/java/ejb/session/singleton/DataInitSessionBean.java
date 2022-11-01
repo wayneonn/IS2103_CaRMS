@@ -125,10 +125,10 @@ public class DataInitSessionBean {
 
         try {
             if (em.find(Model.class, 1l) == null) {
-                modelAId = modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis", true), categoryStandardSedanId);
-                modelBId = modelSessionBean.createNewModel(new Model("Mercedes Benz", "E200", true), categoryLuxurySedanId);
-                modelCId = modelSessionBean.createNewModel(new Model("Nissan", "Qashqai", true), categoryMinivanSuvId);
-                modelDId = modelSessionBean.createNewModel(new Model("Toyota", "Picnic", true), categoryFamilySedanId);
+                modelAId = modelSessionBean.createNewModel(new Model("Corolla Altis", "Toyota", true), categoryStandardSedanId);
+                modelBId = modelSessionBean.createNewModel(new Model("E200", "Mercedes Benz", true), categoryLuxurySedanId);
+                modelCId = modelSessionBean.createNewModel(new Model("Qashqai", "Nissan", true), categoryMinivanSuvId);
+                modelDId = modelSessionBean.createNewModel(new Model("Picnic", "Toyota", true), categoryFamilySedanId);
             }
         } catch (CategoryNotFoundException ex) {
             System.out.println(ex.getMessage());
@@ -156,16 +156,46 @@ public class DataInitSessionBean {
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            Date startDateTime = df.parse("31/10/2022 00:00");
-            Date endDateTime = df.parse("04/11/2022 00:00");
-            RentalRate standardSedanNonPeakRate = new RentalRate("Standard Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK ,100.0, true);
-            
-            if(em.find(RentalRate.class, 1l) == null){
-                standardSedanNonPeakRate.setStartDate(startDateTime);
-                standardSedanNonPeakRate.setEndDate(endDateTime);
-                rentalRateSessionBean.createNewRentalRate(standardSedanNonPeakRate, outletAId);
+            Date startDateTime1 = df.parse("31/10/2022 00:00");
+            Date endDateTime1 = df.parse("04/11/2022 00:00");
+            Date startDateTime2 = df.parse("20/10/2022 00:00");
+            Date endDateTime2 = df.parse("03/11/2022 00:00");
+            Date startDateTime3 = df.parse("01/10/2022 00:00");
+            Date endDateTime3 = df.parse("01/11/2022 00:00");
+            RentalRate standardSedanNonPeakRate = new RentalRate("Standard Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 100.0, true);
+            RentalRate standardSedanPeakRate = new RentalRate("Standard Sedan - Peak Rate", RentalRateTypeEnum.PEAK, 200.0, true);
+            RentalRate standardSedanPromo = new RentalRate("Standard Sedan - Promotional", RentalRateTypeEnum.PEAK, 70.0, true);
+            RentalRate familySedanNonPeakRate = new RentalRate("Family Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 150.0, true);
+            RentalRate familySedanPeakRate = new RentalRate("Family Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 300.0, true);
+            RentalRate familySedanPromoRate = new RentalRate("Family Sedan - Promotional", RentalRateTypeEnum.PROMOTIONAL, 100.0, true);
+            RentalRate luxurySedanNonPeak = new RentalRate("Luxury Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 400.0, true);
+            RentalRate luxurySedanPeak = new RentalRate("Luxury Sedan - Peak Rate", RentalRateTypeEnum.NONPEAK, 600.0, true);
+            RentalRate luxurySedanPromo = new RentalRate("Luxury Sedan - Promotional", RentalRateTypeEnum.PROMOTIONAL, 300.0, true);
+            RentalRate SUVSedanNonPeak = new RentalRate("SUV/Minivan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 500.0, true);
+            RentalRate SUVSedanPeak = new RentalRate("SUV/Minivan - Peak Rate", RentalRateTypeEnum.NONPEAK, 800.0, true);
+            RentalRate SUVSedanPromo = new RentalRate("SUV/Minivan - Promotional", RentalRateTypeEnum.PROMOTIONAL, 400.0, true);
+
+            if (em.find(RentalRate.class, 1l) == null) {
+                standardSedanNonPeakRate.setStartDate(startDateTime1);
+                standardSedanNonPeakRate.setEndDate(endDateTime1);
+                standardSedanPeakRate.setStartDate(startDateTime2);
+                standardSedanPeakRate.setEndDate(endDateTime2);
+                standardSedanPromo.setStartDate(startDateTime3);
+                standardSedanPromo.setEndDate(endDateTime3);
+                rentalRateSessionBean.createNewRentalRate(standardSedanNonPeakRate, categoryStandardSedanId);
+                rentalRateSessionBean.createNewRentalRate(standardSedanPeakRate, categoryStandardSedanId);
+                rentalRateSessionBean.createNewRentalRate(standardSedanPromo, categoryStandardSedanId);
+                rentalRateSessionBean.createNewRentalRate(familySedanNonPeakRate, categoryFamilySedanId);
+                rentalRateSessionBean.createNewRentalRate(familySedanPeakRate, categoryFamilySedanId);
+                rentalRateSessionBean.createNewRentalRate(familySedanPromoRate, categoryFamilySedanId);
+                rentalRateSessionBean.createNewRentalRate(luxurySedanNonPeak, categoryLuxurySedanId);
+                rentalRateSessionBean.createNewRentalRate(luxurySedanPeak, categoryLuxurySedanId);
+                rentalRateSessionBean.createNewRentalRate(luxurySedanPromo, categoryLuxurySedanId);
+                rentalRateSessionBean.createNewRentalRate(SUVSedanNonPeak, categoryMinivanSuvId);
+                rentalRateSessionBean.createNewRentalRate(SUVSedanPeak, categoryMinivanSuvId);
+                rentalRateSessionBean.createNewRentalRate(SUVSedanPromo, categoryMinivanSuvId);
             }
-            
+
         } catch (ParseException ex) {
             System.out.println(ex.getMessage());
         } catch (CategoryNotFoundException ex) {
