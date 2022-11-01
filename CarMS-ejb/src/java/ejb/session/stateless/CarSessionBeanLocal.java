@@ -21,7 +21,7 @@ import javax.ejb.Local;
 @Local
 public interface CarSessionBeanLocal {
 
-     public Long createNewCar(Cars car, Long outletId, Long modelId) throws OutletNotFoundException, ModelNotFoundException, InputDataValidationException, LicenseNumberExsistsException, UnknownPersistenceException;
+    public Long createNewCar(Cars car, Long outletId, Long modelId) throws OutletNotFoundException, ModelNotFoundException, InputDataValidationException, LicenseNumberExsistsException, UnknownPersistenceException;
 
     public List<Cars> retrieveAllCars();
 }

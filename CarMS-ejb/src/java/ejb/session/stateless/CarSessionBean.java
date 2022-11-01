@@ -61,12 +61,17 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
                 try {
                     Outlet outlet = outletSessionBean.retrieveOutletById(outletId);
                     Model model = modelSessionBean.retrieveModelById(modelId);
-                    car.setModel(model);
-                    car.setOutlet(outlet);
-                    outlet.addCar(car);
-                    model.addCar(car);
+
                     car.setLocation(outlet.getOutletName());
                     System.out.println("outlet.getOutletName()" + outlet.getOutletName());
+
+                    //em.persist(car);
+                    System.out.println("Outlet " + outlet.getOutletName());
+                    System.out.println("Car " + car.getLicenseNumber());
+                    //outlet.addCar(car);
+                    model.addCar(car);
+                    car.setModel(model);
+                    car.setOutlet(outlet);
                     em.persist(car);
                     em.flush();
                     return car.getCarId();
@@ -103,7 +108,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
 
     @Override
     public List<Cars> retrieveAllCars() {
-        Query query = em.createQuery("SELECT c FROM Cars c");
+        Query query = em.createQuery("SELECT c FROM Cars c ORDER BY c.model.category, c.model.make, c.model.model, c.licenseNumber ASC");
 
         return query.getResultList();
     }

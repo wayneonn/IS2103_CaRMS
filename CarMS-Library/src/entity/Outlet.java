@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -163,5 +164,30 @@ public class Outlet implements Serializable {
         if (this.cars.contains(car)) {
             this.cars.remove(car);
         }
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Outlet)) {
+            return false;
+        }
+        Outlet other = (Outlet) object;
+        if ((this.outletId == null && other.outletId != null) || (this.outletId != null && !this.outletId.equals(other.outletId))) {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (outletId != null ? outletId.hashCode() : 0);
+        return hash;
+    }
+    
+    @Override
+    public String toString() {
+        return "entity.Outlet[ id=" + outletId + " ]";
     }
 }

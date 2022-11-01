@@ -18,13 +18,17 @@ import entity.Cars;
 import entity.Category;
 import entity.Employee;
 import entity.Model;
+import entity.Outlet;
 import entity.RentalRate;
+import enumerations.CarStateEnumeration;
 import enumerations.EmployeeEnum;
 import enumerations.RentalRateTypeEnum;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
 import exception.InvalidAccessRightException;
+import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
+import exception.OutletNotFoundException;
 import exception.RentalRateNotFoundException;
 import exception.UnknownPersistenceException;
 import exception.ValidityDateNotValidException;
@@ -318,20 +322,73 @@ public class SalesManagementModule {
     }
 
     private void createNewCar() {
+        Scanner scanner = new Scanner(System.in);
+        //Cars car = new Cars();
+        //car.setCarState(CarStateEnumeration.AVAILABLE);
+        System.out.println("*** CarMS Management Client :: Sales Management :: Create new Car***\n");
+        System.out.print("Enter license plate number> ");
+        //car.setLicenseNumber(scanner.nextLine().trim());
+        String licenseNumber = scanner.nextLine().trim();
+        System.out.print("Enter colour> ");
+        //car.setColour(scanner.nextLine().trim());
+        String colour = scanner.nextLine().trim();
+        System.out.print("This is the list of models you are able to choose from. Please enter"
+                + " the ID you would like to choose from.\n\n");
+        List<Model> models = modelSessionBeanRemote.retrieveAvailAllModels();
+        System.out.printf("%4s%30s%30s\n", "ID", "Make", "Model");
+        for (Model model : models) {
+            System.out.printf("%4s%30s%30s\n", model.getModelId(), model.getMake(), model.getModel());
+        }
+        System.out.print("Enter model ID> ");
+        Long modelId = scanner.nextLong();
+        
+        System.out.print("This is the list of outlets you are able to choose from. Please enter"
+                + " the ID you would like to choose from.\n\n");
+        List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
+        System.out.printf("%4s%30s%50s\n", "ID", "Outlet Name", "Address");
+        for (Outlet outlet : outlets) {
+            System.out.printf("%4s%30s%50s\n", outlet.getOutletId(), outlet.getOutletName() , outlet.getAddress());
+        }
+        System.out.print("Enter outlet ID> ");
+        Long outletId = scanner.nextLong();
+        scanner.nextLine();
+        
+        try {
+            //System.out.printf("%10s%10s%10s", car.getCarState(), car.getColour(), car.getLicenseNumber());
+            
+            Long carId = carSessionBeanRemote.createNewCar(new Cars(licenseNumber, CarStateEnumeration.AVAILABLE, colour), outletId, modelId);
+            System.out.println("Car ID: " + carId + " sucessfully created!");
+        } catch (OutletNotFoundException ex) {
+            System.out.println("Outlet of ID: " + outletId + " does not exist!");
+        } catch (InputDataValidationException ex) {
+            System.out.println("Invalid fields for the model");
+        } catch (ModelNotFoundException ex) {
+            System.out.println("Model of ID: " + outletId + " does not exist!");
+        } catch (LicenseNumberExsistsException ex) {
+            System.out.println("License Plate Number already exists!");
+        } catch (UnknownPersistenceException ex) {
+            System.out.println("UnknownPersistenceException when creating new Car");
+        }
+
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+
+
 
     }
 
     private void viewAllCars() {
-//        Scanner sc = new Scanner(System.in);
-//
-//        List<Cars> cars = carSessionBeanRemote.retrieveAllCars();
-//        System.out.printf("%8s%20s%20s%20s%20s%20s\n", "Id", "Car Category", "Make", "Model", "Status", "License Plate Number");
-//        for (Cars car : cars) {
-//            System.out.printf("%8s%20s%20s%20s%20s%20s\n", car.getCarId(), car.getModelEntity().getCategoryEntity().getName(), car.getMake(), car.getModel(), car.getStatus(), car.getPlateNumber());
-//        }
-//
-//        System.out.print("Press any key to continue...> ");
-//        sc.nextLine();
+        Scanner sc = new Scanner(System.in);
+
+        List<Cars> cars = carSessionBeanRemote.retrieveAllCars();
+        System.out.printf("%8s%20s%20s%20s%30s%30s%20s\n", "Id", "Car Category", "Make", "Model", "Status", "License Plate Number", "Colour");
+        for (Cars car : cars) {
+            System.out.printf("%8s%20s%20s%20s%30s%30s%20s\n", car.getCarId(), car.getModel().getCategory().getCategoryName(),
+                    car.getModel().getMake(), car.getModel().getModel(), car.getCarState(), car.getLicenseNumber(), car.getColour());
+        }
+
+        System.out.print("Press any key to continue...> ");
+        sc.nextLine();
     }
 
     private void viewCarDetails() {

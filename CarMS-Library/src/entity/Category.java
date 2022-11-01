@@ -103,5 +103,19 @@ public class Category implements Serializable {
             this.rentalRates.remove(rentalRate);
         }
     }
+
+    /**
+     * @return the models
+     */
+    public List<Model> getModels() {
+        return models;
+    }
+
+    /**
+     * @param models the models to set
+     */
+    public void setModels(List<Model> models) {
+        this.models = models;
+    }
     
 }

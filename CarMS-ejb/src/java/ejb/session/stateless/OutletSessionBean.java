@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Model;
 import entity.Outlet;
 import exception.OutletNotFoundException;
 import java.util.List;
@@ -54,5 +55,12 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
     public void deleteOutlet(Long outletId) throws OutletNotFoundException {
         Outlet outletToRemove = retrieveOutletById(outletId); 
         em.remove(outletToRemove);
+    }
+    
+    @Override
+    public List<Outlet> retrieveAllOutlets() {
+        Query query = em.createQuery("SELECT o FROM Outlet o");
+        query.getResultList().size();
+        return query.getResultList();
     }
 }

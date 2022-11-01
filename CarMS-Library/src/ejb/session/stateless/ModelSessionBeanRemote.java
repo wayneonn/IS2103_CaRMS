@@ -32,4 +32,6 @@ public interface ModelSessionBeanRemote {
     public void deleteModel(Long modelId)throws ModelNotFoundException;
     
     public List<Cars> rentalRateInUse(Long modelId) throws ModelNotFoundException;
+    
+    public List<Model> retrieveAvailAllModels();
 }

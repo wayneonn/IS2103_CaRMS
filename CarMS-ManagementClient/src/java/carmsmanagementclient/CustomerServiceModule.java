@@ -13,8 +13,15 @@ import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.ReservationRecordSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
+import entity.Cars;
 import entity.Employee;
+import enumerations.CarStateEnumeration;
+import exception.InputDataValidationException;
 import exception.InvalidLoginException;
+import exception.LicenseNumberExsistsException;
+import exception.ModelNotFoundException;
+import exception.OutletNotFoundException;
+import exception.UnknownPersistenceException;
 import java.util.Scanner;
 
 /**
@@ -46,7 +53,7 @@ public class CustomerServiceModule {
             EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean,
             CategorySessionBeanRemote categorySessionBean, CarSessionBeanRemote carSessionBean) {
         this();
-        
+
         this.employee = employee;
         this.modelSessionBeanRemote = modelSessionBean;
         this.transitDriverDispatchRecordSessionBeanRemote = transitDriverDispatchRecordSessionBean;
@@ -60,7 +67,6 @@ public class CustomerServiceModule {
     }
 
     public void runApp() {
-
 
     }
 

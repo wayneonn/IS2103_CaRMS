@@ -6,6 +6,7 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.CarSessionBeanLocal;
+import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanLocal;
 import ejb.session.stateless.EmployeeSessionBeanLocal;
 import ejb.session.stateless.ModelSessionBeanLocal;
@@ -72,6 +73,9 @@ public class DataInitSessionBean {
 
     @EJB
     private CarSessionBeanLocal carSessionBean;
+    
+    @EJB
+    private CarSessionBeanRemote carSessionBeanRemote;
 
     Long outletAId;
     Long outletBId;

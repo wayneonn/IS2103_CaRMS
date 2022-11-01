@@ -59,9 +59,9 @@ public class Cars implements Serializable {
     @ManyToMany
     @JoinColumn(nullable = false)
     private List<RentalRate> rentalRates;
-    @OneToOne(mappedBy = "car")
+    @OneToOne(mappedBy = "car", fetch = FetchType.EAGER)
     private ReservationRecord reservationRecord; 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Outlet outlet;
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
@@ -195,6 +195,48 @@ public class Cars implements Serializable {
      */
     public void setModel(Model model) {
         this.model = model;
+    }
+
+    /**
+     * @return the rentalRates
+     */
+    public List<RentalRate> getRentalRates() {
+        return rentalRates;
+    }
+
+    /**
+     * @param rentalRates the rentalRates to set
+     */
+    public void setRentalRates(List<RentalRate> rentalRates) {
+        this.rentalRates = rentalRates;
+    }
+
+    /**
+     * @return the reservationRecord
+     */
+    public ReservationRecord getReservationRecord() {
+        return reservationRecord;
+    }
+
+    /**
+     * @param reservationRecord the reservationRecord to set
+     */
+    public void setReservationRecord(ReservationRecord reservationRecord) {
+        this.reservationRecord = reservationRecord;
+    }
+
+    /**
+     * @return the customer
+     */
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    /**
+     * @param customer the customer to set
+     */
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
     
     
