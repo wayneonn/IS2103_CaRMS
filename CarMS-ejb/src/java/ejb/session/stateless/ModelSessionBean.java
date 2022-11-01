@@ -102,7 +102,7 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
     
     @Override
     public List<Model> retrieveAvailAllModels() {
-        Query query = em.createQuery("SELECT m FROM Model m WHERE m.isEnabled = TRUE ORDER BY m.category, m.model, m.make ASC");
+        Query query = em.createQuery("SELECT m FROM Model m WHERE m.isEnabled = TRUE ORDER BY m.category ASC");
         query.getResultList().size();
         return query.getResultList();
     }

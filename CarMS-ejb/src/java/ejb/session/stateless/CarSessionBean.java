@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Cars;
 import entity.Model;
 import entity.Outlet;
+import exception.CarNotFoundException;
 import exception.InputDataValidationException;
 import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
@@ -61,7 +62,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
                 try {
                     Outlet outlet = outletSessionBean.retrieveOutletById(outletId);
                     Model model = modelSessionBean.retrieveModelById(modelId);
-
+                    //car.setIsEnabled(true);
                     car.setLocation(outlet.getOutletName());
                     System.out.println("outlet.getOutletName()" + outlet.getOutletName());
 
@@ -115,5 +116,54 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
 
     public void persist(Object object) {
         em.persist(object);
+    }
+    
+    @Override
+    public Cars retrieveCarsById(Long categoryId) throws CarNotFoundException {
+        
+        Cars category = em.find(Cars.class, categoryId);
+        
+        if (category != null){
+            return category;
+        } else {
+            throw new CarNotFoundException("Cars ID " + categoryId + " does not exist!");
+        }
+    }
+    
+    @Override
+    public Cars updateCar(Cars updatedCars) throws CarNotFoundException, InputDataValidationException {
+        if (updatedCars != null && updatedCars.getCarId()!= null) {
+            Set<ConstraintViolation<Cars>> constraintViolations = validator.validate(updatedCars);
+
+            if (constraintViolations.isEmpty()) {
+                return em.merge(updatedCars);
+            } else {
+                throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
+            }
+        } else {
+            throw new CarNotFoundException("Car ID not provided for car to be updated");
+        }
+    }
+
+    @Override
+    public void deleteCar(Long carId) throws CarNotFoundException {
+        try {
+            Cars modelToRemove = retrieveCarsById(carId);
+            if (carsInUse(carId).isEmpty()) {
+                em.remove(modelToRemove);
+            } else {
+                modelToRemove.setIsEnabled(false);
+            }
+        } catch (CarNotFoundException ex) {
+            throw new CarNotFoundException("Car of ID: " + carId + " not found!");
+        }
+    }
+    
+    @Override
+    public List<Cars> carsInUse(Long carId) {
+        Query query = em.createQuery("SELECT c FROM Cars c WHERE c.carState != enumerations.CarStateEnumeration.AVAILABLE AND c.carId = :inCarId");
+        query.setParameter("inCarId", carId);
+        query.getResultList().size();
+        return query.getResultList();
     }
 }

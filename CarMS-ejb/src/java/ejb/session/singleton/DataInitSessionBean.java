@@ -141,10 +141,10 @@ public class DataInitSessionBean {
         }
         try {
             if (em.find(Cars.class, 1l) == null) {
-                carSessionBean.createNewCar(new Cars("SKU1856P", CarStateEnumeration.AVAILABLE, "Red"), outletAId, modelAId);
-                carSessionBean.createNewCar(new Cars("SPV2132U", CarStateEnumeration.AVAILABLE, "Blue"), outletBId, modelBId);
-                carSessionBean.createNewCar(new Cars("SGD6421Z", CarStateEnumeration.AVAILABLE, "Yellow"), outletCId, modelCId);
-                carSessionBean.createNewCar(new Cars("SID4221L", CarStateEnumeration.AVAILABLE, "Green"), outletDId, modelDId);
+                carSessionBean.createNewCar(new Cars("SKU1856P", CarStateEnumeration.AVAILABLE, "Red", true), outletAId, modelAId);
+                carSessionBean.createNewCar(new Cars("SPV2132U", CarStateEnumeration.AVAILABLE, "Blue", true), outletBId, modelBId);
+                carSessionBean.createNewCar(new Cars("SGD6421Z", CarStateEnumeration.AVAILABLE, "Yellow", true), outletCId, modelCId);
+                carSessionBean.createNewCar(new Cars("SID4221L", CarStateEnumeration.AVAILABLE, "Green", true), outletDId, modelDId);
             }
         } catch (OutletNotFoundException ex) {
             System.out.println(ex.getMessage());

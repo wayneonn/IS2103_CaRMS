@@ -56,6 +56,10 @@ public class Cars implements Serializable {
     @Size(min = 1, max = 64)
     private String colour;
     
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isEnabled;
+    
     @ManyToMany
     @JoinColumn(nullable = false)
     private List<RentalRate> rentalRates;
@@ -78,10 +82,11 @@ public class Cars implements Serializable {
         return carId;
     }
 
-    public Cars(String licenseNumber, CarStateEnumeration carState, String colour) {
+    public Cars(String licenseNumber, CarStateEnumeration carState, String colour, Boolean isEnabled) {
         this.licenseNumber = licenseNumber;
         this.carState = carState;
         this.colour = colour;
+        this.isEnabled = isEnabled;
     }
 
     public void setCarId(Long carId) {
@@ -237,6 +242,20 @@ public class Cars implements Serializable {
      */
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    /**
+     * @return the isEnabled
+     */
+    public Boolean getIsEnabled() {
+        return isEnabled;
+    }
+
+    /**
+     * @param isEnabled the isEnabled to set
+     */
+    public void setIsEnabled(Boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
     
     

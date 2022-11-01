@@ -23,6 +23,7 @@ import entity.RentalRate;
 import enumerations.CarStateEnumeration;
 import enumerations.EmployeeEnum;
 import enumerations.RentalRateTypeEnum;
+import exception.CarNotFoundException;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
 import exception.InvalidAccessRightException;
@@ -294,7 +295,7 @@ public class SalesManagementModule {
             modelSessionBeanRemote.updateModel(model);
             System.out.println("Model ID: " + modelId + " sucessfully updated!");
         } catch (ModelNotFoundException ex) {
-            System.out.println("Car Category of ID: " + categoryId + " does not exist!");
+            System.out.println("Model not found for ID: " + modelId);
         } catch (InputDataValidationException ex) {
             System.out.println("Invalid fields for the rental rate");
         } catch (CategoryNotFoundException ex) {
@@ -341,22 +342,22 @@ public class SalesManagementModule {
         }
         System.out.print("Enter model ID> ");
         Long modelId = scanner.nextLong();
-        
+
         System.out.print("This is the list of outlets you are able to choose from. Please enter"
                 + " the ID you would like to choose from.\n\n");
         List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
         System.out.printf("%4s%30s%50s\n", "ID", "Outlet Name", "Address");
         for (Outlet outlet : outlets) {
-            System.out.printf("%4s%30s%50s\n", outlet.getOutletId(), outlet.getOutletName() , outlet.getAddress());
+            System.out.printf("%4s%30s%50s\n", outlet.getOutletId(), outlet.getOutletName(), outlet.getAddress());
         }
         System.out.print("Enter outlet ID> ");
         Long outletId = scanner.nextLong();
         scanner.nextLine();
-        
+
         try {
             //System.out.printf("%10s%10s%10s", car.getCarState(), car.getColour(), car.getLicenseNumber());
-            
-            Long carId = carSessionBeanRemote.createNewCar(new Cars(licenseNumber, CarStateEnumeration.AVAILABLE, colour), outletId, modelId);
+
+            Long carId = carSessionBeanRemote.createNewCar(new Cars(licenseNumber, CarStateEnumeration.AVAILABLE, colour, true), outletId, modelId);
             System.out.println("Car ID: " + carId + " sucessfully created!");
         } catch (OutletNotFoundException ex) {
             System.out.println("Outlet of ID: " + outletId + " does not exist!");
@@ -372,8 +373,6 @@ public class SalesManagementModule {
 
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
-
-
 
     }
 
@@ -392,7 +391,110 @@ public class SalesManagementModule {
     }
 
     private void viewCarDetails() {
+        Scanner scanner = new Scanner(System.in);
+        Integer choice = 0;
+        System.out.println("***   CarsMS Management Client || Operations Manager Menu || View Cars Details  ***\n");
+        List<Cars> cars = carSessionBeanRemote.retrieveAllCars();
+        System.out.print("This is the list of types of cars you are able to choose from. Please enter"
+                + " the ID you would like to choose from.\n\n");
+        System.out.printf("%8s%20s%20s%20s%30s%30s%20s\n", "Id", "Car Category", "Make", "Model", "Status", "License Plate Number", "Colour");
 
+        for (Cars car : cars) {
+            System.out.printf("%8s%20s%20s%20s%30s%30s%20s\n", car.getCarId(), car.getModel().getCategory().getCategoryName(),
+                    car.getModel().getMake(), car.getModel().getModel(), car.getCarState(), car.getLicenseNumber(), car.getColour());
+        }
+
+        System.out.print("Enter Cars ID > ");
+        Long carId = scanner.nextLong();
+
+        try {
+            Cars car = carSessionBeanRemote.retrieveCarsById(carId);
+
+            System.out.println("You have chosen ID: " + carId + " and its details are shown below.\n");
+
+            System.out.printf("%8s%20s%20s%20s%30s%30s%20s\n", "Id", "Car Category", "Make", "Model", "Status", "License Plate Number", "Colour");
+            System.out.printf("%8s%20s%20s%20s%30s%30s%20s\n", car.getCarId(), car.getModel().getCategory().getCategoryName(),
+                    car.getModel().getMake(), car.getModel().getModel(), car.getCarState(), car.getLicenseNumber(), car.getColour());
+            System.out.println("------------------------");
+            System.out.println("1: Update Cars");
+            System.out.println("2: Delete Cars");
+            System.out.println("3: Back\n");
+            System.out.print("> ");
+            choice = scanner.nextInt();
+            if (choice == 1) {
+                updateCar(car);
+            } else if (choice == 2) {
+                deleteCar(car);
+            }
+            System.out.print("Press any key to continue...> ");
+        } catch (CarNotFoundException ex) {
+            System.out.println("Cars not found for ID: " + carId);
+        }
+    }
+
+    private void updateCar(Cars car) {
+        Scanner scanner = new Scanner(System.in);
+        Long carId = car.getCarId();
+        car.setIsEnabled(true);
+        System.out.println("***   CarMS Management Client || Sales Management || Update Car   ***\n");
+        System.out.print("Enter license plate number> ");
+        car.setLicenseNumber(scanner.nextLine().trim());
+        System.out.print("Enter colour> ");
+        car.setColour(scanner.nextLine().trim());
+        System.out.print("This is the list of models you are able to choose from. Please enter"
+                + " the ID you would like to choose from.\n\n");
+        List<Model> models = modelSessionBeanRemote.retrieveAvailAllModels();
+        System.out.printf("%4s%30s%30s\n", "ID", "Make", "Model");
+        for (Model model : models) {
+            System.out.printf("%4s%30s%30s\n", model.getModelId(), model.getMake(), model.getModel());
+        }
+        System.out.print("Enter model ID> ");
+        Long modelId = scanner.nextLong();
+
+        System.out.print("This is the list of outlets you are able to choose from. Please enter"
+                + " the ID you would like to choose from.\n\n");
+        List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
+        System.out.printf("%4s%30s%50s\n", "ID", "Outlet Name", "Address");
+        for (Outlet outlet : outlets) {
+            System.out.printf("%4s%30s%50s\n", outlet.getOutletId(), outlet.getOutletName(), outlet.getAddress());
+        }
+        System.out.print("Enter outlet ID> ");
+        Long outletId = scanner.nextLong();
+        scanner.nextLine();
+        
+        try {
+            car.setModel(modelSessionBeanRemote.retrieveModelById(modelId));
+            car.setOutlet(outletSessionBeanRemote.retrieveOutletById(outletId));
+            carSessionBeanRemote.updateCar(car);
+            System.out.println("Model ID: " + carId + " sucessfully updated!");
+        } catch (CarNotFoundException ex) {
+            System.out.println("Car Category of ID: " + carId + " does not exist!");
+        } catch (InputDataValidationException ex) {
+            System.out.println("Invalid fields for the rental rate");
+        } catch (ModelNotFoundException ex) {
+            System.out.println("Model not found for ID: " + modelId);
+        } catch (OutletNotFoundException ex) {
+            System.out.println("Outlet of ID: " + outletId + " does not exist!");
+        }
+
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+    }
+
+    private void deleteCar(Cars car) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("***   CaRMS Management Client || Operations Manager Menu || Delete Car   ***\n");
+        Long carId = car.getCarId();
+        try {
+            carSessionBeanRemote.deleteCar(carId);
+            System.out.println("Car ID: " + carId + " sucessfully deleted!");
+        } catch (CarNotFoundException ex) {
+            System.out.println("Car not found for ID: " + carId);
+        }
+
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
     }
 
     private void viewTransitDriverDispatchRecords() {
