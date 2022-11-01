@@ -125,10 +125,10 @@ public class DataInitSessionBean {
 
         try {
             if (em.find(Model.class, 1l) == null) {
-                modelAId = modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis"), categoryStandardSedanId);
-                modelBId = modelSessionBean.createNewModel(new Model("Mercedes Benz", "E200"), categoryLuxurySedanId);
-                modelCId = modelSessionBean.createNewModel(new Model("Nissan", "Qashqai"), categoryMinivanSuvId);
-                modelDId = modelSessionBean.createNewModel(new Model("Toyota", "Picnic"), categoryFamilySedanId);
+                modelAId = modelSessionBean.createNewModel(new Model("Toyota", "Corolla Altis", true), categoryStandardSedanId);
+                modelBId = modelSessionBean.createNewModel(new Model("Mercedes Benz", "E200", true), categoryLuxurySedanId);
+                modelCId = modelSessionBean.createNewModel(new Model("Nissan", "Qashqai", true), categoryMinivanSuvId);
+                modelDId = modelSessionBean.createNewModel(new Model("Toyota", "Picnic", true), categoryFamilySedanId);
             }
         } catch (CategoryNotFoundException ex) {
             System.out.println(ex.getMessage());

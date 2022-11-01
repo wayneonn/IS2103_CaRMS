@@ -5,13 +5,16 @@
  */
 package ejb.session.stateless;
 
+import entity.Cars;
 import entity.Category;
 import entity.Model;
 import entity.Outlet;
+import entity.RentalRate;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
 import exception.ModelNotFoundException;
 import exception.OutletNotFoundException;
+import exception.RentalRateNotFoundException;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -53,15 +56,15 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
         Set<ConstraintViolation<Model>> constraintViolations = validator.validate(model);
 
         if (constraintViolations.isEmpty()) {
-            try{
-            Category category = categorySessionBean.retrieveCategoryById(categoryId);
-            model.setCategory(category);
-            em.persist(model);
-            em.flush();
+            try {
+                Category category = categorySessionBean.retrieveCategoryById(categoryId);
+                model.setCategory(category);
+                em.persist(model);
+                em.flush();
 
-            return model.getModelId();
+                return model.getModelId();
             } catch (CategoryNotFoundException ex) {
-                throw new CategoryNotFoundException("Car Category not found for ID: " + categoryId); 
+                throw new CategoryNotFoundException("Car Category not found for ID: " + categoryId);
             }
         } else {
             throw new InputDataValidationException(this.prepareInputDataValidationErrorsMessage(constraintViolations));
@@ -77,13 +80,13 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
 
         return msg;
     }
-    
+
     @Override
-    public Model retrieveModelById(Long modelId) throws ModelNotFoundException{
-        
+    public Model retrieveModelById(Long modelId) throws ModelNotFoundException {
+
         Model model = em.find(Model.class, modelId);
-        
-        if (model != null){
+
+        if (model != null) {
             return model;
         } else {
             throw new ModelNotFoundException("Model ID " + modelId + " does not exist!");
@@ -96,15 +99,46 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
 
         return query.getResultList();
     }
-    
-    @Override 
-    public Model updateModel(Model updatedModel){
-        return em.merge(updatedModel);
+
+    @Override
+    public Model updateModel(Model updatedModel) throws ModelNotFoundException, InputDataValidationException {
+        if (updatedModel != null && updatedModel.getModelId() != null) {
+            Set<ConstraintViolation<Model>> constraintViolations = validator.validate(updatedModel);
+
+            if (constraintViolations.isEmpty()) {
+                return em.merge(updatedModel);
+            } else {
+                throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
+            }
+        } else {
+            throw new ModelNotFoundException("Rental Rate Id not provided for rental rate to be updated");
+        }
     }
 
     @Override
-    public void deleteModel(Long modelId)throws ModelNotFoundException{
-        Model modelToRemove = retrieveModelById(modelId); //check if in use
-        em.remove(modelToRemove); //mark as disabled
+    public void deleteModel(Long modelId) throws ModelNotFoundException {
+        try {
+            Model modelToRemove = retrieveModelById(modelId);
+            if (rentalRateInUse(modelId).isEmpty()) {
+                em.remove(modelToRemove);
+            } else {
+                modelToRemove.setIsEnabled(false);
+            }
+        } catch (ModelNotFoundException ex) {
+            throw new ModelNotFoundException("Model of ID: " + modelId + " not found!");
+        }
+    }
+    
+    @Override
+    public List<Cars> rentalRateInUse(Long modelId) throws ModelNotFoundException {
+        try {
+            Model model = retrieveModelById(modelId);
+            List<Cars> carRecords;
+            model.getCars().size();
+            carRecords = model.getCars();
+            return carRecords;
+        } catch (ModelNotFoundException ex) {
+            throw new ModelNotFoundException("Model ID " + modelId + " does not exist!");
+        }
     }
 }

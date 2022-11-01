@@ -41,15 +41,20 @@ public class Model implements Serializable {
     @Size(min = 1, max = 64)
     private String make;
     
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isEnabled;
+    
     @OneToMany(mappedBy = "model")
     private List<Cars> cars;
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Category category;
 
-    public Model(String model, String make) {
+    public Model(String model, String make, Boolean isEnabled) {
         this.model = model;
         this.make = make;
+        this.isEnabled = isEnabled;
     }
     
 
@@ -155,6 +160,20 @@ public class Model implements Serializable {
         if (this.cars.contains(car)) {
             this.cars.remove(car);
         }
+    }
+
+    /**
+     * @return the isEnabled
+     */
+    public Boolean getIsEnabled() {
+        return isEnabled;
+    }
+
+    /**
+     * @param isEnabled the isEnabled to set
+     */
+    public void setIsEnabled(Boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 
 }

@@ -27,7 +27,9 @@ public interface ModelSessionBeanRemote {
     
     public Model retrieveModelById(Long modelId) throws ModelNotFoundException;
     
-    public Model updateModel(Model updatedModel);
+    public Model updateModel(Model updatedModel) throws ModelNotFoundException, InputDataValidationException;
     
     public void deleteModel(Long modelId)throws ModelNotFoundException;
+    
+    public List<Cars> rentalRateInUse(Long modelId) throws ModelNotFoundException;
 }

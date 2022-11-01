@@ -26,4 +26,8 @@ public interface ModelSessionBeanLocal {
     public List<Model> retrieveAllModels();
     
     public Model retrieveModelById(Long modelId) throws ModelNotFoundException;
+    
+    public Model updateModel(Model updatedModel) throws ModelNotFoundException, InputDataValidationException;
+    
+    public List<Cars> rentalRateInUse(Long modelId) throws ModelNotFoundException;
 }

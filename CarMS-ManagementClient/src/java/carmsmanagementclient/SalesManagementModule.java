@@ -16,12 +16,14 @@ import ejb.session.stateless.ReservationRecordSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
 import entity.Category;
 import entity.Employee;
+import entity.Model;
 import entity.RentalRate;
 import enumerations.EmployeeEnum;
 import enumerations.RentalRateTypeEnum;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
 import exception.InvalidAccessRightException;
+import exception.ModelNotFoundException;
 import exception.RentalRateNotFoundException;
 import exception.UnknownPersistenceException;
 import exception.ValidityDateNotValidException;
@@ -119,6 +121,225 @@ public class SalesManagementModule {
     }
 
     private void operationsManagerMenu() {
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+
+        while (true) {
+            System.out.println("***    Car Rental Management System || Operations manager module    ***\n");
+            System.out.println("1: Create New Make And Model");
+            System.out.println("2: View All Make And Models");
+            System.out.println("3: Update Make and Models");
+            System.out.println("4: Delete Make and Models");
+            System.out.println("===============================");
+            System.out.println("5: Create New Car");
+            System.out.println("6: View All Cars");
+            System.out.println("7: View Car Details");
+            System.out.println("===============================");
+            System.out.println("8: View Transit Driver Dispatch Record For Current Day Reservation");
+            System.out.println("9: Assign Transit Driver");
+            System.out.println("10: Update Transit As Complete");
+            System.out.println("11: Log out\n");
+            response = 0;
+
+            while (response < 1 || response > 11) {
+                System.out.print("> ");
+
+                response = scanner.nextInt();
+
+                if (response == 1) {
+                    createNewModel();
+                } else if (response == 2) {
+                    viewAllModels();
+                } else if (response == 3) {
+                    viewModelDetail();
+                } else if (response == 4) {
+                    viewModelDetail();
+                } else if (response == 5) {
+                    createNewCar();
+                } else if (response == 6) {
+                    viewAllCars();
+                } else if (response == 7) {
+                    viewCarDetails();
+                } else if (response == 8) {
+                    viewTransitDriverDispatchRecords();
+                } else if (response == 9) {
+                    assignTransitDriver();
+                } else if (response == 10) {
+                    updateTransitAsComplete();
+                } else if (response == 11) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+
+            if (response == 11) {
+                break;
+            }
+        }
+    }
+
+    private void createNewModel() {
+        Scanner scanner = new Scanner(System.in);
+        Model model = new Model();
+        model.setIsEnabled(true);
+        System.out.println("*** CarMS Management Client || Sales Management || Create new Model***\n");
+        System.out.print("Enter Make name> ");
+        model.setMake(scanner.nextLine().trim());
+        System.out.print("Enter Model name> ");
+        model.setModel(scanner.nextLine().trim());
+        System.out.print("This is the list of car categories you are able to choose from. Please enter"
+                + " the ID you would like to choose from.\n\n");
+        List<Category> categories = categorySessionBeanRemote.retrieveAllCategories();
+        System.out.printf("%4s%15s\n", "ID", "Category");
+        for (Category category : categories) {
+            System.out.printf("%4s%15s\n", category.getCategoryId(), category.getCategoryName());
+        }
+        System.out.print("\nEnter Car Category ID > ");
+        Long categoryId = scanner.nextLong();
+        scanner.nextLine();
+        try {
+            Long modelId = modelSessionBeanRemote.createNewModel(model, categoryId);
+            System.out.println("Model ID: " + modelId + " sucessfully created!");
+        } catch (CategoryNotFoundException ex) {
+            System.out.println("Car Category of ID: " + categoryId + " does not exist!");
+        } catch (InputDataValidationException ex) {
+            System.out.println("Invalid fields for the model");
+        }
+
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+    }
+
+    private void viewAllModels() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("***   CarMS Management Client || Operations Manager Menu || View All Rental Rates  ***\n");
+        List<Model> models = modelSessionBeanRemote.retrieveAllModels();
+        System.out.printf("%4s%40s%40s\n", "ID", "Make", "Model");
+
+        for (Model model : models) {
+            System.out.printf("%4s%40s%40s\n", model.getModelId(),
+                    model.getMake(), model.getModel());
+        }
+
+        System.out.print("\nPress any key to continue...> ");
+        scanner.nextLine();
+    }
+
+    private void viewModelDetail() {
+        Scanner scanner = new Scanner(System.in);
+        Integer choice = 0;
+        System.out.println("***   CarMS Management Client || Operations Manager Menu || View Model Details  ***\n");
+        List<Model> models = modelSessionBeanRemote.retrieveAllModels();
+         System.out.print("This is the list of types of models you are able to choose from. Please enter"
+                + " the ID you would like to choose from.\n\n");
+        System.out.printf("%4s%40s%40s\n", "ID", "Make", "Model");
+
+        for (Model model : models) {
+            System.out.printf("%4s%40s%40s\n", model.getModelId(),
+                    model.getMake(), model.getModel());
+        }
+        
+        System.out.print("Enter Model ID > ");
+        Long modelId = scanner.nextLong();
+        
+        try {
+            Model model = modelSessionBeanRemote.retrieveModelById(modelId);
+
+            System.out.println("You have chosen ID: " + modelId + " and its details are shown below.\n");
+
+            System.out.printf("%4s%40s%40s\n", "ID", "Make", "Model");
+            System.out.printf("%4s%40s%40s\n", model.getModelId(),
+                    model.getMake(), model.getModel());
+            System.out.println("------------------------");
+            System.out.println("1: Update Model");
+            System.out.println("2: Delete Model");
+            System.out.println("3: Back\n");
+            System.out.print("> ");
+            choice = scanner.nextInt();
+            if (choice == 1) {
+                updateModel(model);
+            } else if (choice == 2) {
+                deleteModel(model);
+            }
+            System.out.print("Press any key to continue...> ");
+        } catch (ModelNotFoundException ex) {
+            System.out.println("Model not found for ID: " + modelId);
+        }
+    }
+
+    private void updateModel(Model model) {
+        Scanner scanner = new Scanner(System.in);
+        Long modelId = model.getModelId();
+        
+        System.out.println("*** CarMS Management Client || Sales Management || Update Model***\n");
+        System.out.print("Enter Make name> ");
+        model.setMake(scanner.nextLine().trim());
+        System.out.print("Enter Model name> ");
+        model.setModel(scanner.nextLine().trim());
+        System.out.print("This is the list of car categories you are able to choose from. Please enter"
+                + " the ID you would like to choose from.\n\n");
+        List<Category> categories = categorySessionBeanRemote.retrieveAllCategories();
+        System.out.printf("%4s%15s\n", "ID", "Category");
+        for (Category category : categories) {
+            System.out.printf("%4s%15s\n", category.getCategoryId(), category.getCategoryName());
+        }
+        System.out.print("\nEnter Car Category ID > ");
+        Long categoryId = scanner.nextLong();
+        scanner.nextLine();
+        try {
+            model.setCategory(categorySessionBeanRemote.retrieveCategoryById(categoryId));
+            modelSessionBeanRemote.updateModel(model);
+            System.out.println("Model ID: " + modelId + " sucessfully updated!");
+        } catch (ModelNotFoundException ex) {
+            System.out.println("Car Category of ID: " + categoryId + " does not exist!");
+        } catch (InputDataValidationException ex) {
+            System.out.println("Invalid fields for the rental rate");
+        } catch (CategoryNotFoundException ex) {
+            System.out.println("Car Category of ID: " + categoryId + " does not exist!");
+        }
+
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+    }
+
+    private void deleteModel(Model model) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("***   CaRMS Management Client || Operations Manager Menu || Delete Rental Rate  ***\n");
+        Long modelId = model.getModelId();
+        try {
+            modelSessionBeanRemote.deleteModel(modelId);
+            System.out.println("Rental Rate ID: " + modelId + " sucessfully deleted!");
+        } catch (ModelNotFoundException ex) {
+            System.out.println("Rental Rate not found for ID: " + modelId);
+        }
+
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+    }
+
+    private void createNewCar() {
+
+    }
+
+    private void viewAllCars() {
+
+    }
+
+    private void viewCarDetails() {
+
+    }
+
+    private void viewTransitDriverDispatchRecords() {
+
+    }
+
+    private void assignTransitDriver() {
+
+    }
+
+    private void updateTransitAsComplete() {
 
     }
 
@@ -282,9 +503,9 @@ public class SalesManagementModule {
             if (rentalRate.getEndDate() != null) {
                 endDate = sdf.format(rentalRate.getEndDate());
             }
-            
+
             System.out.println("You have chosen ID: " + rentalRateId + " and its details are shown below.\n");
-            
+
             System.out.printf("%4s%50s%32s%16s%16s%20s%20s\n", "ID", "Rental Rate Description", "Car Category", "Rate Per Day", "Is Enabled?", "Start Period", "End Period");
             System.out.printf("%4s%50s%32s%16s%16s%20s%20s\n\n", rentalRate.getRentalRateId(),
                     rentalRate.getRentalRateDescription(), rentalRate.getCategory().getCategoryName(),
@@ -305,11 +526,11 @@ public class SalesManagementModule {
             System.out.println("Rental Rate not found for ID: " + rentalRateId);
         }
     }
-    
+
     private void updateRentalRate(RentalRate rentalRate) {
         Scanner scanner = new Scanner(System.in);
         Long rentalRateId = rentalRate.getRentalRateId();
-        
+
         System.out.println("***   CaRMS Management Client || Operations Manager Menu || Update Rental Rate  ***\n");
         Long categoryId;
 
@@ -388,7 +609,7 @@ public class SalesManagementModule {
         System.out.print("Press any key to continue...  > ");
         scanner.nextLine();
     }
-    
+
     private void deleteRentalRate(RentalRate rentalRate) {
         Scanner scanner = new Scanner(System.in);
 
@@ -400,8 +621,8 @@ public class SalesManagementModule {
         } catch (RentalRateNotFoundException ex) {
             System.out.println("Rental Rate not found for ID: " + rentalRateId);
         }
-        
+
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
- }
+}
