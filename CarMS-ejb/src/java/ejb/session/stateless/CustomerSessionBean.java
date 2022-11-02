@@ -58,7 +58,7 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
                 em.persist(newCustomer);
                 em.flush();
 
-                return newCustomer.getCustEmail();
+                return newCustomer.getCustomerId();
             }
             catch(PersistenceException ex)
             {
@@ -128,10 +128,10 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
         }
     }
     
-    @Override
-    public Car searchCar(LocalDateTime pickupDateTime, LocalDateTime returnDateTime, ) {
-        
-    }
+//    @Override
+//    public Car searchCar(LocalDateTime pickupDateTime, LocalDateTime returnDateTime, ) {
+//        
+//    }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<Customer>>constraintViolations)
     {

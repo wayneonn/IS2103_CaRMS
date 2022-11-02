@@ -35,7 +35,7 @@ public class Main {
         //System.out.println(modelSessionBean.retrieveAllModels());
         //System.out.println(customerSessionBeanRemote.retrieveAllCustomers());
         //System.out.println(categorySessionBean.retrieveAllCategories());
-        MainApp mainApp = new MainApp(customerSessionBeanRemote, modelSessionBean, categorySessionBean);
+        MainApp mainApp = new MainApp(categorySessionBean, customerSessionBeanRemote, modelSessionBean);
         mainApp.runApp();
     }
     

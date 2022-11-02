@@ -86,7 +86,6 @@ public class MCRCustomer extends Customer implements Serializable {
     /**
      * @return the idNumber
      */
-    @Override
     public String getIdNumber() {
         return idNumber;
     }
@@ -94,7 +93,6 @@ public class MCRCustomer extends Customer implements Serializable {
     /**
      * @param idNumber the idNumber to set
      */
-    @Override
     public void setIdNumber(String idNumber) {
         this.idNumber = idNumber;
     }

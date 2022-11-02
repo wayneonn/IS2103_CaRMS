@@ -8,6 +8,7 @@ package ejb.session.singleton;
 import ejb.session.stateless.CarSessionBeanLocal;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanLocal;
+import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanLocal;
 import ejb.session.stateless.ModelSessionBeanLocal;
 import ejb.session.stateless.OutletSessionBeanLocal;
@@ -15,7 +16,9 @@ import ejb.session.stateless.PartnerSessionBeanLocal;
 import ejb.session.stateless.RentalRateSessionBeanLocal;
 import entity.Cars;
 import entity.Category;
+import entity.Customer;
 import entity.Employee;
+import entity.MCRCustomer;
 import entity.Model;
 import entity.Outlet;
 import entity.RentalRate;
@@ -23,6 +26,7 @@ import enumerations.CarStateEnumeration;
 import enumerations.EmployeeEnum;
 import enumerations.RentalRateTypeEnum;
 import exception.CategoryNotFoundException;
+import exception.CustomerUsernameExistException;
 import exception.InputDataValidationException;
 import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
@@ -49,6 +53,9 @@ import javax.persistence.PersistenceContext;
 @Startup
 
 public class DataInitSessionBean {
+
+    @EJB
+    private CustomerSessionBeanRemote customerSessionBean;
 
     @EJB
     private EmployeeSessionBeanLocal employeeSessionBean;
@@ -208,6 +215,19 @@ public class DataInitSessionBean {
             System.out.println(ex.getMessage());
         } catch (UnknownPersistenceException ex) {
             System.out.println(ex.getMessage());
+        }
+        
+        try{
+            if (em.find(MCRCustomer.class, 1l) == null) {
+            customerSessionBean.createNewCustomer(new MCRCustomer("customer", "password", "S991771s", "92238212", "Wayne", "Yow", "wengonn99@hotmail.com", "1234567890123456"));
+            customerSessionBean.createNewCustomer(new Customer("Steven", "Halim", "stevenhalim@hotmail.com", "1234567890123456"));
+            }
+        } catch (CustomerUsernameExistException ex) {
+        
+        } catch (UnknownPersistenceException ex) {
+        
+        } catch (InputDataValidationException ex) {
+        
         }
 
     }
