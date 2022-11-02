@@ -136,14 +136,14 @@ public class Customer implements Serializable {
     /**
      * @return the email
      */
-    public String getIdNumber() {
+    public String getCustEmail() {
         return email;
     }
 
     /**
      * @param email the email to set
      */
-    public void setIdNumber(String email) {
+    public void setCustEmail(String email) {
         this.email = email;
     }
 

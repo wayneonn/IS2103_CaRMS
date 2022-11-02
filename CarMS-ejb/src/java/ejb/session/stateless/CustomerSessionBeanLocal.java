@@ -6,6 +6,11 @@
 package ejb.session.stateless;
 
 import entity.Customer;
+import exception.CustomerNotFoundException;
+import exception.CustomerUsernameExistException;
+import exception.InputDataValidationException;
+import exception.InvalidLoginCredentialException;
+import exception.UnknownPersistenceException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,7 +21,8 @@ import javax.ejb.Local;
 @Local
 public interface CustomerSessionBeanLocal {
 
-    public Long createNewCustomer(Customer customer);
-
+    public Long createNewCustomer(Customer customer)throws CustomerUsernameExistException, UnknownPersistenceException, InputDataValidationException;
+    public Customer retrieveCustByUsername(String username) throws CustomerNotFoundException;
+    public Customer login(String username, String password) throws InvalidLoginCredentialException;
     public List<Customer> retrieveAllCustomers();
 }

@@ -32,10 +32,12 @@ public class Main {
         // TODO code application logic here
         
         //Testing CODE
-        System.out.println(modelSessionBean.retrieveAllModels());
-        System.out.println(customerSessionBeanRemote.retrieveAllCustomers());
-        System.out.println(categorySessionBean.retrieveAllCategories());
-        
+        //System.out.println(modelSessionBean.retrieveAllModels());
+        //System.out.println(customerSessionBeanRemote.retrieveAllCustomers());
+        //System.out.println(categorySessionBean.retrieveAllCategories());
+        MainApp mainApp = new MainApp(customerSessionBeanRemote, modelSessionBean, categorySessionBean);
+        mainApp.runApp();
     }
+    
     
 }
