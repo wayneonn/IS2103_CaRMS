@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Customer;
+import entity.MCRCustomer;
 import exception.InvalidLoginCredentialException;
 import exception.CustomerNotFoundException;
 import exception.CustomerUsernameExistException;
@@ -48,17 +49,17 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewCustomer(Customer newCustomer) throws CustomerUsernameExistException, UnknownPersistenceException, InputDataValidationException {
-        Set<ConstraintViolation<Customer>>constraintViolations = validator.validate(newCustomer);
+    public Long createNewCustomer(MCRCustomer newMCRCustomer) throws CustomerUsernameExistException, UnknownPersistenceException, InputDataValidationException {
+        Set<ConstraintViolation<MCRCustomer>>constraintViolations = validator.validate(newMCRCustomer);
         
         if(constraintViolations.isEmpty())
         {
             try
             {
-                em.persist(newCustomer);
+                em.persist(newMCRCustomer);
                 em.flush();
 
-                return newCustomer.getCustomerId();
+                return newMCRCustomer.getCustomerId();
             }
             catch(PersistenceException ex)
             {
@@ -93,13 +94,13 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
     }
     
     @Override 
-    public Customer retrieveCustByUsername(String username) throws CustomerNotFoundException {
-        Query query = em.createQuery("SELECT C FROM Customer c WHERE c.username = :inUsername");
+    public MCRCustomer retrieveCustByUsername(String username) throws CustomerNotFoundException {
+        Query query = em.createQuery("SELECT C FROM MCRCustomer c WHERE c.username = :inUsername");
         query.setParameter("inUsername", username);
         
         try
         {
-            return (Customer)query.getSingleResult();
+            return (MCRCustomer)query.getSingleResult();
         }
         catch(NoResultException | NonUniqueResultException ex)
         {
@@ -108,10 +109,10 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
     }
     
     @Override
-    public Customer login(String username, String password) throws InvalidLoginCredentialException {
+    public MCRCustomer login(String username, String password) throws InvalidLoginCredentialException {
         try
         {
-            Customer customer = retrieveCustByUsername(username);
+            MCRCustomer customer = retrieveCustByUsername(username);
             
             if(customer.getCustPassword().equals(password))
             {
@@ -133,7 +134,7 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
 //        
 //    }
     
-    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<Customer>>constraintViolations)
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<MCRCustomer>>constraintViolations)
     {
         String msg = "Input data validation error!:";
             

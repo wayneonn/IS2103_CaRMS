@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Cars;
 import entity.Category;
 import entity.Customer;
+import entity.MCRCustomer;
 import exception.CustomerNotFoundException;
 import exception.CustomerUsernameExistException;
 import exception.InputDataValidationException;
@@ -22,8 +23,8 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface CustomerSessionBeanRemote {
-    public Long createNewCustomer(Customer customer)throws CustomerUsernameExistException, UnknownPersistenceException, InputDataValidationException;
+    public Long createNewCustomer(MCRCustomer newMCRCustomer)throws CustomerUsernameExistException, UnknownPersistenceException, InputDataValidationException;
     public Customer retrieveCustByUsername(String username) throws CustomerNotFoundException;
-    public Customer login(String username, String password) throws InvalidLoginCredentialException;
+    public MCRCustomer login(String username, String password) throws InvalidLoginCredentialException;
     public List<Customer> retrieveAllCustomers();
 }

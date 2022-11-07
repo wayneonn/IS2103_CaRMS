@@ -36,8 +36,8 @@ public class MCRCustomer extends Customer implements Serializable {
     @Size(max = 32)
     private String idNumber;
     
-    @Column(nullable = true)
-    @Min(1)
+    @Column(nullable = true, length = 8)
+    @Size(max = 8)
     private String phoneNumber;
 
     public MCRCustomer(String custUsername, String custPassword, String idNumber, String phoneNumber, String firstName, String lastName, String email, String creditCardNumber) {
@@ -54,7 +54,6 @@ public class MCRCustomer extends Customer implements Serializable {
     /**
      * @return the custUsername
      */
-    @Override
     public String getCustUsername() {
         return custUsername;
     }
@@ -62,7 +61,6 @@ public class MCRCustomer extends Customer implements Serializable {
     /**
      * @param custUsername the custUsername to set
      */
-    @Override
     public void setCustUsername(String custUsername) {
         this.custUsername = custUsername;
     }
@@ -70,7 +68,6 @@ public class MCRCustomer extends Customer implements Serializable {
     /**
      * @return the custPassword
      */
-    @Override
     public String getCustPassword() {
         return custPassword;
     }
@@ -78,7 +75,6 @@ public class MCRCustomer extends Customer implements Serializable {
     /**
      * @param custPassword the custPassword to set
      */
-    @Override
     public void setCustPassword(String custPassword) {
         this.custPassword = custPassword;
     }
@@ -107,7 +103,6 @@ public class MCRCustomer extends Customer implements Serializable {
     /**
      * @param phoneNumber the phoneNumber to set
      */
-    @Override
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }

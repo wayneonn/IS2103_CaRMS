@@ -220,7 +220,7 @@ public class DataInitSessionBean {
         try{
             if (em.find(MCRCustomer.class, 1l) == null) {
             customerSessionBean.createNewCustomer(new MCRCustomer("customer", "password", "S991771s", "92238212", "Wayne", "Yow", "wengonn99@hotmail.com", "1234567890123456"));
-            customerSessionBean.createNewCustomer(new Customer("Steven", "Halim", "stevenhalim@hotmail.com", "1234567890123456"));
+            //customerSessionBean.createNewCustomer(new Customer("Steven", "Halim", "stevenhalim@hotmail.com", "1234567890123456"));
             }
         } catch (CustomerUsernameExistException ex) {
         

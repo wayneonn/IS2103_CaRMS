@@ -6,9 +6,12 @@
 package ejb.session.stateless;
 
 import entity.ReservationRecord;
+import exception.CustomerNotFoundException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -33,9 +36,16 @@ public class ReservationRecordSessionBean implements ReservationRecordSessionBea
     }
 
     @Override
-    public List<ReservationRecord> retrieveReservationRecord() {
-        Query query = em.createQuery("SELECT E FROM Outlet e");
+    public List<ReservationRecord> retrieveReservationRecords() {
+        Query query = em.createQuery("SELECT R FROM ReservationRecord r");
 
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<ReservationRecord> retrieveReservationsByUsername(String username) {
+        Query query = em.createQuery("SELECT r FROM Reservation r IN (r.customer) c = :inUsername");
+        query.setParameter("inId", username);
         return query.getResultList();
     }
 }

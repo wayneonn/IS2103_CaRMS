@@ -9,6 +9,8 @@ import javax.ejb.EJB;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
+import ejb.session.stateless.ReservationRecordSessionBeanRemote;
+import entity.MCRCustomer;
 
 /**
  *
@@ -20,10 +22,15 @@ public class Main {
     private static CustomerSessionBeanRemote customerSessionBeanRemote;
 
     @EJB
-    private static ModelSessionBeanRemote modelSessionBean;
+    private static ModelSessionBeanRemote modelSessionBeanRemote;
 
     @EJB
-    private static CategorySessionBeanRemote categorySessionBean;
+    private static CategorySessionBeanRemote categorySessionBeanRemote;
+    
+    @EJB
+    private static ReservationRecordSessionBeanRemote reservationRecordSessionBeanRemote;
+    
+    private static MCRCustomer mcrCustomerEntity;
 
     /**
      * @param args the command line arguments
@@ -35,7 +42,7 @@ public class Main {
         //System.out.println(modelSessionBean.retrieveAllModels());
         //System.out.println(customerSessionBeanRemote.retrieveAllCustomers());
         //System.out.println(categorySessionBean.retrieveAllCategories());
-        MainApp mainApp = new MainApp(categorySessionBean, customerSessionBeanRemote, modelSessionBean);
+        MainApp mainApp = new MainApp(categorySessionBeanRemote, customerSessionBeanRemote, modelSessionBeanRemote, reservationRecordSessionBeanRemote, mcrCustomerEntity);
         mainApp.runApp();
     }
     

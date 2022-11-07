@@ -108,28 +108,28 @@ public class Customer implements Serializable {
     /**
      * @return the firstName
      */
-    public String getCustUsername() {
+    public String getFirstName() {
         return firstName;
     }
 
     /**
      * @param firstName the firstName to set
      */
-    public void setCustUsername(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
     /**
      * @return the lastName
      */
-    public String getCustPassword() {
+    public String getLastName() {
         return lastName;
     }
 
     /**
      * @param lastName the lastName to set
      */
-    public void setCustPassword(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -147,19 +147,12 @@ public class Customer implements Serializable {
         this.email = email;
     }
 
-    /**
-     * @return the creditCardNumber
-     */
-    public String getPhoneNumber() {
+    public String getCreditCardNumber() {
         return creditCardNumber;
     }
 
-    /**
-     * @param creditCardNumber the creditCardNumber to set
-     */
-    public void setPhoneNumber(String creditCardNumber) {
+    public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
     }
-
     
 }
