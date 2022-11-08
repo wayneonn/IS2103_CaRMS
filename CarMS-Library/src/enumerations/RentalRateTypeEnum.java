@@ -11,6 +11,6 @@ package enumerations;
  */
 public enum RentalRateTypeEnum {
     PEAK,
-    NONPEAK,
+    DEFAULT,
     PROMOTIONAL;
 }

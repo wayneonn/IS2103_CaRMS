@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.ReservationRecord;
 import exception.CustomerNotFoundException;
+import exception.ReservationNotFoundException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -47,5 +48,20 @@ public class ReservationRecordSessionBean implements ReservationRecordSessionBea
         Query query = em.createQuery("SELECT r FROM Reservation r IN (r.customer) c = :inUsername");
         query.setParameter("inId", username);
         return query.getResultList();
+    }
+    
+    @Override
+    public ReservationRecord retrieveReservationRecordById(Long reservationRecordId) throws ReservationNotFoundException
+    {
+        ReservationRecord reservationRecord = em.find(ReservationRecord.class, reservationRecordId);
+        
+        if(reservationRecordId != null)
+        {
+            return reservationRecord;
+        }
+        else
+        {
+            throw new ReservationNotFoundException("Reservation Record ID " + reservationRecordId + " does not exist!");
+        }
     }
 }

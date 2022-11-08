@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,9 +53,9 @@ public class ReservationRecord implements Serializable { //reservation record
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
     //@Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime pickupDateTime;
+    private Date pickupDateTime;
     //@Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime returnDateTime;
+    private Date returnDateTime;
     @Column(nullable = false, precision = 11, scale = 2)
     @NotNull
     @DecimalMin("0.00")
@@ -112,28 +113,28 @@ public class ReservationRecord implements Serializable { //reservation record
     /**
      * @return the pickupDateTime
      */
-    public LocalDateTime getPickupDateTime() {
+    public Date getPickupDateTime() {
         return pickupDateTime;
     }
 
     /**
      * @param pickupDateTime the pickupDateTime to set
      */
-    public void setPickupDateTime(LocalDateTime pickupDateTime) {
+    public void setPickupDateTime(Date pickupDateTime) {
         this.pickupDateTime = pickupDateTime;
     }
 
     /**
      * @return the returnDateTime
      */
-    public LocalDateTime getReturnDateTime() {
+    public Date getReturnDateTime() {
         return returnDateTime;
     }
 
     /**
      * @param returnDateTime the returnDateTime to set
      */
-    public void setReturnDateTime(LocalDateTime returnDateTime) {
+    public void setReturnDateTime(Date returnDateTime) {
         this.returnDateTime = returnDateTime;
     }
 

@@ -8,13 +8,18 @@ package ejb.session.stateless;
 import entity.Cars;
 import entity.Model;
 import entity.Outlet;
+import entity.ReservationRecord;
 import exception.CarNotFoundException;
 import exception.InputDataValidationException;
 import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
 import exception.OutletNotFoundException;
 import exception.UnknownPersistenceException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -166,4 +171,31 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         query.getResultList().size();
         return query.getResultList();
     }
+    
+    /*
+    @Override
+    public List<ReservationRecord> searchCars(Date carPickUpDateTime, String pickUpOutlet, Date carReturnDateTime, String returnOutlet)
+    {
+        Random random = new Random();
+        
+        List<ReservationRecord> cars = new ArrayList<>();
+        
+        GregorianCalendar pickupDateTimeCalendar = new GregorianCalendar();
+        pickupDateTimeCalendar.setTime(carPickUpDateTime);
+        pickupDateTimeCalendar.add(GregorianCalendar.HOUR_OF_DAY, 0);
+        Date pickupDateTime = pickupDateTimeCalendar.getTime();
+        
+        GregorianCalendar returnDateTimeCalendar = new GregorianCalendar();
+        returnDateTimeCalendar.setTime(carReturnDateTime);
+        returnDateTimeCalendar.add(GregorianCalendar.HOUR_OF_DAY, -1);
+        Date returnDateTime = returnDateTimeCalendar.getTime();
+        
+        String carModel = String.valueOf((char)(random.nextInt(26) + 'A')) + String.valueOf((char)(random.nextInt(26) + 'A')) + String.valueOf((char)(random.nextInt(26) + 'A'));
+        
+        carModel.add(new ItineraryItem(1, collectDateTime, "Collect rental car model " + rentalCarModel));
+        carModel.add(new ItineraryItem(2, returnDateTime, "Return rental car model " + rentalCarModel));
+        
+        return rentalCars;
+    }
+*/
 }

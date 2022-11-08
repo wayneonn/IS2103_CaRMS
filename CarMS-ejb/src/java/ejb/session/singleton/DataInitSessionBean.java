@@ -87,7 +87,7 @@ public class DataInitSessionBean {
     Long outletAId;
     Long outletBId;
     Long outletCId;
-    Long outletDId;
+    //Long outletDId;
 
     Long categoryStandardSedanId;
     Long categoryFamilySedanId;
@@ -110,18 +110,28 @@ public class DataInitSessionBean {
         LocalTime closingHour = LocalTime.parse("22:00");
 
         if (em.find(Outlet.class, 1l) == null) {
-            outletAId = outletSessionBean.createNewOutlet(new Outlet("Kent Ridge Drive", "Outlet A", openingHour, closingHour));
-            outletBId = outletSessionBean.createNewOutlet(new Outlet("Holland Village Drive", "Outlet B", openingHour, closingHour));
+            outletAId = outletSessionBean.createNewOutlet(new Outlet("Kent Ridge Drive", "Outlet A", null, null));
+            outletBId = outletSessionBean.createNewOutlet(new Outlet("Holland Village Drive", "Outlet B", null, null));
             outletCId = outletSessionBean.createNewOutlet(new Outlet("Lentor Plains", "Outlet C", openingHour, closingHour));
-            outletDId = outletSessionBean.createNewOutlet(new Outlet("Buona Vista Drive", "Outlet D", openingHour, closingHour));
+            //outletDId = outletSessionBean.createNewOutlet(new Outlet("Buona Vista Drive", "Outlet D", openingHour, closingHour));
         }
 
         try {
             if (em.find(Employee.class, 1l) == null) {
-                employeeSessionBean.createNewEmployee(new Employee("EmployeeA1", "password", "A1", EmployeeEnum.SALESMANAGER), outletAId);
-                employeeSessionBean.createNewEmployee(new Employee("EmployeeB1", "password", "B1", EmployeeEnum.OPERATIONSMANAGER), outletBId);
-                employeeSessionBean.createNewEmployee(new Employee("EmployeeC1", "password", "C1", EmployeeEnum.CUSTSERVICEEXEC), outletCId);
-                employeeSessionBean.createNewEmployee(new Employee("EmployeeD1", "password", "D1", EmployeeEnum.CUSTSERVICEEXEC), outletDId);
+                employeeSessionBean.createNewEmployee(new Employee("A1", "password", "Employee A1", EmployeeEnum.SALESMANAGER), outletAId);
+                employeeSessionBean.createNewEmployee(new Employee("A2", "password", "Employee A2", EmployeeEnum.OPERATIONSMANAGER), outletAId);
+                employeeSessionBean.createNewEmployee(new Employee("A3", "password", "Employee A3", EmployeeEnum.CUSTSERVICEEXEC), outletAId);
+                employeeSessionBean.createNewEmployee(new Employee("A4", "password", "Employee A4", EmployeeEnum.EMPLOYEE), outletAId);
+                employeeSessionBean.createNewEmployee(new Employee("A5", "password", "Employee A5", EmployeeEnum.EMPLOYEE), outletAId);
+                
+                employeeSessionBean.createNewEmployee(new Employee("B1", "password", "Employee B1", EmployeeEnum.SALESMANAGER), outletBId);
+                employeeSessionBean.createNewEmployee(new Employee("B2", "password", "Employee B2", EmployeeEnum.OPERATIONSMANAGER), outletBId);
+                employeeSessionBean.createNewEmployee(new Employee("B3", "password", "Employee B3", EmployeeEnum.CUSTSERVICEEXEC), outletBId);
+                
+                employeeSessionBean.createNewEmployee(new Employee("C1", "password", "Employee C1", EmployeeEnum.SALESMANAGER), outletCId);
+                employeeSessionBean.createNewEmployee(new Employee("C2", "password", "Employee C2", EmployeeEnum.OPERATIONSMANAGER), outletCId);
+                employeeSessionBean.createNewEmployee(new Employee("C3", "password", "Employee C3", EmployeeEnum.CUSTSERVICEEXEC), outletCId);
+                
             }
         } catch (OutletNotFoundException ex) {
             ex.getMessage();
@@ -136,10 +146,12 @@ public class DataInitSessionBean {
 
         try {
             if (em.find(Model.class, 1l) == null) {
-                modelAId = modelSessionBean.createNewModel(new Model("Corolla Altis", "Toyota", true), categoryStandardSedanId);
-                modelBId = modelSessionBean.createNewModel(new Model("E200", "Mercedes Benz", true), categoryLuxurySedanId);
-                modelCId = modelSessionBean.createNewModel(new Model("Qashqai", "Nissan", true), categoryMinivanSuvId);
-                modelDId = modelSessionBean.createNewModel(new Model("Picnic", "Toyota", true), categoryFamilySedanId);
+                modelAId = modelSessionBean.createNewModel(new Model("Corolla", "Toyota", true), categoryStandardSedanId);
+                modelBId = modelSessionBean.createNewModel(new Model("Civic", "Honda", true), categoryStandardSedanId);
+                modelAId = modelSessionBean.createNewModel(new Model("Sunny", "Nissan", true), categoryStandardSedanId);
+                modelBId = modelSessionBean.createNewModel(new Model("E Class", "Mercedes", true), categoryLuxurySedanId);
+                modelCId = modelSessionBean.createNewModel(new Model("5 Series", "BMW", true), categoryLuxurySedanId);
+                modelDId = modelSessionBean.createNewModel(new Model("A6", "Audi", true), categoryLuxurySedanId);
             }
         } catch (CategoryNotFoundException ex) {
             System.out.println(ex.getMessage());
@@ -151,7 +163,7 @@ public class DataInitSessionBean {
                 carSessionBean.createNewCar(new Cars("SKU1856P", CarStateEnumeration.AVAILABLE, "Red", true), outletAId, modelAId);
                 carSessionBean.createNewCar(new Cars("SPV2132U", CarStateEnumeration.AVAILABLE, "Blue", true), outletBId, modelBId);
                 carSessionBean.createNewCar(new Cars("SGD6421Z", CarStateEnumeration.AVAILABLE, "Yellow", true), outletCId, modelCId);
-                carSessionBean.createNewCar(new Cars("SID4221L", CarStateEnumeration.AVAILABLE, "Green", true), outletDId, modelDId);
+                //carSessionBean.createNewCar(new Cars("SID4221L", CarStateEnumeration.AVAILABLE, "Green", true), outletDId, modelDId);
             }
         } catch (OutletNotFoundException ex) {
             System.out.println(ex.getMessage());
@@ -167,44 +179,49 @@ public class DataInitSessionBean {
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            Date startDateTime1 = df.parse("31/10/2022 00:00");
-            Date endDateTime1 = df.parse("04/11/2022 00:00");
-            Date startDateTime2 = df.parse("20/10/2022 00:00");
-            Date endDateTime2 = df.parse("03/11/2022 00:00");
-            Date startDateTime3 = df.parse("01/10/2022 00:00");
-            Date endDateTime3 = df.parse("01/11/2022 00:00");
-            RentalRate standardSedanNonPeakRate = new RentalRate("Standard Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 100.0, true);
-            RentalRate standardSedanPeakRate = new RentalRate("Standard Sedan - Peak Rate", RentalRateTypeEnum.PEAK, 200.0, true);
-            RentalRate standardSedanPromo = new RentalRate("Standard Sedan - Promotional", RentalRateTypeEnum.PEAK, 70.0, true);
-            RentalRate familySedanNonPeakRate = new RentalRate("Family Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 150.0, true);
-            RentalRate familySedanPeakRate = new RentalRate("Family Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 300.0, true);
-            RentalRate familySedanPromoRate = new RentalRate("Family Sedan - Promotional", RentalRateTypeEnum.PROMOTIONAL, 100.0, true);
-            RentalRate luxurySedanNonPeak = new RentalRate("Luxury Sedan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 400.0, true);
-            RentalRate luxurySedanPeak = new RentalRate("Luxury Sedan - Peak Rate", RentalRateTypeEnum.NONPEAK, 600.0, true);
-            RentalRate luxurySedanPromo = new RentalRate("Luxury Sedan - Promotional", RentalRateTypeEnum.PROMOTIONAL, 300.0, true);
-            RentalRate SUVSedanNonPeak = new RentalRate("SUV/Minivan - Non Peak Rate", RentalRateTypeEnum.NONPEAK, 500.0, true);
-            RentalRate SUVSedanPeak = new RentalRate("SUV/Minivan - Peak Rate", RentalRateTypeEnum.NONPEAK, 800.0, true);
-            RentalRate SUVSedanPromo = new RentalRate("SUV/Minivan - Promotional", RentalRateTypeEnum.PROMOTIONAL, 400.0, true);
-
+            Date startDateTime1 = df.parse("09/12/2022 12:00");
+            Date endDateTime1 = df.parse("11/12/2022 00:00");
+            Date startDateTime2 = df.parse("05/12/2022 00:00");
+            Date endDateTime2 = df.parse("05/12/2022 23:59");
+            Date startDateTime3 = df.parse("06/12/2022 00:00");
+            Date endDateTime3 = df.parse("06/12/2022 23:59");
+            Date startDateTime4 = df.parse("07/12/2022 12:00");
+            Date endDateTime4 = df.parse("08/12/2022 12:00");
+            RentalRate standardSedanDefaultRate = new RentalRate("Standard Sedan - Default Rate", RentalRateTypeEnum.DEFAULT, 100.0, true);
+            RentalRate standardSedanPromo = new RentalRate("Standard Sedan - Weekend Promo", RentalRateTypeEnum.PROMOTIONAL, 80.0, true);
+            RentalRate familySedanDefaultRate  = new RentalRate("Family Sedan - Default Rate", RentalRateTypeEnum.DEFAULT, 200.0, true);
+            RentalRate luxurySedanDefaultRate = new RentalRate("Luxury Sedan - Default Rate", RentalRateTypeEnum.DEFAULT, 300.0, true);
+            RentalRate luxurySedanPeak = new RentalRate("Luxury Sedan - Monday", RentalRateTypeEnum.PEAK, 310.0, true);
+            RentalRate luxurySedanPeak2 = new RentalRate("Luxury Sedan - Tuesday", RentalRateTypeEnum.PEAK, 320.0, true);
+            RentalRate luxurySedanPromo = new RentalRate("Luxury Sedan - Weekday Promo", RentalRateTypeEnum.PROMOTIONAL, 250.0, true);
+            RentalRate SUVSedanDefault = new RentalRate("SUV/Minivan - Default Rate", RentalRateTypeEnum.DEFAULT, 400.0, true);
+            
             if (em.find(RentalRate.class, 1l) == null) {
-                standardSedanNonPeakRate.setStartDate(startDateTime1);
-                standardSedanNonPeakRate.setEndDate(endDateTime1);
-                standardSedanPeakRate.setStartDate(startDateTime2);
-                standardSedanPeakRate.setEndDate(endDateTime2);
-                standardSedanPromo.setStartDate(startDateTime3);
-                standardSedanPromo.setEndDate(endDateTime3);
-                rentalRateSessionBean.createNewRentalRate(standardSedanNonPeakRate, categoryStandardSedanId);
-                rentalRateSessionBean.createNewRentalRate(standardSedanPeakRate, categoryStandardSedanId);
+                standardSedanDefaultRate.setStartDate(null);
+                standardSedanDefaultRate.setEndDate(null);
+                standardSedanPromo.setStartDate(startDateTime1);
+                standardSedanPromo.setEndDate(endDateTime1);
+                familySedanDefaultRate.setStartDate(null);
+                familySedanDefaultRate.setEndDate(null);
+                luxurySedanDefaultRate.setStartDate(null);
+                luxurySedanDefaultRate.setEndDate(null);
+                luxurySedanPeak.setStartDate(startDateTime2);
+                luxurySedanPeak.setEndDate(endDateTime2);
+                luxurySedanPeak2.setStartDate(startDateTime3);
+                luxurySedanPeak2.setEndDate(endDateTime3);
+                luxurySedanPromo.setStartDate(startDateTime4);
+                luxurySedanPromo.setEndDate(endDateTime4);
+                SUVSedanDefault.setStartDate(null);
+                SUVSedanDefault.setEndDate(null);
+                
+                rentalRateSessionBean.createNewRentalRate(standardSedanDefaultRate, categoryStandardSedanId);
                 rentalRateSessionBean.createNewRentalRate(standardSedanPromo, categoryStandardSedanId);
-                rentalRateSessionBean.createNewRentalRate(familySedanNonPeakRate, categoryFamilySedanId);
-                rentalRateSessionBean.createNewRentalRate(familySedanPeakRate, categoryFamilySedanId);
-                rentalRateSessionBean.createNewRentalRate(familySedanPromoRate, categoryFamilySedanId);
-                rentalRateSessionBean.createNewRentalRate(luxurySedanNonPeak, categoryLuxurySedanId);
+                rentalRateSessionBean.createNewRentalRate(familySedanDefaultRate, categoryFamilySedanId);
+                rentalRateSessionBean.createNewRentalRate(luxurySedanDefaultRate, categoryLuxurySedanId);
                 rentalRateSessionBean.createNewRentalRate(luxurySedanPeak, categoryLuxurySedanId);
+                rentalRateSessionBean.createNewRentalRate(luxurySedanPeak2, categoryLuxurySedanId);
                 rentalRateSessionBean.createNewRentalRate(luxurySedanPromo, categoryLuxurySedanId);
-                rentalRateSessionBean.createNewRentalRate(SUVSedanNonPeak, categoryMinivanSuvId);
-                rentalRateSessionBean.createNewRentalRate(SUVSedanPeak, categoryMinivanSuvId);
-                rentalRateSessionBean.createNewRentalRate(SUVSedanPromo, categoryMinivanSuvId);
+                rentalRateSessionBean.createNewRentalRate(SUVSedanDefault, categoryMinivanSuvId);               
             }
 
         } catch (ParseException ex) {
