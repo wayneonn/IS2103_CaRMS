@@ -111,7 +111,7 @@ public class MainApp {
         String password = "";
         System.out.println("Bypass Login.\n");
         //System.out.print("Enter username >> ");
-        username = "EmployeeA1";
+        username = "EmployeeC1";
         //System.out.print("Enter password >> ");
         password = "password";
 
@@ -166,7 +166,7 @@ public class MainApp {
                         customerServiceModule = new CustomerServiceModule(employee, modelSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
                                 customerSessionBeanRemote, reservationRecordSessionBeanRemote, employeeSessionBeanRemote,
                                 outletSessionBeanRemote, categorySessionBeanRemote, carSessionBeanRemote);
-                        customerServiceModule.runApp();
+                        customerServiceModule.accessRightAllocator();
                     } else if (choice == 3) {
                         break;
                     } else {

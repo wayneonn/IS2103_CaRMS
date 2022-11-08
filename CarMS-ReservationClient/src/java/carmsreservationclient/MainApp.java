@@ -9,6 +9,7 @@ import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import entity.Customer;
+import entity.MCRCustomer;
 import exception.InvalidLoginCredentialException;
 import java.util.Scanner;
 /**
@@ -21,7 +22,7 @@ public class MainApp {
     private CustomerSessionBeanRemote customerSessionBeanRemote;
     private ModelSessionBeanRemote modelSessionBeanRemote;
     
-    private Customer currentCustomerEntity;
+    private MCRCustomer currentCustomerEntity;
     
     public MainApp() {       
         
@@ -93,7 +94,7 @@ public class MainApp {
         
         if(username.length() > 0 && password.length() > 0)
         {
-            currentCustomerEntity = customerSessionBeanRemote.login(username, password);      
+            //currentCustomerEntity = customerSessionBeanRemote.login(username, password);      
         }
         else {
             throw new InvalidLoginCredentialException("Missing login credential!");

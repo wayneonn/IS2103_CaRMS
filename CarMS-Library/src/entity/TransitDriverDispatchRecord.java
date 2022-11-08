@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,8 +33,8 @@ public class TransitDriverDispatchRecord implements Serializable {
     @JoinColumn(nullable = false)
     private ReservationRecord reservationRecord;
     
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne//(optional = false)
+    //@JoinColumn(nullable = false)
     private Employee employee;
 
     public TransitDriverDispatchRecord() {
@@ -57,6 +58,7 @@ public class TransitDriverDispatchRecord implements Serializable {
     private Date openingHour;
     @Temporal(TemporalType.TIMESTAMP)
     private Date transitDate;
+    @Column(nullable = false)
     private boolean isComplete;
 
     /**
@@ -180,6 +182,48 @@ public class TransitDriverDispatchRecord implements Serializable {
      */
     public void setOpeningHour(Date openingHour) {
         this.openingHour = openingHour;
+    }
+
+    /**
+     * @return the reservationRecord
+     */
+    public ReservationRecord getReservationRecord() {
+        return reservationRecord;
+    }
+
+    /**
+     * @param reservationRecord the reservationRecord to set
+     */
+    public void setReservationRecord(ReservationRecord reservationRecord) {
+        this.reservationRecord = reservationRecord;
+    }
+
+    /**
+     * @return the employee
+     */
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    /**
+     * @param employee the employee to set
+     */
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    /**
+     * @return the outlet
+     */
+    public Outlet getOutlet() {
+        return outlet;
+    }
+
+    /**
+     * @param outlet the outlet to set
+     */
+    public void setOutlet(Outlet outlet) {
+        this.outlet = outlet;
     }
 
 }

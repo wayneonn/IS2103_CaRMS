@@ -8,6 +8,7 @@ package entity;
 import enumerations.EmployeeEnum;
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -55,6 +57,9 @@ public class Employee implements Serializable {
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Outlet outlet;
+    
+    @OneToMany(mappedBy = "employee")
+    private List<TransitDriverDispatchRecord> transitDriverDispatchRecords;
 
     /**
      * @return the employeeId
@@ -173,5 +178,19 @@ public class Employee implements Serializable {
      */
     public void setOutlet(Outlet outlet) {
         this.outlet = outlet;
+    }
+
+    /**
+     * @return the transitDriverDispatchRecords
+     */
+    public List<TransitDriverDispatchRecord> getTransitDriverDispatchRecords() {
+        return transitDriverDispatchRecords;
+    }
+
+    /**
+     * @param transitDriverDispatchRecords the transitDriverDispatchRecords to set
+     */
+    public void setTransitDriverDispatchRecords(List<TransitDriverDispatchRecord> transitDriverDispatchRecords) {
+        this.transitDriverDispatchRecords = transitDriverDispatchRecords;
     }
 }

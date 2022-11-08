@@ -7,9 +7,11 @@ package entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,32 +31,40 @@ import javax.validation.constraints.Size;
  * @author wayneonn
  */
 @Entity
-public class ReservationRecord implements Serializable { //reservation record
+public class ReservationRecord implements Serializable {
 
+//reservation record
     @ManyToOne
     private Customer customer;
-    
+
     @ManyToMany
     @JoinColumn(nullable = false)
     private List<RentalRate> rentalRates;
 
     public ReservationRecord() {
     }
-    
+
     @OneToOne
-    private Cars car; 
-    
+    private Cars car;
+
     @OneToOne(mappedBy = "reservationRecord")
     private TransitDriverDispatchRecord transitDriverDispatchRecord;
     
+    @OneToOne(optional = false)
+    @JoinColumn(nullable = false)
+    private Outlet pickupOutlet;
+    @OneToOne(optional = false)
+    @JoinColumn(nullable = false)
+    private Outlet returnOutlet;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
-    //@Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime pickupDateTime;
-    //@Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime returnDateTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date pickupDateTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date returnDateTime;
     @Column(nullable = false, precision = 11, scale = 2)
     @NotNull
     @DecimalMin("0.00")
@@ -64,11 +74,19 @@ public class ReservationRecord implements Serializable { //reservation record
     @NotNull
     @Size(min = 13, max = 16)
     private String creditCardNum;
-    @Column(nullable = false, precision = 11, scale = 2)
-    @NotNull
+    @Column(nullable = true, precision = 11, scale = 2)
     @DecimalMin("0.00")
     @Digits(integer = 9, fraction = 2)
     private Double refundAmount;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean paid;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean pickedUp;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean completed;
 
     /**
      * @return the reservationId
@@ -83,7 +101,7 @@ public class ReservationRecord implements Serializable { //reservation record
     public void setReservationId(Long reservationId) {
         this.reservationId = reservationId;
     }
-    
+
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -96,14 +114,14 @@ public class ReservationRecord implements Serializable { //reservation record
         }
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (reservationId != null ? reservationId.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public String toString() {
         return "entity.Employee[ id=" + reservationId + " ]";
@@ -112,28 +130,28 @@ public class ReservationRecord implements Serializable { //reservation record
     /**
      * @return the pickupDateTime
      */
-    public LocalDateTime getPickupDateTime() {
+    public Date getPickupDateTime() {
         return pickupDateTime;
     }
 
     /**
      * @param pickupDateTime the pickupDateTime to set
      */
-    public void setPickupDateTime(LocalDateTime pickupDateTime) {
+    public void setPickupDateTime(Date pickupDateTime) {
         this.pickupDateTime = pickupDateTime;
     }
 
     /**
      * @return the returnDateTime
      */
-    public LocalDateTime getReturnDateTime() {
+    public Date getReturnDateTime() {
         return returnDateTime;
     }
 
     /**
      * @param returnDateTime the returnDateTime to set
      */
-    public void setReturnDateTime(LocalDateTime returnDateTime) {
+    public void setReturnDateTime(Date returnDateTime) {
         this.returnDateTime = returnDateTime;
     }
 
@@ -235,5 +253,73 @@ public class ReservationRecord implements Serializable { //reservation record
         this.transitDriverDispatchRecord = transitDriverDispatchRecord;
     }
 
-    
+    /**
+     * @return the paid
+     */
+    public Boolean getPaid() {
+        return paid;
+    }
+
+    /**
+     * @param paid the paid to set
+     */
+    public void setPaid(Boolean paid) {
+        this.paid = paid;
+    }
+
+    /**
+     * @return the pickedUp
+     */
+    public Boolean getPickedUp() {
+        return pickedUp;
+    }
+
+    /**
+     * @param pickedUp the pickedUp to set
+     */
+    public void setPickedUp(Boolean pickedUp) {
+        this.pickedUp = pickedUp;
+    }
+
+    /**
+     * @return the completed
+     */
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    /**
+     * @param completed the completed to set
+     */
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+
+    /**
+     * @return the pickupOutlet
+     */
+    public Outlet getPickupOutlet() {
+        return pickupOutlet;
+    }
+
+    /**
+     * @param pickupOutlet the pickupOutlet to set
+     */
+    public void setPickupOutlet(Outlet pickupOutlet) {
+        this.pickupOutlet = pickupOutlet;
+    }
+
+    /**
+     * @return the returnOutlet
+     */
+    public Outlet getReturnOutlet() {
+        return returnOutlet;
+    }
+
+    /**
+     * @param returnOutlet the returnOutlet to set
+     */
+    public void setReturnOutlet(Outlet returnOutlet) {
+        this.returnOutlet = returnOutlet;
+    }
 }

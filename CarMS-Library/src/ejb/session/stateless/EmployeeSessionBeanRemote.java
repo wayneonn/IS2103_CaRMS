@@ -28,4 +28,8 @@ public interface EmployeeSessionBeanRemote {
     public Employee retrieveStaffByUsername(String username) throws EmployeeNotFoundException;
     
     public Employee staffLogin(String username, String password) throws InvalidLoginException;
+
+    public List<Employee> retrieveAllEmployeesByOutletId(Long outletId);
+
+    public Employee retrieveEmployeeById(Long employeeId) throws EmployeeNotFoundException;
 }

@@ -26,4 +26,6 @@ public interface CustomerSessionBeanRemote {
     public Customer retrieveCustByUsername(String username) throws CustomerNotFoundException;
     public Customer login(String username, String password) throws InvalidLoginCredentialException;
     public List<Customer> retrieveAllCustomers();
+
+    public Customer retrieveCustomerById(Long customerId) throws CustomerNotFoundException;
 }

@@ -60,6 +60,26 @@ public class EmployeeSessionBean implements EmployeeSessionBeanLocal, EmployeeSe
     }
     
     @Override
+    public Employee retrieveEmployeeById(Long employeeId) throws EmployeeNotFoundException {
+        
+        Employee employee = em.find(Employee.class, employeeId);
+        
+        if (employee != null){
+            return employee;
+        } else {
+            throw new EmployeeNotFoundException("Employee ID " + employeeId + " does not exist!");
+        }
+    }
+    
+    @Override
+    public List<Employee> retrieveAllEmployeesByOutletId(Long outletId) {
+        Query query = em.createQuery("SELECT e FROM Employee e WHERE e.outlet.outletId = :inOutletId");
+        query.setParameter("inOutletId", outletId);
+
+        return query.getResultList();
+    }
+    
+    @Override
     public Employee retrieveStaffByUsername(String username) throws EmployeeNotFoundException {
         Query query = em.createQuery("SELECT e FROM Employee e WHERE e.employeeUsername = :inUsername");
         query.setParameter("inUsername", username);

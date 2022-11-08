@@ -6,10 +6,13 @@
 package ejb.session.stateless;
 
 import entity.Customer;
+import entity.MCRCustomer;
+import entity.Outlet;
 import exception.InvalidLoginCredentialException;
 import exception.CustomerNotFoundException;
 import exception.CustomerUsernameExistException;
 import exception.InputDataValidationException;
+import exception.OutletNotFoundException;
 import exception.UnknownPersistenceException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -93,13 +96,13 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
     }
     
     @Override 
-    public Customer retrieveCustByUsername(String username) throws CustomerNotFoundException {
+    public MCRCustomer retrieveCustByUsername(String username) throws CustomerNotFoundException {
         Query query = em.createQuery("SELECT C FROM Customer c WHERE c.username = :inUsername");
         query.setParameter("inUsername", username);
         
         try
         {
-            return (Customer)query.getSingleResult();
+            return (MCRCustomer)query.getSingleResult();
         }
         catch(NoResultException | NonUniqueResultException ex)
         {
@@ -111,7 +114,7 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
     public Customer login(String username, String password) throws InvalidLoginCredentialException {
         try
         {
-            Customer customer = retrieveCustByUsername(username);
+            MCRCustomer customer = retrieveCustByUsername(username);
             
             if(customer.getCustPassword().equals(password))
             {
@@ -144,4 +147,18 @@ public class CustomerSessionBean implements CustomerSessionBeanLocal, CustomerSe
         
         return msg;
     }
+    
+        @Override
+    public Customer retrieveCustomerById(Long customerId) throws CustomerNotFoundException{
+        
+        Customer customer = em.find(Customer.class, customerId);
+        
+        if (customer != null){
+            return customer;
+        } else {
+            throw new CustomerNotFoundException("Customer ID " + customerId + " does not exist!");
+        }
+    }
+    
+    
 }
