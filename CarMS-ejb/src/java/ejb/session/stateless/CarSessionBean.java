@@ -117,22 +117,36 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     public void persist(Object object) {
         em.persist(object);
     }
-    
+
+    @Override
+    public List<Cars> retrieveCarsByCategoryId(Long categoryId) {
+        Query query = em.createQuery("SELECT c FROM Cars c WHERE c.model.category.categoryId = :inCategoryId");
+        query.setParameter("inCategoryId", categoryId);
+        return query.getResultList();
+    }
+
     @Override
     public Cars retrieveCarsById(Long categoryId) throws CarNotFoundException {
-        
+
         Cars category = em.find(Cars.class, categoryId);
-        
-        if (category != null){
+
+        if (category != null) {
             return category;
         } else {
             throw new CarNotFoundException("Cars ID " + categoryId + " does not exist!");
         }
     }
-    
+
+    @Override
+    public List<Cars> retrieveCarsByModelId(Long modelId) {
+        Query query = em.createQuery("SELECT c FROM Cars c WHERE c.model.modelId = :inModelId");
+        query.setParameter("inModelId", modelId);
+        return query.getResultList();
+    }
+
     @Override
     public Cars updateCar(Cars updatedCars) throws CarNotFoundException, InputDataValidationException {
-        if (updatedCars != null && updatedCars.getCarId()!= null) {
+        if (updatedCars != null && updatedCars.getCarId() != null) {
             Set<ConstraintViolation<Cars>> constraintViolations = validator.validate(updatedCars);
 
             if (constraintViolations.isEmpty()) {
@@ -158,7 +172,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
             throw new CarNotFoundException("Car of ID: " + carId + " not found!");
         }
     }
-    
+
     @Override
     public List<Cars> carsInUse(Long carId) {
         Query query = em.createQuery("SELECT c FROM Cars c WHERE c.carState != enumerations.CarStateEnumeration.AVAILABLE AND c.carId = :inCarId");
@@ -166,4 +180,31 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         query.getResultList().size();
         return query.getResultList();
     }
+
+    /*
+    @Override
+    public List<ReservationRecord> searchCars(Date carPickUpDateTime, String pickUpOutlet, Date carReturnDateTime, String returnOutlet)
+    {
+        Random random = new Random();
+        
+        List<ReservationRecord> cars = new ArrayList<>();
+        
+        GregorianCalendar pickupDateTimeCalendar = new GregorianCalendar();
+        pickupDateTimeCalendar.setTime(carPickUpDateTime);
+        pickupDateTimeCalendar.add(GregorianCalendar.HOUR_OF_DAY, 0);
+        Date pickupDateTime = pickupDateTimeCalendar.getTime();
+        
+        GregorianCalendar returnDateTimeCalendar = new GregorianCalendar();
+        returnDateTimeCalendar.setTime(carReturnDateTime);
+        returnDateTimeCalendar.add(GregorianCalendar.HOUR_OF_DAY, -1);
+        Date returnDateTime = returnDateTimeCalendar.getTime();
+        
+        String carModel = String.valueOf((char)(random.nextInt(26) + 'A')) + String.valueOf((char)(random.nextInt(26) + 'A')) + String.valueOf((char)(random.nextInt(26) + 'A'));
+        
+        carModel.add(new ItineraryItem(1, collectDateTime, "Collect rental car model " + rentalCarModel));
+        carModel.add(new ItineraryItem(2, returnDateTime, "Return rental car model " + rentalCarModel));
+        
+        return rentalCars;
+    }
+     */
 }

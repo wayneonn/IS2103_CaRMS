@@ -134,6 +134,8 @@ public class CustomerServiceModule {
                 Long reservationRecordId = scanner.nextLong();
                 scanner.nextLine();
                 ReservationRecord reservationRecord = reservationRecordSessionBeanRemote.retrieveReservationRecordById(reservationRecordId);
+                System.out.println("\nYou have entered ID :" + reservationRecordId + "\n");
+                reservationRecord.getPaid();
                 if (!reservationRecord.getPaid()) {
                     System.out.print("To pay rental fee? (Enter 'Y' to pay)> ");
                     String input = scanner.nextLine().trim();

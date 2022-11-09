@@ -39,6 +39,10 @@ public class TransitDriverDispatchRecord implements Serializable {
 
     public TransitDriverDispatchRecord() {
     }
+
+    public TransitDriverDispatchRecord(Date pickupDateTime) {
+        this.pickupDateTime = pickupDateTime;
+    }
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -52,10 +56,6 @@ public class TransitDriverDispatchRecord implements Serializable {
     private Date pickupDateTime;
     @Temporal(TemporalType.TIMESTAMP)
     private Date returnDateTime;
-    @Temporal(TemporalType.TIMESTAMP) 
-    private Date closingHour;
-    @Temporal(TemporalType.TIMESTAMP) 
-    private Date openingHour;
     @Temporal(TemporalType.TIMESTAMP)
     private Date transitDate;
     @Column(nullable = false)
@@ -129,20 +129,6 @@ public class TransitDriverDispatchRecord implements Serializable {
     }
 
     /**
-     * @return the closingHour
-     */
-    public Date getClosingHour() {
-        return closingHour;
-    }
-
-    /**
-     * @param closingHour the closingHour to set
-     */
-    public void setClosingHour(Time closingHour) {
-        this.closingHour = closingHour;
-    }
-
-    /**
      * @return the transitDate
      */
     public Date getTransitDate() {
@@ -168,20 +154,6 @@ public class TransitDriverDispatchRecord implements Serializable {
      */
     public void setIsComplete(boolean isComplete) {
         this.isComplete = isComplete;
-    }
-
-    /**
-     * @return the openingHour
-     */
-    public Date getOpeningHour() {
-        return openingHour;
-    }
-
-    /**
-     * @param openingHour the openingHour to set
-     */
-    public void setOpeningHour(Date openingHour) {
-        this.openingHour = openingHour;
     }
 
     /**

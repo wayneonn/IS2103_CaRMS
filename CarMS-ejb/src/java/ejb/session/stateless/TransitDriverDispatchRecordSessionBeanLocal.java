@@ -8,6 +8,9 @@ package ejb.session.stateless;
 import entity.TransitDriverDispatchRecord;
 import exception.EmployeeIsNotFromAssignedOutletException;
 import exception.EmployeeNotFoundException;
+import exception.OutletNotFoundException;
+import exception.RentalReservationNotFoundException;
+import exception.TransitAlreadyCompletedException;
 import exception.TransitDriverDispatchRecordNotFoundException;
 import java.util.Date;
 import java.util.List;
@@ -24,11 +27,15 @@ public interface TransitDriverDispatchRecordSessionBeanLocal {
 
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecord();
 
-    public void assignDriver(Long driverId, Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, EmployeeNotFoundException, EmployeeIsNotFromAssignedOutletException;
+    public void assignDriver(Long driverId, Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, EmployeeNotFoundException, EmployeeIsNotFromAssignedOutletException, TransitAlreadyCompletedException;
 
     public TransitDriverDispatchRecord retrieveTransitDriverDispatchRecordById(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException;
 
-    public void updateTransitAsCompleted(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException;
+    public void updateTransitAsCompleted(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, TransitAlreadyCompletedException;
 
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Long outletId, Date date);
+    
+    public List<TransitDriverDispatchRecord> retrieveNotCompletedTransitDriverDispatchRecordByOutletId(Long outletId, Date date);
+    
+    public Long createNewTranspatchDriverRecordCommit(Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException;
 }

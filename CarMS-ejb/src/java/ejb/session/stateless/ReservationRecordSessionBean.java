@@ -11,12 +11,14 @@ import entity.Outlet;
 import entity.ReservationRecord;
 import enumerations.CarStateEnumeration;
 import exception.CustomerNotFoundException;
-import exception.OutletNotFoundException;
 import exception.RentalReservationNotFoundException;
+import exception.ReservationNotFoundException;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -44,8 +46,8 @@ public class ReservationRecordSessionBean implements ReservationRecordSessionBea
     }
 
     @Override
-    public List<ReservationRecord> retrieveReservationRecord() {
-        Query query = em.createQuery("SELECT r FROM ReservationRecord r");
+    public List<ReservationRecord> retrieveReservationRecords() {
+        Query query = em.createQuery("SELECT R FROM ReservationRecord r");
 
         return query.getResultList();
     }
@@ -61,6 +63,7 @@ public class ReservationRecordSessionBean implements ReservationRecordSessionBea
             throw new RentalReservationNotFoundException("ReservationRecord ID " + reservationRecordId + " does not exist!");
         }
     }
+    
 
     @Override
     public void pickupCar(Long rentalReservationId) throws RentalReservationNotFoundException {
@@ -83,10 +86,12 @@ public class ReservationRecordSessionBean implements ReservationRecordSessionBea
     public void returnCar(Long rentalReservationId) throws RentalReservationNotFoundException {
         try {
             ReservationRecord rentalReservation = retrieveReservationRecordById(rentalReservationId);
+            rentalReservation.getReturnOutlet();
             Outlet returnOutlet = rentalReservation.getReturnOutlet();
+            System.out.println("returnOutlet" + returnOutlet);
             Cars car = rentalReservation.getCar();
             car.setCarState(CarStateEnumeration.AVAILABLE);
-            car.setOutlet(rentalReservation.getReturnOutlet());
+            car.setOutlet(returnOutlet);
             car.setLocation(car.getOutlet().getOutletName());
             car.setReservationRecord(null);
             returnOutlet.addCar(car);
@@ -98,7 +103,7 @@ public class ReservationRecordSessionBean implements ReservationRecordSessionBea
 
     @Override
     public List<ReservationRecord> retrieveCustomerReservationsRecordsByPickupOutletId(Long outletId) {
-        Query query = em.createQuery("SELECT r FROM ReservationRecord r WHERE r.pickedUp = FALSE AND r.car IS NOT NULL AND r.pickupOutlet.outletId = :inOutletId ");
+        Query query = em.createQuery("SELECT r FROM ReservationRecord r WHERE r.pickedUp = FALSE AND r.car IS NOT NULL AND r.pickupOutlet.outletId = :inOutletId");
         query.setParameter("inOutletId", outletId);
         return query.getResultList();
     }
@@ -109,4 +114,19 @@ public class ReservationRecordSessionBean implements ReservationRecordSessionBea
         query.setParameter("inOutletId", outletId);
         return query.getResultList();
     }
+    
+    @Override
+    public List<ReservationRecord> retrieveReservationsByUsername(String username) {
+        Query query = em.createQuery("SELECT r FROM ReservationRecord r WHERE r.c c = :inUsername");
+        query.setParameter("inId", username);
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<ReservationRecord> retrieveReservationsByCustId(Long custId) {
+        Query query = em.createQuery("SELECT r FROM ReservationRecord r WHERE r.customer.customerId = :inCustId");
+        query.setParameter("inCustId", custId);
+        return query.getResultList();
+    }
+    
 }

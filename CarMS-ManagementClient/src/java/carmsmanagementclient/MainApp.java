@@ -111,7 +111,7 @@ public class MainApp {
         String password = "";
         System.out.println("Bypass Login.\n");
         //System.out.print("Enter username >> ");
-        username = "EmployeeC1";
+        username = "A3";
         //System.out.print("Enter password >> ");
         password = "password";
 

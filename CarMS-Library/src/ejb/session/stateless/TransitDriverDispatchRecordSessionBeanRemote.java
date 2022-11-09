@@ -8,6 +8,9 @@ package ejb.session.stateless;
 import entity.TransitDriverDispatchRecord;
 import exception.EmployeeIsNotFromAssignedOutletException;
 import exception.EmployeeNotFoundException;
+import exception.OutletNotFoundException;
+import exception.RentalReservationNotFoundException;
+import exception.TransitAlreadyCompletedException;
 import exception.TransitDriverDispatchRecordNotFoundException;
 import java.util.Date;
 import java.util.List;
@@ -20,13 +23,18 @@ import javax.ejb.Remote;
 @Remote
 public interface TransitDriverDispatchRecordSessionBeanRemote {
     public Long createNewTransitDriverDispatchRecord (TransitDriverDispatchRecord reservationRecord);
+    
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecord();
 
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Long outletId, Date date);
 
     public TransitDriverDispatchRecord retrieveTransitDriverDispatchRecordById(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException;
 
-    public void assignDriver(Long driverId, Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, EmployeeNotFoundException, EmployeeIsNotFromAssignedOutletException;
+    public void assignDriver(Long driverId, Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, EmployeeNotFoundException, EmployeeIsNotFromAssignedOutletException, TransitAlreadyCompletedException;
 
-    public void updateTransitAsCompleted(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException;
+    public void updateTransitAsCompleted(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, TransitAlreadyCompletedException;
+
+    public List<TransitDriverDispatchRecord> retrieveNotCompletedTransitDriverDispatchRecordByOutletId(Long outletId, Date date);
+
+    public Long createNewTranspatchDriverRecordCommit(Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException;
 }

@@ -33,4 +33,8 @@ public interface CarSessionBeanRemote {
     public void deleteCar(Long carId) throws CarNotFoundException;
     
     public List<Cars> carsInUse(Long carId);
+    
+    public List<Cars> retrieveCarsByCategoryId(Long categoryId);
+
+    public List<Cars> retrieveCarsByModelId(Long modelId);
 }

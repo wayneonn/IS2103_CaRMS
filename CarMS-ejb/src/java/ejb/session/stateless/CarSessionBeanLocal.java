@@ -34,4 +34,7 @@ public interface CarSessionBeanLocal {
     
     public List<Cars> carsInUse(Long carId);
     
+    public List<Cars> retrieveCarsByCategoryId(Long categoryId);
+    
+    public List<Cars> retrieveCarsByModelId(Long modelId);
 }

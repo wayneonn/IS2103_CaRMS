@@ -48,6 +48,8 @@ public class Outlet implements Serializable {
     private List<Cars> cars;
     @OneToMany(mappedBy = "outlet")
     private List<Employee> employees;
+    @OneToMany(mappedBy = "outlet")
+    private List<TransitDriverDispatchRecord> transitDriverDispatchRecords;
 
     public Outlet() {
     }
@@ -189,5 +191,19 @@ public class Outlet implements Serializable {
     @Override
     public String toString() {
         return "entity.Outlet[ id=" + outletId + " ]";
+    }
+
+    /**
+     * @return the transitDriverDispatchRecords
+     */
+    public List<TransitDriverDispatchRecord> getTransitDriverDispatchRecords() {
+        return transitDriverDispatchRecords;
+    }
+
+    /**
+     * @param transitDriverDispatchRecords the transitDriverDispatchRecords to set
+     */
+    public void setTransitDriverDispatchRecords(List<TransitDriverDispatchRecord> transitDriverDispatchRecords) {
+        this.transitDriverDispatchRecords = transitDriverDispatchRecords;
     }
 }

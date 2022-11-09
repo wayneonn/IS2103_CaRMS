@@ -147,19 +147,12 @@ public class Customer implements Serializable {
         this.email = email;
     }
 
-    /**
-     * @return the creditCardNumber
-     */
-    public String getPhoneNumber() {
+    public String getCreditCardNumber() {
         return creditCardNumber;
     }
 
-    /**
-     * @param creditCardNumber the creditCardNumber to set
-     */
-    public void setPhoneNumber(String creditCardNumber) {
+    public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
     }
-
     
 }

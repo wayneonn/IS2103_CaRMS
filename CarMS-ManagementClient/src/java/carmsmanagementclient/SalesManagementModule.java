@@ -34,6 +34,7 @@ import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
 import exception.OutletNotFoundException;
 import exception.RentalRateNotFoundException;
+import exception.TransitAlreadyCompletedException;
 import exception.TransitDriverDispatchRecordNotFoundException;
 import exception.UnknownPersistenceException;
 import exception.ValidityDateNotValidException;
@@ -199,9 +200,9 @@ public class SalesManagementModule {
         System.out.print("This is the list of car categories you are able to choose from. Please enter"
                 + " the ID you would like to choose from.\n\n");
         List<Category> categories = categorySessionBeanRemote.retrieveAllCategories();
-        System.out.printf("%4s%15s\n", "ID", "Category");
+        System.out.printf("%4s%20s\n", "ID", "Category");
         for (Category category : categories) {
-            System.out.printf("%4s%15s\n", category.getCategoryId(), category.getCategoryName());
+            System.out.printf("%4s%20s\n", category.getCategoryId(), category.getCategoryName());
         }
         System.out.print("\nEnter Car Category ID > ");
         Long categoryId = scanner.nextLong();
@@ -288,9 +289,9 @@ public class SalesManagementModule {
         System.out.print("This is the list of car categories you are able to choose from. Please enter"
                 + " the ID you would like to choose from.\n\n");
         List<Category> categories = categorySessionBeanRemote.retrieveAllCategories();
-        System.out.printf("%4s%15s\n", "ID", "Category");
+        System.out.printf("%4s%20s\n", "ID", "Category");
         for (Category category : categories) {
-            System.out.printf("%4s%15s\n", category.getCategoryId(), category.getCategoryName());
+            System.out.printf("%4s%20s\n", category.getCategoryId(), category.getCategoryName());
         }
         System.out.print("\nEnter Car Category ID > ");
         Long categoryId = scanner.nextLong();
@@ -515,7 +516,7 @@ public class SalesManagementModule {
         try {
             Date date = sdf.parse(todayDate);
             System.out.println("Dispatch records for " + employee.getOutlet().getOutletName() + " on " + todayDate + "\n");
-            System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n", "ID", "License Number" , "Make", "Mode", "Destination Outlet", "Driver Name", "Status", "Transit Date", "Car Transit Time");
+            System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n", "ID", "License Number", "Make", "Mode", "Destination Outlet", "Driver Name", "Status", "Transit Date", "Car Transit Time");
             List<TransitDriverDispatchRecord> transitDriverDispatchRecords = transitDriverDispatchRecordSessionBeanRemote.
                     retrieveTransitDriverDispatchRecordByOutletId(employee.getOutlet().getOutletId(), date);
 
@@ -532,7 +533,7 @@ public class SalesManagementModule {
                 String transitDate = sdf.format(transitDriverDispatchRecord.getTransitDate());
                 String transitTime = timeFormat.format(transitDriverDispatchRecord.getTransitDate());
                 System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n",
-                        transitDriverDispatchRecord.getDispatchedId(), 
+                        transitDriverDispatchRecord.getDispatchedId(),
                         transitDriverDispatchRecord.getReservationRecord().getCar().getLicenseNumber(),
                         transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getMake(),
                         transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getModel(),
@@ -547,7 +548,7 @@ public class SalesManagementModule {
         scanner.nextLine();
     }
 
-    private void updateTransitAsComplete() {  
+    private void updateTransitAsComplete() {
         Scanner scanner = new Scanner(System.in);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -563,9 +564,9 @@ public class SalesManagementModule {
         try {
             Date date = sdf.parse(todayDate);
             System.out.println("Dispatch records for " + employee.getOutlet().getOutletName() + " on " + todayDate + "\n");
-                 System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n", "ID", "License Number" , "Make", "Mode", "Destination Outlet", "Driver Name", "Status", "Transit Date", "Car Transit Time");
+            System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n", "ID", "License Number", "Make", "Mode", "Destination Outlet", "Driver Name", "Status", "Transit Date", "Car Transit Time");
             List<TransitDriverDispatchRecord> transitDriverDispatchRecords = transitDriverDispatchRecordSessionBeanRemote.
-                    retrieveTransitDriverDispatchRecordByOutletId(employee.getOutlet().getOutletId(), date);
+                    retrieveNotCompletedTransitDriverDispatchRecordByOutletId(employee.getOutlet().getOutletId(), date);
             if (transitDriverDispatchRecords.isEmpty()) {
                 System.out.println("No dispatch records to be assigned to!");
             } else {
@@ -580,13 +581,13 @@ public class SalesManagementModule {
                     }
                     String transitDate = sdf.format(transitDriverDispatchRecord.getTransitDate());
                     String transitTime = timeFormat.format(transitDriverDispatchRecord.getTransitDate());
-                System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n",
-                        transitDriverDispatchRecord.getDispatchedId(), 
-                        transitDriverDispatchRecord.getReservationRecord().getCar().getLicenseNumber(),
-                        transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getMake(),
-                        transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getModel(),
-                        transitDriverDispatchRecord.getOutlet().getOutletName(),
-                        dispatchDriverName, isCompleted, transitDate, transitTime);
+                    System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n",
+                            transitDriverDispatchRecord.getDispatchedId(),
+                            transitDriverDispatchRecord.getReservationRecord().getCar().getLicenseNumber(),
+                            transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getMake(),
+                            transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getModel(),
+                            transitDriverDispatchRecord.getOutlet().getOutletName(),
+                            dispatchDriverName, isCompleted, transitDate, transitTime);
                 }
 
                 System.out.print("Enter Transit Driver Dispatch Record ID> ");
@@ -598,6 +599,8 @@ public class SalesManagementModule {
         } catch (ParseException ex) {
             System.out.println("Invalid date");
         } catch (TransitDriverDispatchRecordNotFoundException ex) {
+            System.err.println(ex.getMessage());
+        } catch (TransitAlreadyCompletedException ex) {
             System.err.println(ex.getMessage());
         }
 
@@ -621,9 +624,9 @@ public class SalesManagementModule {
         try {
             Date date = sdf.parse(todayDate);
             System.out.println("Dispatch records for " + employee.getOutlet().getOutletName() + " on " + todayDate + "\n");
-             System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n", "ID", "License Number" , "Make", "Mode", "Destination Outlet", "Driver Name", "Status", "Transit Date", "Car Transit Time");
+            System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n", "ID", "License Number", "Make", "Mode", "Destination Outlet", "Driver Name", "Status", "Transit Date", "Car Transit Time");
             List<TransitDriverDispatchRecord> transitDriverDispatchRecords = transitDriverDispatchRecordSessionBeanRemote.
-                    retrieveTransitDriverDispatchRecordByOutletId(employee.getOutlet().getOutletId(), date);
+                    retrieveNotCompletedTransitDriverDispatchRecordByOutletId(employee.getOutlet().getOutletId(), date);
             if (transitDriverDispatchRecords.isEmpty()) {
                 System.out.println("No dispatch records to be assigned to!");
             } else {
@@ -637,13 +640,14 @@ public class SalesManagementModule {
                         dispatchDriverName = transitDriverDispatchRecord.getEmployee().getEmployeeName();
                     }
                     String transitDate = sdf.format(transitDriverDispatchRecord.getTransitDate());
-                    String transitTime = timeFormat.format(transitDriverDispatchRecord.getTransitDate());                System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n",
-                        transitDriverDispatchRecord.getDispatchedId(), 
-                        transitDriverDispatchRecord.getReservationRecord().getCar().getLicenseNumber(),
-                        transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getMake(),
-                        transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getModel(),
-                        transitDriverDispatchRecord.getOutlet().getOutletName(),
-                        dispatchDriverName, isCompleted, transitDate, transitTime);
+                    String transitTime = timeFormat.format(transitDriverDispatchRecord.getTransitDate());
+                    System.out.printf("%12s%32s%15s%20s%30s%20s%20s%20s%20s\n",
+                            transitDriverDispatchRecord.getDispatchedId(),
+                            transitDriverDispatchRecord.getReservationRecord().getCar().getLicenseNumber(),
+                            transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getMake(),
+                            transitDriverDispatchRecord.getReservationRecord().getCar().getModel().getModel(),
+                            transitDriverDispatchRecord.getOutlet().getOutletName(),
+                            dispatchDriverName, isCompleted, transitDate, transitTime);
                 }
 
                 System.out.print("Enter Transit Driver Dispatch Record ID> ");
@@ -670,6 +674,8 @@ public class SalesManagementModule {
             System.err.println(ex.getMessage());
         } catch (EmployeeNotFoundException ex) {
             System.err.println(ex.getMessage());
+        } catch (TransitAlreadyCompletedException ex) {
+            System.err.println(ex.getMessage());
         }
 
         System.out.print("Press any key to continue...> ");
@@ -688,9 +694,9 @@ public class SalesManagementModule {
         System.out.print("This is the list of car categories you are able to choose from. Please enter"
                 + " the ID you would like to choose from.\n\n");
         List<Category> categories = categorySessionBeanRemote.retrieveAllCategories();
-        System.out.printf("%4s%15s\n", "ID", "Category");
+        System.out.printf("%4s%20s\n", "ID", "Category");
         for (Category category : categories) {
-            System.out.printf("%4s%15s\n", category.getCategoryId(), category.getCategoryName());
+            System.out.printf("%4s%20s\n", category.getCategoryId(), category.getCategoryName());
         }
         System.out.print("\nEnter Car Category ID > ");
         categoryId = scanner.nextLong();
@@ -705,7 +711,7 @@ public class SalesManagementModule {
             System.out.print("This is the list of types of rate you are able to choose from. Please enter"
                     + " the ID you would like to choose from.\n\n");
             System.out.printf("%4s%40s\n", "ID", "Rental Rate Type");
-            System.out.printf("%4s%40s\n", "1", "Non Peak");
+            System.out.printf("%4s%40s\n", "1", "Default");
             System.out.printf("%4s%40s\n", "2", "Peak");
             System.out.printf("%4s%40s\n", "3", "Promotional Rate");
             Integer choice = 0;
@@ -714,7 +720,7 @@ public class SalesManagementModule {
                 //Long rentalRateId = scanner.nextLong();
                 choice = scanner.nextInt();
                 if (choice == 1) {
-                    rentalRate.setRentalRateType(RentalRateTypeEnum.NONPEAK);
+                    rentalRate.setRentalRateType(RentalRateTypeEnum.DEFAULT);
                 } else if (choice == 2) {
                     rentalRate.setRentalRateType(RentalRateTypeEnum.PEAK);
                 } else if (choice == 3) {
@@ -872,9 +878,9 @@ public class SalesManagementModule {
         System.out.print("This is the list of car categories you are able to choose from. Please enter"
                 + " the ID you would like to choose from.\n\n");
         List<Category> categories = categorySessionBeanRemote.retrieveAllCategories();
-        System.out.printf("%4s%15s\n", "ID", "Category");
+        System.out.printf("%4s%20s\n", "ID", "Category");
         for (Category category : categories) {
-            System.out.printf("%4s%15s\n", category.getCategoryId(), category.getCategoryName());
+            System.out.printf("%4s%20s\n", category.getCategoryId(), category.getCategoryName());
         }
         System.out.print("\nEnter Car Category ID > ");
         categoryId = scanner.nextLong();
@@ -889,7 +895,7 @@ public class SalesManagementModule {
             System.out.print("This is the list of types of rate you are able to choose from. Please enter"
                     + " the ID you would like to choose from.\n\n");
             System.out.printf("%4s%40s\n", "ID", "Rental Rate Type");
-            System.out.printf("%4s%40s\n", "1", "Non Peak");
+            System.out.printf("%4s%40s\n", "1", "Default");
             System.out.printf("%4s%40s\n", "2", "Peak");
             System.out.printf("%4s%40s\n", "3", "Promotional Rate");
             Integer choice = 0;
@@ -898,7 +904,7 @@ public class SalesManagementModule {
                 //Long rentalRateId = scanner.nextLong();
                 choice = scanner.nextInt();
                 if (choice == 1) {
-                    rentalRate.setRentalRateType(RentalRateTypeEnum.NONPEAK);
+                    rentalRate.setRentalRateType(RentalRateTypeEnum.DEFAULT);
                 } else if (choice == 2) {
                     rentalRate.setRentalRateType(RentalRateTypeEnum.PEAK);
                 } else if (choice == 3) {

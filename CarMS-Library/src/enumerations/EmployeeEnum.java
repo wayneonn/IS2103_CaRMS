@@ -12,6 +12,7 @@ package enumerations;
 public enum EmployeeEnum {
     SALESMANAGER,
     OPERATIONSMANAGER,
-    CUSTSERVICEEXEC;
+    CUSTSERVICEEXEC,
+    EMPLOYEE;
 }
 

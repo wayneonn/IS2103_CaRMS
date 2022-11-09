@@ -7,10 +7,15 @@ package ejb.session.stateless;
 
 import entity.Cars;
 import entity.Employee;
+import entity.Outlet;
+import entity.ReservationRecord;
 import entity.TransitDriverDispatchRecord;
 import exception.CarNotFoundException;
 import exception.EmployeeIsNotFromAssignedOutletException;
 import exception.EmployeeNotFoundException;
+import exception.OutletNotFoundException;
+import exception.RentalReservationNotFoundException;
+import exception.TransitAlreadyCompletedException;
 import exception.TransitDriverDispatchRecordNotFoundException;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +35,12 @@ import javax.persistence.Query;
 public class TransitDriverDispatchRecordSessionBean implements TransitDriverDispatchRecordSessionBeanRemote, TransitDriverDispatchRecordSessionBeanLocal {
 
     @EJB
+    private ReservationRecordSessionBeanLocal reservationRecordSessionBean;
+
+    @EJB
+    private OutletSessionBeanLocal outletSessionBean;
+
+    @EJB
     private EmployeeSessionBeanLocal employeeSessionBean;
 
     @PersistenceContext(unitName = "CarMS-ejbPU")
@@ -43,6 +54,26 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
         em.flush();
 
         return reservationRecord.getDispatchedId();
+    }
+
+    @Override
+    public Long createNewTranspatchDriverRecordCommit(Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException {
+        try {
+            TransitDriverDispatchRecord transitDriverDispatchRecord = new TransitDriverDispatchRecord(transitDate);
+            Outlet destinationOutlet = outletSessionBean.retrieveOutletById(destinationOutletId);
+            ReservationRecord rentalReservation = reservationRecordSessionBean.retrieveReservationRecordById(rentalReservationId);
+            transitDriverDispatchRecord.setOutlet(destinationOutlet);
+            destinationOutlet.getTransitDriverDispatchRecords().add(transitDriverDispatchRecord);
+            transitDriverDispatchRecord.setReservationRecord(rentalReservation);
+            rentalReservation.setTransitDriverDispatchRecord(transitDriverDispatchRecord);
+            em.persist(transitDriverDispatchRecord);
+            em.flush();
+            return transitDriverDispatchRecord.getDispatchedId();
+        } catch (OutletNotFoundException ex) {
+            throw new OutletNotFoundException("Outlet ID: " + destinationOutletId + " not found!");
+        } catch (RentalReservationNotFoundException ex) {
+            throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + " not found!");
+        }
     }
 
     @Override
@@ -74,6 +105,26 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
     }
 
     @Override
+    public List<TransitDriverDispatchRecord> retrieveNotCompletedTransitDriverDispatchRecordByOutletId(Long outletId, Date date) {
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        System.out.println("Date is " + date);
+        GregorianCalendar nDate = new GregorianCalendar(date.getYear() + 1900,
+                date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+        nDate.add(Calendar.DATE, 1);
+        Date nextDay = nDate.getTime();
+        Query query = em.createQuery("SELECT t FROM TransitDriverDispatchRecord t WHERE t.outlet.outletId = :inOutletId AND t.transitDate >= :inToday AND t.transitDate < :inNextDay AND t.isComplete = FALSE");
+        query.setParameter("inOutletId", outletId);
+        query.setParameter("inToday", date);
+        query.setParameter("inNextDay", nextDay);
+        query.getResultList().size();
+
+        //em.flush();
+        return query.getResultList();
+    }
+
+    @Override
     public TransitDriverDispatchRecord retrieveTransitDriverDispatchRecordById(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException {
 
         TransitDriverDispatchRecord transitDriverDispatchRecord = em.find(TransitDriverDispatchRecord.class, transitDriverDispatchRecordId);
@@ -86,7 +137,7 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
     }
 
     @Override
-    public void assignDriver(Long driverId, Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, EmployeeNotFoundException, EmployeeIsNotFromAssignedOutletException {
+    public void assignDriver(Long driverId, Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, EmployeeNotFoundException, EmployeeIsNotFromAssignedOutletException, TransitAlreadyCompletedException {
         try {
             Employee driver = employeeSessionBean.retrieveEmployeeById(driverId);
             TransitDriverDispatchRecord transitDriverDispatchRecord = retrieveTransitDriverDispatchRecordById(transitDriverDispatchRecordId);
@@ -94,6 +145,8 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
             Long outletId = transitDriverDispatchRecord.getOutlet().getOutletId();
             if (!driverOutlet.equals(outletId)) {
                 throw new EmployeeIsNotFromAssignedOutletException("Employee is not from the outlet");
+            } else if (transitDriverDispatchRecord.isIsComplete()) {
+                throw new TransitAlreadyCompletedException("Transit Record has already been completed!");
             } else {
                 transitDriverDispatchRecord.setEmployee(driver);
                 driver.getTransitDriverDispatchRecords().add(transitDriverDispatchRecord);
@@ -107,13 +160,16 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
     }
 
     @Override
-    public void updateTransitAsCompleted(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException {
+    public void updateTransitAsCompleted(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException, TransitAlreadyCompletedException {
         try {
             TransitDriverDispatchRecord transitDriverDispatchRecord = retrieveTransitDriverDispatchRecordById(transitDriverDispatchRecordId);
+            if (transitDriverDispatchRecord.isIsComplete()) {
+                throw new TransitAlreadyCompletedException("Transit Record has already been completed!");
+            }
             transitDriverDispatchRecord.setIsComplete(true);
         } catch (TransitDriverDispatchRecordNotFoundException ex) {
             throw new TransitDriverDispatchRecordNotFoundException("Transit Driver Dispatch Record ID: " + transitDriverDispatchRecordId + " not found!");
         }
     }
-    
+
 }

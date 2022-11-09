@@ -36,7 +36,7 @@ public class Employee implements Serializable {
 
     @Column(nullable = false, unique = true, length = 32)
     @NotNull
-    @Size(min = 6, max = 32)
+    @Size(min = 2, max = 32)
     private String employeeUsername;
 
     @Column(nullable = false, length = 32)

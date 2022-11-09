@@ -56,6 +56,11 @@ public class ReservationRecord implements Serializable {
     @OneToOne(optional = false)
     @JoinColumn(nullable = false)
     private Outlet returnOutlet;
+    @OneToOne(optional = true)
+    private Category categoryCriteria;
+    @OneToOne(optional = true)
+    private Model modelCriteria;
+    
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -321,5 +326,33 @@ public class ReservationRecord implements Serializable {
      */
     public void setReturnOutlet(Outlet returnOutlet) {
         this.returnOutlet = returnOutlet;
+    }
+
+    /**
+     * @return the categoryCriteria
+     */
+    public Category getCategoryCriteria() {
+        return categoryCriteria;
+    }
+
+    /**
+     * @param categoryCriteria the categoryCriteria to set
+     */
+    public void setCategoryCriteria(Category categoryCriteria) {
+        this.categoryCriteria = categoryCriteria;
+    }
+
+    /**
+     * @return the modelCriteria
+     */
+    public Model getModelCriteria() {
+        return modelCriteria;
+    }
+
+    /**
+     * @param modelCriteria the modelCriteria to set
+     */
+    public void setModelCriteria(Model modelCriteria) {
+        this.modelCriteria = modelCriteria;
     }
 }
