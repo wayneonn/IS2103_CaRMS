@@ -28,6 +28,8 @@ public class Partner implements Serializable {
     @OneToMany (mappedBy = "partner")
     @JoinColumn(nullable = false)
     private List<Customer> customers;
+    @OneToMany(mappedBy = "partner")
+    private List<ReservationRecord> reservationRecords;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,12 +39,26 @@ public class Partner implements Serializable {
     @NotNull
     @Size(min = 1, max = 30)
     private String partnerUsername;
-    @Column(nullable = false, unique = true, length = 30)
+    @Column(nullable = false, length = 30)
     @NotNull
-    @Size(min = 8, max = 30)
+    @Size(min = 6, max = 30)
     private String partnerPassword;
+    @Column(nullable = false, unique = true, length = 128)
+    @NotNull
+    @Size(max = 128)
+    private String partnerName;
 
     public Partner() {
+    }
+
+    public Partner(String partnerName, String partnerUsername, String partnerPassword) {
+        this.partnerUsername = partnerUsername;
+        this.partnerPassword = partnerPassword;
+        this.partnerName = partnerName;
+    }
+
+    public Partner(String partnerName) {
+        this.partnerName = partnerName;
     }
 
     public Long getPartnerId() {
@@ -104,6 +120,48 @@ public class Partner implements Serializable {
      */
     public void setPartnerPassword(String partnerPassword) {
         this.partnerPassword = partnerPassword;
+    }
+
+    /**
+     * @return the customers
+     */
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    /**
+     * @param customers the customers to set
+     */
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
+    }
+
+    /**
+     * @return the reservationRecords
+     */
+    public List<ReservationRecord> getReservationRecords() {
+        return reservationRecords;
+    }
+
+    /**
+     * @param reservationRecords the reservationRecords to set
+     */
+    public void setReservationRecords(List<ReservationRecord> reservationRecords) {
+        this.reservationRecords = reservationRecords;
+    }
+
+    /**
+     * @return the partnerName
+     */
+    public String getPartnerName() {
+        return partnerName;
+    }
+
+    /**
+     * @param partnerName the partnerName to set
+     */
+    public void setPartnerName(String partnerName) {
+        this.partnerName = partnerName;
     }
 
 }

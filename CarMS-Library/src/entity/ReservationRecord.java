@@ -60,6 +60,9 @@ public class ReservationRecord implements Serializable {
     private Category categoryCriteria;
     @OneToOne(optional = true)
     private Model modelCriteria;
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
+    private Partner partner;
     
 
     private static final long serialVersionUID = 1L;
@@ -354,5 +357,19 @@ public class ReservationRecord implements Serializable {
      */
     public void setModelCriteria(Model modelCriteria) {
         this.modelCriteria = modelCriteria;
+    }
+
+    /**
+     * @return the partner
+     */
+    public Partner getPartner() {
+        return partner;
+    }
+
+    /**
+     * @param partner the partner to set
+     */
+    public void setPartner(Partner partner) {
+        this.partner = partner;
     }
 }
