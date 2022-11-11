@@ -126,7 +126,7 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
     public void deleteModel(Long modelId) throws ModelNotFoundException {
         try {
             Model modelToRemove = retrieveModelById(modelId);
-            if (rentalRateInUse(modelId).isEmpty()) {
+            if (modelInUse(modelId).isEmpty()) {
                 em.remove(modelToRemove);
             } else {
                 modelToRemove.setIsEnabled(false);
@@ -137,15 +137,11 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
     }
     
     @Override
-    public List<Cars> rentalRateInUse(Long modelId) throws ModelNotFoundException {
-        try {
-            Model model = retrieveModelById(modelId);
-            List<Cars> carRecords;
-            model.getCars().size();
-            carRecords = model.getCars();
-            return carRecords;
-        } catch (ModelNotFoundException ex) {
-            throw new ModelNotFoundException("Model ID " + modelId + " does not exist!");
-        }
+    public List<Cars> modelInUse(Long modelId) {
+        
+        Query query = em.createQuery("SELECT c FROM Cars c WHERE c.model.modelId = :inModelId");
+        query.setParameter("inModelId", modelId);
+        query.getResultList().size();
+        return query.getResultList();
     }
 }
