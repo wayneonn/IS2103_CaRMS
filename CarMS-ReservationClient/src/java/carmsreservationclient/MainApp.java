@@ -25,6 +25,7 @@ import exception.CustomerUsernameExistException;
 import exception.InputDataValidationException;
 import exception.InvalidLoginCredentialException;
 import exception.ModelNotFoundException;
+import exception.NoCustomerReservationsFoundException;
 import exception.NoRentalRateApplicableException;
 import exception.OutletNotFoundException;
 import exception.PickUpDateAfterReturnDateException;
@@ -197,16 +198,15 @@ public class MainApp {
 
         while (true) {
             System.out.println("*** Merlion Car Rental ***\n");
-            System.out.println("You are login as " + mcrCustomerEntity.getCustUsername());
+            System.out.println("Welcome " + mcrCustomerEntity.getFirstName() + " " + mcrCustomerEntity.getLastName() + "!\n");
             System.out.println("1: Search Car");
             System.out.println("2: Reserve Car");
-            System.out.println("3: Cancel Reservation");
-            System.out.println("4: View Reservation Details");
-            System.out.println("5: View All My Reservations");
-            System.out.println("6: Logout\n");
+            System.out.println("3: View Reservation Details");
+            System.out.println("4: View All My Reservations");
+            System.out.println("5: Logout\n");
             response = 0;
 
-            while (response < 1 || response > 6) {
+            while (response < 1 || response > 5) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -216,19 +216,17 @@ public class MainApp {
                 } else if (response == 2) {
                     reserveCar();
                 } else if (response == 3) {
-                    // cancelReservation();
-                } else if (response == 4) {
                     doViewReservationDetails();
-                } else if (response == 5) {
+                } else if (response == 4) {
                     doViewMyReservations();
-                } else if (response == 6) {
+                } else if (response == 5) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
 
-            if (response == 6) {
+            if (response == 5) {
                 break;
             }
         }
@@ -345,7 +343,7 @@ public class MainApp {
                 throw new PickUpDateAfterReturnDateException();
             }
 
-            System.out.print("This is the list of outlets you are able to choose from. Please enter"
+            System.out.print("\nThis is the list of outlets you are able to choose from. Please enter"
                     + " the ID you would like to choose from.\n\n");
             List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
             System.out.printf("%4s%30s%50s%20s%20s\n", "ID", "Outlet Name", "Address", "Opening Hour", "Closing Hour");
@@ -363,60 +361,47 @@ public class MainApp {
             operatingHoursChecker(pickupOutletId, pickUpDateTime, 1);
             operatingHoursChecker(returnOutletId, returnDateTime, 2);
 
-            while (true) {
-                System.out.println("*** Search by Car Category or Car Model? ***\n");
-                System.out.println("1: Search by Car Category");
-                System.out.println("2: Search by Car Model");
-                choice = 0;
+            List<Category> categories = categorySessionBeanRemote.retrieveAllCategories();
 
-                while (choice < 1 || choice > 2) {
-                    System.out.print("> ");
-                    choice = scanner.nextInt();
+            System.out.println("\n\n*******    Search Results For Car(s) Available    *******\n\n");
 
-                    if (choice == 1) {
-                        List<Category> categories = categorySessionBeanRemote.retrieveAllCategories();
-                        System.out.print("This is the list of car categories you are able to choose from. Please enter"
-                                + " the ID you would like to choose from.\n\n");
-                        System.out.printf("%4s%20s\n", "ID", "Category");
-                        for (Category category : categories) {
-                            System.out.printf("%4s%20s\n", category.getCategoryId(), category.getCategoryName());
-                        }
-                        System.out.print("\nEnter Car Category ID > ");
-                        categoryId = scanner.nextLong();
-                        ableToReserve = carSessionBeanRemote.searchCarByCategory(pickupOutletId, returnOutletId, categoryId, pickUpDateTime, returnDateTime);
-                        break;
-                    } else if (choice == 2) {
-                        List<Model> models = modelSessionBeanRemote.retrieveAvailAllModels();
-                        System.out.print("This is the list of models you are able to choose from. Please enter"
-                                + " the ID you would like to choose from.\n\n");
-                        System.out.printf("%4s%30s%30s\n", "ID", "Make", "Model");
-                        for (Model model : models) {
-                            System.out.printf("%4s%30s%30s\n", model.getModelId(), model.getMake(), model.getModel());
-                        }
-                        System.out.print("Enter model ID> ");
-                        modelId = scanner.nextLong();
-                        categoryId = modelSessionBeanRemote.retrieveModelById(modelId).getCategory().getCategoryId();
-                        ableToReserve = carSessionBeanRemote.searchCarByModel(pickupOutletId, returnOutletId, modelId, pickUpDateTime, returnDateTime);
-                        break;
+            System.out.println("***    Search Results For Car Category   ***\n");
+            for (Category category : categories) {
+                ableToReserve = carSessionBeanRemote.searchCarByCategory(pickupOutletId, returnOutletId, category.getCategoryId(), pickUpDateTime, returnDateTime);
+                try {
+                    BigDecimal totalRentalFee = rentalRateSessionBeanRemote.calculateRentalFee(category.getCategoryId(), pickUpDateTime, returnDateTime);
+                    if (ableToReserve) {
+                        System.out.println("Car(s) available for rental for the category of " + category.getCategoryName() + ". The total rental fee will be $" + totalRentalFee + ". ");
                     } else {
-                        System.out.println("Invalid option, please try again\n");
+                        System.out.println("No car(s) are available for rental for the category of " + category.getCategoryName());
                     }
+                } catch (NoRentalRateApplicableException ex) {
+                    System.out.println("There are no available rental rates found for the period stated for the category " + category.getCategoryName() + "\n");
                 }
-                if (choice == 1 || choice == 2) {
-                    break;
+
+            }
+
+            List<Model> models = modelSessionBeanRemote.retrieveAvailAllModels();
+
+            System.out.println("\n***    Search Results For Make and Model   ***\n\n");
+            for (Model model : models) {
+                ableToReserve = carSessionBeanRemote.searchCarByModel(pickupOutletId, returnOutletId, model.getModelId(), pickUpDateTime, returnDateTime);
+                categoryId = modelSessionBeanRemote.retrieveModelById(model.getModelId()).getCategory().getCategoryId();
+                try {
+                    BigDecimal totalRentalFee = rentalRateSessionBeanRemote.calculateRentalFee(categoryId, pickUpDateTime, returnDateTime);
+                    if (ableToReserve) {
+                        System.out.println("Car(s) available for rental for the make and model of " + model.getMake() + " " + model.getModel() + ". The total rental fee will be $" + totalRentalFee + ". ");
+                    } else {
+                        System.out.println("No car(s) are available for rental for the make and model of " + model.getMake() + " " + model.getModel());
+                    }
+                } catch (NoRentalRateApplicableException ex) {
+                    System.out.println("There are no available rental rates found for the period stated for the make and model of " + model.getMake() + " " + model.getModel() + "\n");
                 }
+
             }
-            scanner.nextLine();
-            if (!ableToReserve) {
-                System.out.println("No cars are available for rental.");
-            } else {
-                BigDecimal totalRentalFee = rentalRateSessionBeanRemote.calculateRentalFee(categoryId, pickUpDateTime, returnDateTime);
-                System.out.println("There are cars available for rental. The total rental fee will be $" + totalRentalFee + ". ");
-            }
+
         } catch (ParseException ex) {
             System.out.println("Invalid Date/Time Format!");
-        } catch (NoRentalRateApplicableException ex) {
-            System.out.println("There are no available rental rates found for the period stated.\n");
         } catch (CategoryNotFoundException ex) {
             System.out.println("Car Category of ID: " + categoryId + " does not exist!");
         } catch (ModelNotFoundException ex) {
@@ -521,11 +506,10 @@ public class MainApp {
                 System.out.println("No cars are available for rental.");
             } else {
                 BigDecimal totalRentalFee = rentalRateSessionBeanRemote.calculateRentalFee(categoryId, pickUpDateTime, returnDateTime);
-                System.out.println("There are cars available for rental. The total rental fee will be $" + totalRentalFee + ". ");
+                System.out.println("Car(s) available for rental. The total rental fee will be $" + totalRentalFee + ". ");
                 System.out.print("Reserve a car? (Enter 'Y' to reserve a car)> ");
                 String input = scanner.nextLine().trim();
                 if (input.equals("Y")) {
-                    //doReserveCar(choice, categoryId, modelId, pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, totalRentalFee);
                     reservationRecord.setPickupDateTime(pickUpDateTime);
                     reservationRecord.setReturnDateTime(returnDateTime);
                     reservationRecord.setAmtPaid(new Double(totalRentalFee.toString()));
@@ -533,11 +517,13 @@ public class MainApp {
                     reservationRecord.setPickedUp(false);
                     reservationRecord.setReservationCancelled(false);
 
-                    System.out.print("Enter Credit Card Number> ");
+                    //String creditCardNumber = mcrCustomerEntity.getCreditCardNumber();
+                    System.out.print("Please Enter your Credit Card Number >");
                     String creditCardNumber = scanner.nextLine().trim();
+                    System.out.print("Your Credit Card Number: " + creditCardNumber + " will be used.\n");
                     reservationRecord.setCreditCardNum(creditCardNumber);
 
-                    System.out.print("Would you like to pay now or pay later at the outlet? (Enter 'Y' to enter payment details)> ");
+                    System.out.print("Would you like to pay now or pay later at the outlet? (Enter 'Y' to make payment now.)> ");
                     input = scanner.nextLine().trim();
                     if (input.equals("Y")) {
                         reservationRecord.setPaid(true);
@@ -612,68 +598,77 @@ public class MainApp {
     private void doViewReservationDetails() throws RentalReservationNotFoundException {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("*** CarMS :: View All Of My Reservations ***\n");
+        System.out.println("*** CarMS || View All Of My Reservations ***\n");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-        //String username = mcrCustomerEntity.getCustUsername();
-        System.out.print("This is the list of records you are able to choose from. Please enter"
-                + " the ID you would like to choose from.\n\n");
         List<ReservationRecord> reservations = reservationRecordSessionBeanRemote.retrieveReservationsByCustId(mcrCustomerEntity.getCustomerId());
-        System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", "Reservation ID", "Pickup Date & Time", "Return Date & Time", "Amount Paid", "Pickup Outlet", "Return Outlet", "Refunded?", "Refund Amount");
-
-        for (ReservationRecord reservation : reservations) {
-            String transitDriver = "NOT ASSIGNED";
-            if (!(reservation.getTransitDriverDispatchRecord() == null)) {
-                transitDriver = reservation.getTransitDriverDispatchRecord().getEmployee().getEmployeeName();
-            }
-
-            String refunded = "Not Refunded";
-            if (reservation.getReservationCancelled() == true) {
-                refunded = "Refunded";
-            }
-            String refundAmount = " - ";
-            if (reservation.getRefundAmount() != null) {
-                refundAmount = NumberFormat.getCurrencyInstance().format(reservation.getRefundAmount());
-            }
-             System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", reservation.getReservationId().toString(), sdf.format(reservation.getPickupDateTime()), sdf.format(reservation.getReturnDateTime()), NumberFormat.getCurrencyInstance().format(reservation.getAmtPaid()), reservation.getPickupOutlet().getOutletName(), reservation.getReturnOutlet().getOutletName(), refunded, refundAmount);
-        }
-
-        System.out.print("Enter Reservation ID > ");
-        Long reservationId = scanner.nextLong();
-        Integer choice = 0;
+        //String username = mcrCustomerEntity.getCustUsername();
 
         try {
-            ReservationRecord reservation = reservationRecordSessionBeanRemote.retrieveReservationRecordById(reservationId);
-            String transitDriver = "NOT ASSIGNED";
-            if (!(reservation.getTransitDriverDispatchRecord() == null)) {
-                transitDriver = reservation.getTransitDriverDispatchRecord().getEmployee().getEmployeeName();
+            if (reservations.isEmpty()) {
+                throw new NoCustomerReservationsFoundException("There are no reservation records found in your account.\n");
             }
-            String refunded = "Not Refunded";
-            if (reservation.getReservationCancelled() == true) {
-                refunded = "Refunded";
-            }
-            String refundAmount = " - ";
-            if (reservation.getRefundAmount() != null) {
-                refundAmount = NumberFormat.getCurrencyInstance().format(reservation.getRefundAmount());
-            }
-            System.out.println("\nYou have chosen ID: " + reservationId + " and its details are shown below.\n");
+
+            System.out.print("This is the list of records you are able to choose from. Please enter"
+                    + " the ID you would like to choose from.\n\n");
 
             System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", "Reservation ID", "Pickup Date & Time", "Return Date & Time", "Amount Paid", "Pickup Outlet", "Return Outlet", "Refunded?", "Refund Amount");
 
-            System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", reservation.getReservationId().toString(), sdf.format(reservation.getPickupDateTime()), sdf.format(reservation.getReturnDateTime()), NumberFormat.getCurrencyInstance().format(reservation.getAmtPaid()), reservation.getPickupOutlet().getOutletName(), reservation.getReturnOutlet().getOutletName(), refunded, refundAmount);
-            System.out.println("------------------------");
-            System.out.println("1: Delete Reservation Record");
-            System.out.println("2: Back\n");
-            System.out.print("> ");
-            choice = scanner.nextInt();
-            if (choice == 1) {
-                cancelReservation(reservation.getReservationId());
-            } else if (choice == 2) {
-                System.out.print("You have chosen to exit.\n\n");
+            for (ReservationRecord reservation : reservations) {
+                String transitDriver = "NOT ASSIGNED";
+                if (!(reservation.getTransitDriverDispatchRecord() == null)) {
+                    transitDriver = reservation.getTransitDriverDispatchRecord().getEmployee().getEmployeeName();
+                }
+
+                String refunded = "Not Refunded";
+                if (reservation.getReservationCancelled() == true) {
+                    refunded = "Refunded";
+                }
+                String refundAmount = " - ";
+                if (reservation.getRefundAmount() != null) {
+                    refundAmount = NumberFormat.getCurrencyInstance().format(reservation.getRefundAmount());
+                }
+                System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", reservation.getReservationId().toString(), sdf.format(reservation.getPickupDateTime()), sdf.format(reservation.getReturnDateTime()), NumberFormat.getCurrencyInstance().format(reservation.getAmtPaid()), reservation.getPickupOutlet().getOutletName(), reservation.getReturnOutlet().getOutletName(), refunded, refundAmount);
             }
-            System.out.print("Press any key to continue...> ");
-        } catch (RentalReservationNotFoundException ex) {
-            System.out.println("Reservation Record not found for ID: " + reservationId);
+
+            System.out.print("Enter Reservation ID > ");
+            Long reservationId = scanner.nextLong();
+            Integer choice = 0;
+
+            try {
+                ReservationRecord reservation = reservationRecordSessionBeanRemote.retrieveReservationRecordById(reservationId);
+                String transitDriver = "NOT ASSIGNED";
+                if (!(reservation.getTransitDriverDispatchRecord() == null)) {
+                    transitDriver = reservation.getTransitDriverDispatchRecord().getEmployee().getEmployeeName();
+                }
+                String refunded = "Not Refunded";
+                if (reservation.getReservationCancelled() == true) {
+                    refunded = "Refunded";
+                }
+                String refundAmount = " - ";
+                if (reservation.getRefundAmount() != null) {
+                    refundAmount = NumberFormat.getCurrencyInstance().format(reservation.getRefundAmount());
+                }
+                System.out.println("\nYou have chosen ID: " + reservationId + " and its details are shown below.\n");
+
+                System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", "Reservation ID", "Pickup Date & Time", "Return Date & Time", "Amount Paid", "Pickup Outlet", "Return Outlet", "Refunded?", "Refund Amount");
+
+                System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", reservation.getReservationId().toString(), sdf.format(reservation.getPickupDateTime()), sdf.format(reservation.getReturnDateTime()), NumberFormat.getCurrencyInstance().format(reservation.getAmtPaid()), reservation.getPickupOutlet().getOutletName(), reservation.getReturnOutlet().getOutletName(), refunded, refundAmount);
+                System.out.println("------------------------");
+                System.out.println("1: Delete Reservation Record");
+                System.out.println("2: Back\n");
+                System.out.print("> ");
+                choice = scanner.nextInt();
+                if (choice == 1) {
+                    cancelReservation(reservation.getReservationId());
+                } else if (choice == 2) {
+                    System.out.print("You have chosen to exit.\n\n");
+                }
+                System.out.print("Press any key to continue...> ");
+            } catch (RentalReservationNotFoundException ex) {
+                System.out.println("Reservation Record not found for ID: " + reservationId);
+            }
+        } catch (NoCustomerReservationsFoundException ex) {
+            System.out.println(ex.getMessage());
         }
 
         System.out.print("Press any key to continue...> ");
@@ -693,12 +688,10 @@ public class MainApp {
             System.out.println("Reservation successfully cancelled!");
 
             if (reservationRecord.getPaid()) {
-                System.out.println("You have been refunded SGD $"
-                        + df.format(reservationRecord.getAmtPaid() - penalty) + " to your card "
-                        + reservationRecord.getCreditCardNum()
-                        + " after deducting cancellation penalty of $" + penalty + ".");
+                System.out.println("You have been refunded $"
+                        + df.format(reservationRecord.getAmtPaid() - penalty) + " to your card " + reservationRecord.getCreditCardNum() + ". The cancellation penalty is $" + df.format(penalty) + ".");
             } else {
-                System.out.println("Your card : " + reservationRecord.getCreditCardNum() + " has been charged $" + penalty + " as a cancellation penalty.");
+                System.out.println("Your card : " + reservationRecord.getCreditCardNum() + " has been charged a fee of $" + penalty + " for the cancellation penalty.");
             }
 
         } catch (RentalReservationNotFoundException ex) {
@@ -713,25 +706,32 @@ public class MainApp {
 
         System.out.println("*** CarMS :: View All Of My Reservations ***\n");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-        //String username = mcrCustomerEntity.getCustUsername();
         List<ReservationRecord> reservations = reservationRecordSessionBeanRemote.retrieveReservationsByCustId(mcrCustomerEntity.getCustomerId());
-        System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", "Reservation ID", "Pickup Date & Time", "Return Date & Time", "Amount Paid", "Pickup Outlet", "Return Outlet", "Refunded?", "Refund Amount");
+        try {
+            if (reservations.isEmpty()) {
+                throw new NoCustomerReservationsFoundException("There are no reservation records found in your account.\n");
+            }
+            //String username = mcrCustomerEntity.getCustUsername();
 
-        for (ReservationRecord reservation : reservations) {
-            String transitDriver = "NOT ASSIGNED";
-            if (!(reservation.getTransitDriverDispatchRecord() == null)) {
-                transitDriver = reservation.getTransitDriverDispatchRecord().getEmployee().getEmployeeName();
+            System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", "Reservation ID", "Pickup Date & Time", "Return Date & Time", "Amount Paid", "Pickup Outlet", "Return Outlet", "Refunded?", "Refund Amount");
+
+            for (ReservationRecord reservation : reservations) {
+                String transitDriver = "NOT ASSIGNED";
+                if (!(reservation.getTransitDriverDispatchRecord() == null)) {
+                    transitDriver = reservation.getTransitDriverDispatchRecord().getEmployee().getEmployeeName();
+                }
+                String refunded = "Not Refunded";
+                if (reservation.getReservationCancelled() == true) {
+                    refunded = "Refunded";
+                }
+                String refundAmount = " - ";
+                if (reservation.getRefundAmount() != null) {
+                    refundAmount = NumberFormat.getCurrencyInstance().format(reservation.getRefundAmount());
+                }
+                System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", reservation.getReservationId().toString(), sdf.format(reservation.getPickupDateTime()), sdf.format(reservation.getReturnDateTime()), NumberFormat.getCurrencyInstance().format(reservation.getAmtPaid()), reservation.getPickupOutlet().getOutletName(), reservation.getReturnOutlet().getOutletName(), refunded, refundAmount);
             }
-            String refunded = "Not Refunded";
-            if (reservation.getReservationCancelled() == true) {
-                refunded = "Refunded";
-            }
-            String refundAmount = " - ";
-            if (reservation.getRefundAmount() != null) {
-                refundAmount = NumberFormat.getCurrencyInstance().format(reservation.getRefundAmount());
-            }
-            System.out.printf("%20s%25s%25s%13s%20s%20s%20s%20s\n", reservation.getReservationId().toString(), sdf.format(reservation.getPickupDateTime()), sdf.format(reservation.getReturnDateTime()), NumberFormat.getCurrencyInstance().format(reservation.getAmtPaid()), reservation.getPickupOutlet().getOutletName(), reservation.getReturnOutlet().getOutletName(), refunded, refundAmount);
+        } catch (NoCustomerReservationsFoundException ex) {
+            System.out.println(ex.getMessage());
         }
 
         System.out.print("Press any key to continue...> ");
