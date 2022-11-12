@@ -31,6 +31,7 @@ import exception.EmployeeNotFoundException;
 import exception.InputDataValidationException;
 import exception.InvalidAccessRightException;
 import exception.LicenseNumberExsistsException;
+import exception.ModelIsDisabledException;
 import exception.ModelNotFoundException;
 import exception.OutletNotFoundException;
 import exception.RentalRateNotFoundException;
@@ -361,8 +362,9 @@ public class SalesManagementModule {
         scanner.nextLine();
 
         try {
-            //System.out.printf("%10s%10s%10s", car.getCarState(), car.getColour(), car.getLicenseNumber());
-
+            if (modelSessionBeanRemote.retrieveModelById(modelId).getIsEnabled() == false) {
+                throw new ModelIsDisabledException("Model is being disabled as the model is no longer in use.");
+            }
             Long carId = carSessionBeanRemote.createNewCar(new Cars(licenseNumber, CarStateEnumeration.AVAILABLE, colour, true), outletId, modelId);
             System.out.println("Car ID: " + carId + " sucessfully created!");
         } catch (OutletNotFoundException ex) {
@@ -375,6 +377,8 @@ public class SalesManagementModule {
             System.out.println("License Plate Number already exists!");
         } catch (UnknownPersistenceException ex) {
             System.out.println("UnknownPersistenceException when creating new Car");
+        } catch (ModelIsDisabledException ex) {
+            System.out.println(ex.getMessage());
         }
 
         System.out.print("Press any key to continue...> ");

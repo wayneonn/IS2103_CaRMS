@@ -8,7 +8,10 @@ package ejb.session.stateless;
 import entity.Category;
 import entity.Outlet;
 import entity.RentalRate;
+import exception.CategoryNameAlreadyExistException;
 import exception.CategoryNotFoundException;
+import exception.InputDataValidationException;
+import exception.UnknownPersistenceException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -19,7 +22,7 @@ import javax.ejb.Local;
 @Local
 public interface CategorySessionBeanLocal {
 
-    public Long createNewCategory(Category category);
+    public Long createNewCategory(Category category) throws CategoryNameAlreadyExistException, UnknownPersistenceException, InputDataValidationException;
     
     public Category retrieveCategoryById(Long categoryId) throws CategoryNotFoundException;
 

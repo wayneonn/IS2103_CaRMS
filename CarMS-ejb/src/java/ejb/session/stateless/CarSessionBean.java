@@ -6,14 +6,20 @@
 package ejb.session.stateless;
 
 import entity.Cars;
+import entity.Category;
 import entity.Model;
 import entity.Outlet;
+import entity.ReservationRecord;
 import exception.CarNotFoundException;
+import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
 import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
 import exception.OutletNotFoundException;
 import exception.UnknownPersistenceException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -33,6 +39,12 @@ import javax.validation.ValidatorFactory;
  */
 @Stateless
 public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal {
+
+    @EJB
+    private ModelSessionBeanLocal modelSessionBean1;
+
+    @EJB
+    private CategorySessionBeanLocal categorySessionBean;
 
     @EJB
     private ModelSessionBeanLocal modelSessionBean;
@@ -207,4 +219,76 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         return rentalCars;
     }
      */
+    @Override
+    public Boolean searchCarByCategory(Long pickupOutletId, Long returnOutletId, Long categoryId, Date pickupDate, Date returnDate) throws CategoryNotFoundException {
+        List<ReservationRecord> reservationRecord = new ArrayList<>();
+        CarSessionBean obj = new CarSessionBean();
+        Calendar calendar = obj.dateToCalendar(pickupDate);
+        calendar.add(Calendar.HOUR, -2);
+        Date transitDateTimeRequired = calendar.getTime();
+
+        Query query = em.createQuery("SELECT r FROM ReservationRecord r WHERE r.categoryCriteria.categoryId = :inCategoryId"
+                + " AND ((r.pickupDateTime < :inPickupDate AND r.returnDateTime <= :inReturnDate)"
+                + " OR (r.pickupDateTime >= :inPickupDate AND r.returnDateTime <= :inReturnDate)"
+                + " OR (r.pickupDateTime <= :inPickupDate AND r.returnDateTime >= :inReturnDate)"
+                + " OR (r.pickupDateTime < :inPickupDate AND r.returnDateTime > :inTransitDate AND r.returnOutlet.outletId != :inPickupOutletId))"
+                + " AND r.reservationCancelled = FALSE");
+        query.setParameter("inCategoryId", categoryId);
+        query.setParameter("inPickupDate", pickupDate);
+        query.setParameter("inReturnDate", returnDate);
+        query.setParameter("inTransitDate", transitDateTimeRequired);
+        query.setParameter("inPickupOutletId", pickupOutletId);
+        reservationRecord.addAll(query.getResultList());
+
+        List<Category> categories = modelSessionBean.retrieveCarsByCategoryId(categoryId);
+
+        System.out.println("cars : " + categories.size());
+        System.out.println("rentalReservations.size() : " + reservationRecord.size());
+
+        boolean isCarFleetSizeSufficient = categories.size() > reservationRecord.size();
+
+        return isCarFleetSizeSufficient;
+    }
+
+    @Override
+    public Boolean searchCarByModel(Long pickupOutletId, Long returnOutletId, Long modelId, Date pickupDate, Date returnDate) throws ModelNotFoundException {
+        List<ReservationRecord> reservationRecord = new ArrayList<>();
+        CarSessionBean obj = new CarSessionBean();
+        Calendar calendar = obj.dateToCalendar(pickupDate);
+        calendar.add(Calendar.HOUR, -2);
+        Date transitDateTimeRequired = calendar.getTime();
+
+        Query query = em.createQuery("SELECT r FROM ReservationRecord r WHERE r.modelCriteria.modelId = :inCategoryId"
+                + " AND ((r.pickupDateTime < :inPickupDate AND r.returnDateTime <= :inReturnDate)"
+                + " OR (r.pickupDateTime >= :inPickupDate AND r.returnDateTime <= :inReturnDate)"
+                + " OR (r.pickupDateTime <= :inPickupDate AND r.returnDateTime >= :inReturnDate)"
+                + " OR (r.pickupDateTime < :inPickupDate AND r.returnDateTime > :inTransitDate AND r.returnOutlet.outletId != :inPickupOutletId))"
+                + " AND r.reservationCancelled = FALSE");
+        query.setParameter("inCategoryId", modelId);
+        query.setParameter("inPickupDate", pickupDate);
+        query.setParameter("inReturnDate", returnDate);
+        query.setParameter("inTransitDate", transitDateTimeRequired);
+        query.setParameter("inPickupOutletId", pickupOutletId);
+        reservationRecord.addAll(query.getResultList());
+
+        Model model = modelSessionBean.retrieveModelById(modelId);
+
+        System.out.println("cars : " + model.getCars().size());
+        System.out.println("rentalReservations.size() : " + reservationRecord.size());
+
+        boolean isCarFleetSizeSufficient = model.getCars().size() > reservationRecord.size();
+
+        return isCarFleetSizeSufficient;
+    }
+
+    private Calendar dateToCalendar(Date date) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
+    }
+
+    private Date calendarToDate(Calendar calendar) {
+        return calendar.getTime();
+    }
 }

@@ -14,9 +14,12 @@ import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationRecordSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
+import ejb.session.stateless.EjbTimerSessionBeanRemote;
 import entity.Employee;
 import exception.InvalidAccessRightException;
 import exception.InvalidLoginException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -34,6 +37,7 @@ public class MainApp {
     private CarSessionBeanRemote carSessionBeanRemote;
     private CustomerSessionBeanRemote customerSessionBeanRemote;
     private RentalRateSessionBeanRemote rentalRateSessionBeanRemote;
+    private EjbTimerSessionBeanRemote ejbTimerSessionBean;
 
     private Employee employee;
 
@@ -50,7 +54,8 @@ public class MainApp {
     public MainApp(ModelSessionBeanRemote modelSessionBean, TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBean,
             CustomerSessionBeanRemote customerSessionBean, ReservationRecordSessionBeanRemote reservationRecordSessionBean,
             EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean,
-            CategorySessionBeanRemote categorySessionBean, CarSessionBeanRemote carSessionBean, RentalRateSessionBeanRemote rentalRateSessionBeanRemote) {
+            CategorySessionBeanRemote categorySessionBean, CarSessionBeanRemote carSessionBean, RentalRateSessionBeanRemote rentalRateSessionBeanRemote,
+            EjbTimerSessionBeanRemote ejbTimerSessionBeanRemote) {
         this();
 
         this.modelSessionBeanRemote = modelSessionBean;
@@ -62,6 +67,7 @@ public class MainApp {
         this.categorySessionBeanRemote = categorySessionBean;
         this.carSessionBeanRemote = carSessionBean;
         this.rentalRateSessionBeanRemote = rentalRateSessionBeanRemote;
+        this.ejbTimerSessionBean = ejbTimerSessionBeanRemote;
     }
 
     public void runApp() {
@@ -87,13 +93,14 @@ public class MainApp {
                 } else if (choice == 2) {
                     break;
                 } else if (choice == 3) {
-                    try {
-                        bypassLogin();
-                        System.out.println("Login successful!\n");
-                        mainMenu();
-                    } catch (InvalidLoginException ex) {
-                        System.out.println("Invalid login credentials " + ex.getMessage());
-                    }
+//                    try {
+//                        bypassLogin();
+//                        System.out.println("Login successful!\n");
+//                        mainMenu();
+//                    } catch (InvalidLoginException ex) {
+//                        System.out.println("Invalid login credentials " + ex.getMessage());
+//                    }
+                    allocateCars();
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
@@ -155,7 +162,7 @@ public class MainApp {
             while (choice < 1 || choice > 3) {
                 System.out.print(" >> ");
                 choice = scanner.nextInt();
-                
+
                 try {
                     if (choice == 1) {
                         salesManagementModule = new SalesManagementModule(employee, modelSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
@@ -179,6 +186,25 @@ public class MainApp {
             if (choice == 3) {
                 break;
             }
+        }
+    }
+
+    private void allocateCars() {
+        try {
+            System.out.println("Generate car allocation for dates 05/12/2022, 06/12/2022, 07/12/2022, 08/12/2022");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date allocationDate = dateFormat.parse("05/12/2022");
+            ejbTimerSessionBean.allocateCarsToCurrentDayReservations(allocationDate);
+            allocationDate = dateFormat.parse("06/12/2022");
+            ejbTimerSessionBean.allocateCarsToCurrentDayReservations(allocationDate);
+            allocationDate = dateFormat.parse("07/12/2022");
+            ejbTimerSessionBean.allocateCarsToCurrentDayReservations(allocationDate);
+            allocationDate = dateFormat.parse("08/12/2022");
+            ejbTimerSessionBean.allocateCarsToCurrentDayReservations(allocationDate);
+            
+            System.out.println("Car allocation generated!");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 }

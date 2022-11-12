@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Cars;
+import entity.Category;
 import entity.Model;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
@@ -34,4 +35,6 @@ public interface ModelSessionBeanRemote {
     public List<Cars> modelInUse(Long modelId);
     
     public List<Model> retrieveAvailAllModels();
+
+    public List<Category> retrieveCarsByCategoryId(Long categoryId);
 }

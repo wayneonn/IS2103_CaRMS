@@ -8,7 +8,10 @@ package ejb.session.stateless;
 import entity.Cars;
 import entity.Category;
 import entity.Outlet;
+import exception.CategoryNameAlreadyExistException;
 import exception.CategoryNotFoundException;
+import exception.InputDataValidationException;
+import exception.UnknownPersistenceException;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -19,7 +22,7 @@ import javax.ejb.Remote;
 @Remote
 public interface CategorySessionBeanRemote {
 
-    public Long createNewCategory(Category category);
+   public Long createNewCategory(Category category) throws CategoryNameAlreadyExistException, UnknownPersistenceException, InputDataValidationException;
 
     public Category retrieveCategoryById(Long categoryId) throws CategoryNotFoundException;
     

@@ -6,7 +6,9 @@
 package ejb.session.stateless;
 
 import entity.Partner;
+import exception.InputDataValidationException;
 import exception.PartnerNotFoundException;
+import exception.UnknownPersistenceException;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -17,9 +19,9 @@ import javax.ejb.Remote;
 @Remote
 public interface PartnerSessionBeanRemote {
     
-    public Long createNewPartner(Partner partner);
+    public Long createNewPartner(Partner partner) throws InputDataValidationException, UnknownPersistenceException;
     public Partner retrievePartnerById(Long partnerId)throws PartnerNotFoundException;
-    public Partner updatePartner(Partner updatedPartner);
+    public Partner updatePartner(Partner updatedPartner) throws InputDataValidationException, UnknownPersistenceException;
     public void deleteOutlet(Long partnerId) throws PartnerNotFoundException;
     
 }

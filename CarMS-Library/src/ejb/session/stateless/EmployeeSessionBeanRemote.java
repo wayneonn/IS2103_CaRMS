@@ -10,8 +10,11 @@ import entity.Category;
 import entity.Customer;
 import entity.Employee;
 import exception.EmployeeNotFoundException;
+import exception.EmployeeUserNameAlreadyExistException;
+import exception.InputDataValidationException;
 import exception.InvalidLoginException;
 import exception.OutletNotFoundException;
+import exception.UnknownPersistenceException;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -21,7 +24,7 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface EmployeeSessionBeanRemote {
-    public Long createNewEmployee(Employee employee, Long outletId) throws OutletNotFoundException ;
+    public Long createNewEmployee(Employee employee, Long outletId) throws OutletNotFoundException, InputDataValidationException, EmployeeUserNameAlreadyExistException, UnknownPersistenceException ;
 
     public List<Employee> retrieveAllEmployees();
     

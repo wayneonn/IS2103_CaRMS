@@ -5,27 +5,33 @@
  */
 package ejb.session.stateless;
 
-import entity.Cars;
 import entity.Employee;
 import entity.Outlet;
 import entity.ReservationRecord;
 import entity.TransitDriverDispatchRecord;
-import exception.CarNotFoundException;
 import exception.EmployeeIsNotFromAssignedOutletException;
 import exception.EmployeeNotFoundException;
+import exception.InputDataValidationException;
 import exception.OutletNotFoundException;
 import exception.RentalReservationNotFoundException;
 import exception.TransitAlreadyCompletedException;
 import exception.TransitDriverDispatchRecordNotFoundException;
+import exception.UnknownPersistenceException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 /**
  *
@@ -46,19 +52,48 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
     @PersistenceContext(unitName = "CarMS-ejbPU")
     private EntityManager em;
 
+    private final ValidatorFactory validatorFactory;
+    private final Validator validator;
+
+    public TransitDriverDispatchRecordSessionBean() {
+        this.validatorFactory = Validation.buildDefaultValidatorFactory();
+        this.validator = validatorFactory.getValidator();
+    }
+
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewTransitDriverDispatchRecord(TransitDriverDispatchRecord reservationRecord) {
-        em.persist(reservationRecord);
-        em.flush();
+    public Long createNewTransitDriverDispatchRecord(TransitDriverDispatchRecord reservationRecord) throws InputDataValidationException, UnknownPersistenceException {
+        try {
+            Set<ConstraintViolation<TransitDriverDispatchRecord>> constraintViolations = validator.validate(reservationRecord);
 
-        return reservationRecord.getDispatchedId();
+            if (constraintViolations.isEmpty()) {
+                em.persist(reservationRecord);
+                em.flush();
+
+                return reservationRecord.getDispatchedId();
+            } else {
+                throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
+            }
+        } catch (PersistenceException ex) {
+            throw new UnknownPersistenceException(ex.getMessage());
+        }
+    }
+
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<TransitDriverDispatchRecord>> constraintViolations) {
+        String msg = "Input data validation error!:";
+
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            msg += "\n\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage();
+        }
+
+        return msg;
     }
 
     @Override
     public Long createNewTranspatchDriverRecordCommit(Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException {
         try {
+            
             TransitDriverDispatchRecord transitDriverDispatchRecord = new TransitDriverDispatchRecord(transitDate);
             Outlet destinationOutlet = outletSessionBean.retrieveOutletById(destinationOutletId);
             ReservationRecord rentalReservation = reservationRecordSessionBean.retrieveReservationRecordById(rentalReservationId);

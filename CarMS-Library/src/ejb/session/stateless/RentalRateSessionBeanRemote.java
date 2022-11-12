@@ -9,8 +9,11 @@ import entity.RentalRate;
 import entity.ReservationRecord;
 import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
+import exception.NoRentalRateApplicableException;
 import exception.RentalRateNotFoundException;
 import exception.UnknownPersistenceException;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 import javax.persistence.PersistenceException;
@@ -33,4 +36,8 @@ public interface RentalRateSessionBeanRemote {
     public void deleteRentalRate(Long rentalRateId) throws RentalRateNotFoundException;
     
     public List<ReservationRecord> rentalRateInUse(Long rentalRateId) throws RentalRateNotFoundException;
+
+    public BigDecimal calculateRentalFee(Long categoryId, Date pickUpDateTime, Date returnDateTime) throws NoRentalRateApplicableException;
+
+    public RentalRate retrieveCheapestRentalRate(Long categoryId, Date pickupDate) throws NoRentalRateApplicableException;
 }

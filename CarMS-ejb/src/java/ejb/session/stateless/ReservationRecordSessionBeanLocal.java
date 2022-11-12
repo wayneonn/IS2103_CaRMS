@@ -7,7 +7,9 @@ package ejb.session.stateless;
 
 import entity.Customer;
 import entity.ReservationRecord;
+import exception.InputDataValidationException;
 import exception.RentalReservationNotFoundException;
+import exception.UnknownPersistenceException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -18,7 +20,7 @@ import javax.ejb.Local;
 @Local
 public interface ReservationRecordSessionBeanLocal {
 
-    public Long createNewReservationRecord(ReservationRecord reservationRecord);
+    public Long createNewReservationRecord(ReservationRecord reservationRecord) throws InputDataValidationException, UnknownPersistenceException;
 
     public List<ReservationRecord> retrieveReservationRecords();
 

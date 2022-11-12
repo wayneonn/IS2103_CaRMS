@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -78,7 +79,7 @@ public class ReservationRecord implements Serializable {
     @DecimalMin("0.00")
     @Digits(integer = 9, fraction = 2)
     private Double amtPaid;
-    @Column(nullable = false, unique = true, length = 16)
+    @Column(nullable = false, length = 16)
     @NotNull
     @Size(min = 13, max = 16)
     private String creditCardNum;
@@ -95,6 +96,9 @@ public class ReservationRecord implements Serializable {
     @Column(nullable = false)
     @NotNull
     private Boolean completed;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean reservationCancelled;
 
     /**
      * @return the reservationId
@@ -371,5 +375,19 @@ public class ReservationRecord implements Serializable {
      */
     public void setPartner(Partner partner) {
         this.partner = partner;
+    }
+
+    /**
+     * @return the reservationCancelled
+     */
+    public Boolean getReservationCancelled() {
+        return reservationCancelled;
+    }
+
+    /**
+     * @param reservationCancelled the reservationCancelled to set
+     */
+    public void setReservationCancelled(Boolean reservationCancelled) {
+        this.reservationCancelled = reservationCancelled;
     }
 }

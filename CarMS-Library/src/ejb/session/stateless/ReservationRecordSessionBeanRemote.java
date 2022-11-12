@@ -7,7 +7,13 @@ package ejb.session.stateless;
 
 import entity.Customer;
 import entity.ReservationRecord;
+import exception.CategoryNotFoundException;
+import exception.CustomerNotFoundException;
+import exception.InputDataValidationException;
+import exception.ModelNotFoundException;
+import exception.OutletNotFoundException;
 import exception.RentalReservationNotFoundException;
+import exception.UnknownPersistenceException;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -18,7 +24,7 @@ import javax.ejb.Remote;
 @Remote
 public interface ReservationRecordSessionBeanRemote {
 
-    public Long createNewReservationRecord(ReservationRecord reservationRecord);
+    public Long createNewReservationRecord(ReservationRecord reservationRecord) throws InputDataValidationException, UnknownPersistenceException;
 
     public void returnCar(Long rentalReservationId) throws RentalReservationNotFoundException;
 
@@ -35,5 +41,9 @@ public interface ReservationRecordSessionBeanRemote {
     public List<ReservationRecord> retrieveReservationsByUsername(String username);
 
     public List<ReservationRecord> retrieveReservationsByCustId(Long custId);
+
+    public Long createNewCarRentalReservation(Long categoryId, Long modelId, Long customerId, Long pickupOutletId, Long returnOutletId, ReservationRecord newRentalReservation) throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException, CategoryNotFoundException, ModelNotFoundException;
+
+    public Double cancelReservation(Long reservationRecordId) throws RentalReservationNotFoundException;
 
 }

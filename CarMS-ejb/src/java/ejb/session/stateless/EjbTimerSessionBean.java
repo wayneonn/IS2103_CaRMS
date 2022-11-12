@@ -31,7 +31,7 @@ import javax.persistence.Query;
  */
 @Stateless
 public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerSessionBeanLocal {
-    
+
     private static boolean ALLOCATED = true;
 
     @EJB
@@ -52,7 +52,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
     @Override
     public void activateAllocation() {
         Date todayDate = new Date();
-        System.out.println("allocateCarsToCurrentDayReservations event: " + new Date());
+        //System.out.println("allocateCarsToCurrentDayReservations event: " + new Date());
         allocateCarsToCurrentDayReservations(todayDate);
     }
 
@@ -70,7 +70,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
     @Override
     public void allocateCarsToCurrentDayReservations(Date todayDate) {
         Date startDate = todayDate;
-        startDate.setHours(0);
+        startDate.setHours(2);
         startDate.setMinutes(0);
         startDate.setSeconds(0);
         EjbTimerSessionBean obj = new EjbTimerSessionBean();
@@ -89,6 +89,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
             boolean alreadyAllocated = false;
             if (reservationRecord.getCategoryCriteria() != null) { // rental reservation by category
                 List<Cars> cars = carSessionBean.retrieveCarsByCategoryId(reservationRecord.getCategoryCriteria().getCategoryId());
+                
                 // first sifts out those cars that are not needed for transit 
                 for (Cars car : cars) {
                     if (car.getModel().getCategory().getCategoryName().equals(reservationRecord.getCategoryCriteria().getCategoryName()) // car category and reservation record matches
@@ -105,8 +106,8 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 }
 
                 // breaks the loop if the car are available and reservationRecord is empty
-                Long carCategoryId = reservationRecord.getCategoryCriteria().getCategoryId();
-                List<Cars> carsOfSameCategory = carSessionBean.retrieveCarsByCategoryId(carCategoryId); // find list of cars that matches at the outlet
+                Long categoryId = reservationRecord.getCategoryCriteria().getCategoryId();
+                List<Cars> carsOfSameCategory = carSessionBean.retrieveCarsByCategoryId(categoryId); // find list of cars that matches at the outlet
                 for (Cars car : carsOfSameCategory) {
                     CarStateEnumeration carCurrentState = car.getCarState();
                     if ((carCurrentState == CarStateEnumeration.AVAILABLE) && car.getReservationRecord() == null) { // already available in outlet
@@ -121,28 +122,35 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                     continue;
                 }
 
-//                // check returning cars to same outlet
-//                for (Cars car : carsOfSameCategory) {
-//                    CarStateEnumeration carCurrentState = car.getCarState();
-//                    String carReservationReturnOutlet = car.getReservationRecord().getReturnOutlet().getOutletName();
-//                    String reservationReturnOutlet = reservationRecord.getPickupOutlet().getOutletName();
-//                    if ((carCurrentState == CarStateEnumeration.ONRENTAL) && carReservationReturnOutlet.equals(reservationReturnOutlet)) {
-//                        Date carReturnDate = car.getReservationRecord().getReturnDateTime();
-//                        Date reservationReturnDate = reservationRecord.getPickupDateTime();
-//                        if (carReturnDate.before(reservationReturnDate)) {
-//                            reservationRecord.setCar(car);
-//                            alreadyAllocated = ALLOCATED;
-//                            break;
-//                        }
-//                    }
-//                }
-//                if (alreadyAllocated) {
-//                    continue;
-//                }
+                // check returning cars to same outlet
+                for (Cars car : carsOfSameCategory) {
+                    CarStateEnumeration carCurrentState = car.getCarState();
+                    Outlet carReservationReturnOutlet = new Outlet();
+                    if (car.getReservationRecord() != null) {
+                        carReservationReturnOutlet = car.getReservationRecord().getReturnOutlet();
+                    }
+                    Outlet reservationReturnOutlet = reservationRecord.getPickupOutlet();
+                    if ((carCurrentState == CarStateEnumeration.ONRENTAL) && carReservationReturnOutlet.equals(reservationReturnOutlet)) {
+                        Date carReturnDate = car.getReservationRecord().getReturnDateTime();
+                        Date reservationReturnDate = reservationRecord.getPickupDateTime();
+                        if (carReturnDate.before(reservationReturnDate)) {
+                            reservationRecord.setCar(car);
+                            alreadyAllocated = ALLOCATED;
+                            break;
+                        }
+                    }
+                }
+                if (alreadyAllocated) {
+                    continue;
+                }
+                
                 //  checking cars on rental and returning to the same outlet within 2 hours
                 for (Cars car : carsOfSameCategory) {
                     CarStateEnumeration carCurrentState = car.getCarState();
-                    Outlet carReservationReturnOutlet = car.getReservationRecord().getReturnOutlet();
+                    Outlet carReservationReturnOutlet = new Outlet();
+                    if (car.getReservationRecord() != null) {
+                        carReservationReturnOutlet = car.getReservationRecord().getReturnOutlet();
+                    }
                     Outlet reservationReturnOutlet = reservationRecord.getPickupOutlet();
                     if ((carCurrentState == CarStateEnumeration.ONRENTAL) && carReservationReturnOutlet.equals(reservationReturnOutlet)) {
                         Calendar onRentalAfterTwoHours = obj.dateToCalendar(startDate);
@@ -192,27 +200,30 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                     continue;
                 }
 
-//                // check returning cars to same outlet
-//                for (Cars car : cars) {
-//                    CarStateEnumeration carCurrentState = car.getCarState();
-//                    String carReservationReturnOutlet = "";
-//                    String reservationReturnOutlet = "";
-//
-//                    if (car.getReservationRecord() != null) {
-//                        carReservationReturnOutlet = car.getReservationRecord().getReturnOutlet().getOutletName();
-//                        reservationReturnOutlet = reservationRecord.getPickupOutlet().getOutletName();
-//                    }
-//
-//                    if ((carCurrentState == CarStateEnumeration.ONRENTAL && car.getReservationRecord() == null)
-//                            && carReservationReturnOutlet.equals(reservationReturnOutlet)) {
-//                        if (car.getReservationRecord() != null && car.getReservationRecord().getReturnDateTime().before(reservationRecord.getPickupDateTime())) {
-//                            reservationRecord.setCar(car);
-//                            alreadyAllocated = ALLOCATED;
-//                            break;
-//                        }
-//                    }
-//                }
-//                if (alreadyAllocated) continue;
+                // check returning cars to same outlet
+                for (Cars car : cars) {
+                    CarStateEnumeration carCurrentState = car.getCarState();
+                    String carReservationReturnOutlet = "";
+                    String reservationReturnOutlet = "";
+
+                    if (car.getReservationRecord() != null) {
+                        carReservationReturnOutlet = car.getReservationRecord().getReturnOutlet().getOutletName();
+                        reservationReturnOutlet = reservationRecord.getPickupOutlet().getOutletName();
+                    }
+
+                    if ((carCurrentState == CarStateEnumeration.ONRENTAL && car.getReservationRecord() == null)
+                            && carReservationReturnOutlet.equals(reservationReturnOutlet)) {
+                        if (car.getReservationRecord() != null && car.getReservationRecord().getReturnDateTime().before(reservationRecord.getPickupDateTime())) {
+                            reservationRecord.setCar(car);
+                            alreadyAllocated = ALLOCATED;
+                            break;
+                        }
+                    }
+                }
+                if (alreadyAllocated) {
+                    continue;
+                }
+
                 //  checking cars on rental and returning to the same outlet within 2 hours
                 for (Cars car : cars) {
                     CarStateEnumeration carCurrentState = car.getCarState();
@@ -242,6 +253,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
             }
         }
         System.out.println("reservationsThatRequiresTransit" + reservationsThatRequiresTransit);
+        generateTransitDriverDispatchRecords(todayDate, reservationsThatRequiresTransit);
     }
 
     public void generateTransitDriverDispatchRecords(Date date, List<ReservationRecord> rentalReservationsToBeAllocated) {
@@ -249,8 +261,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
             for (ReservationRecord rentalReservation : rentalReservationsToBeAllocated) {
                 Date transitStartDate = date;
 
-                transitDriverDispatchRecordSessionBean.createNewTranspatchDriverRecordCommit(rentalReservation.getPickupOutlet().getOutletId(),
-                        rentalReservation.getReservationId(), transitStartDate);
+                transitDriverDispatchRecordSessionBean.createNewTranspatchDriverRecordCommit(rentalReservation.getPickupOutlet().getOutletId(), rentalReservation.getReservationId(), transitStartDate);
             }
         } catch (RentalReservationNotFoundException | OutletNotFoundException ex) {
             System.out.println(ex.getMessage());

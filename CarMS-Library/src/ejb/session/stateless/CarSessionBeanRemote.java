@@ -7,11 +7,13 @@ package ejb.session.stateless;
 
 import entity.Cars;
 import exception.CarNotFoundException;
+import exception.CategoryNotFoundException;
 import exception.InputDataValidationException;
 import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
 import exception.OutletNotFoundException;
 import exception.UnknownPersistenceException;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -37,4 +39,8 @@ public interface CarSessionBeanRemote {
     public List<Cars> retrieveCarsByCategoryId(Long categoryId);
 
     public List<Cars> retrieveCarsByModelId(Long modelId);
+
+    public Boolean searchCarByModel(Long pickupOutletId, Long returnOutletId, Long modelId, Date pickupDate, Date returnDate) throws ModelNotFoundException;
+
+    public Boolean searchCarByCategory(Long pickupOutletId, Long returnOutletId, Long categoryId, Date pickupDate, Date returnDate) throws CategoryNotFoundException;
 }

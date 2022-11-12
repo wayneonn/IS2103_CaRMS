@@ -26,8 +26,10 @@ import entity.RentalRate;
 import enumerations.CarStateEnumeration;
 import enumerations.EmployeeEnum;
 import enumerations.RentalRateTypeEnum;
+import exception.CategoryNameAlreadyExistException;
 import exception.CategoryNotFoundException;
 import exception.CustomerUsernameExistException;
+import exception.EmployeeUserNameAlreadyExistException;
 import exception.InputDataValidationException;
 import exception.LicenseNumberExsistsException;
 import exception.ModelNotFoundException;
@@ -85,9 +87,6 @@ public class DataInitSessionBean {
     @EJB
     private CarSessionBeanLocal carSessionBean;
 
-    @EJB
-    private CarSessionBeanRemote carSessionBeanRemote;
-
     Long outletAId;
     Long outletBId;
     Long outletCId;
@@ -109,17 +108,20 @@ public class DataInitSessionBean {
     // "Insert Code > Add Business Method")
     @PostConstruct
     public void postConstruct() {
-//        if (em.find(Cars.class, 1l) == null) {
-//            carSessionBean.createNewCar(new Cars("TESTING", CarStateEnumeration.AVAILABLE, "Toyota", 5));
-//        }
+
         LocalTime openingHour = LocalTime.parse("08:00");
         LocalTime closingHour = LocalTime.parse("22:00");
 
-        if (em.find(Outlet.class, 1l) == null) {
-            outletAId = outletSessionBean.createNewOutlet(new Outlet("Kent Ridge Drive", "Outlet A", null, null));
-            outletBId = outletSessionBean.createNewOutlet(new Outlet("Holland Village Drive", "Outlet B", null, null));
-            outletCId = outletSessionBean.createNewOutlet(new Outlet("Lentor Plains", "Outlet C", openingHour, closingHour));
-            //outletDId = outletSessionBean.createNewOutlet(new Outlet("Buona Vista Drive", "Outlet D", openingHour, closingHour));
+        try {
+            if (em.find(Outlet.class, 1l) == null) {
+                outletAId = outletSessionBean.createNewOutlet(new Outlet("Kent Ridge Drive", "Outlet A", null, null));
+                outletBId = outletSessionBean.createNewOutlet(new Outlet("Holland Village Drive", "Outlet B", null, null));
+                outletCId = outletSessionBean.createNewOutlet(new Outlet("Lentor Plains", "Outlet C", openingHour, closingHour));
+            }
+        } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InputDataValidationException ex) {
+            System.out.println(ex.getMessage());
         }
 
         try {
@@ -141,13 +143,27 @@ public class DataInitSessionBean {
             }
         } catch (OutletNotFoundException ex) {
             ex.getMessage();
+        } catch (InputDataValidationException ex) {
+            System.out.println(ex.getMessage());
+        } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
+        } catch (EmployeeUserNameAlreadyExistException ex) {
+            System.out.println(ex.getMessage());
         }
 
-        if (em.find(Category.class, 1l) == null) {
-            categoryStandardSedanId = categorySessionBean.createNewCategory(new Category("Standard Sedan"));
-            categoryFamilySedanId = categorySessionBean.createNewCategory(new Category("Family Sedan"));
-            categoryLuxurySedanId = categorySessionBean.createNewCategory(new Category("Luxury Sedan"));
-            categoryMinivanSuvId = categorySessionBean.createNewCategory(new Category("SUV and Minivan"));
+        try {
+            if (em.find(Category.class, 1l) == null) {
+                categoryStandardSedanId = categorySessionBean.createNewCategory(new Category("Standard Sedan"));
+                categoryFamilySedanId = categorySessionBean.createNewCategory(new Category("Family Sedan"));
+                categoryLuxurySedanId = categorySessionBean.createNewCategory(new Category("Luxury Sedan"));
+                categoryMinivanSuvId = categorySessionBean.createNewCategory(new Category("SUV and Minivan"));
+            }
+        } catch (CategoryNameAlreadyExistException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InputDataValidationException ex) {
+            System.out.println(ex.getMessage());
+        } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
         }
 
         try {
@@ -178,7 +194,6 @@ public class DataInitSessionBean {
                 carSessionBean.createNewCar(new Cars("LS00A4ME", CarStateEnumeration.AVAILABLE, "Yellow", true), outletCId, modelDId);
                 carSessionBean.createNewCar(new Cars("LS00B4B5", CarStateEnumeration.AVAILABLE, "Yellow", true), outletCId, modelEId);
                 carSessionBean.createNewCar(new Cars("LS00C4A6", CarStateEnumeration.AVAILABLE, "Yellow", true), outletCId, modelFId);
-                //carSessionBean.createNewCar(new Cars("SID4221L", CarStateEnumeration.AVAILABLE, "Green", true), outletDId, modelDId);
             }
         } catch (OutletNotFoundException ex) {
             System.out.println(ex.getMessage());
@@ -258,7 +273,6 @@ public class DataInitSessionBean {
         try {
             if (em.find(MCRCustomer.class, 1l) == null) {
                 customerSessionBean.createNewCustomer(new MCRCustomer("customer", "password", "S991771s", "92238212", "Wayne", "Yow", "wengonn99@hotmail.com", "1234567890123456"));
-                //customerSessionBean.createNewCustomer(new Customer("Steven", "Halim", "stevenhalim@hotmail.com", "1234567890123456"));
             }
         } catch (CustomerUsernameExistException ex) {
             System.out.println(ex.getMessage());
@@ -268,10 +282,15 @@ public class DataInitSessionBean {
             System.out.println(ex.getMessage());
         }
 
-        if (em.find(Partner.class, 1l) == null) {
-            partnerSessionBean.createNewPartner(new Partner("Holiday.com","partner","password"));
+        try {
+            if (em.find(Partner.class, 1l) == null) {
+                partnerSessionBean.createNewPartner(new Partner("Holiday.com", "partner", "password"));
+            }
+        } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InputDataValidationException ex) {
+            System.out.println(ex.getMessage());
         }
-
     }
 
 }

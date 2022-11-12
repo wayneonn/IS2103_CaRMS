@@ -49,7 +49,7 @@ public class RentalRate implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalRateId;
     
-    @Column(nullable = false, length = 128)
+    @Column(nullable = false, unique = true , length = 128)
     @NotNull
     @Size(max = 128)
     private String rentalRateDescription;
@@ -230,6 +230,20 @@ public class RentalRate implements Serializable {
      */
     public void setReservationRecords(List<ReservationRecord> reservationRecords) {
         this.reservationRecords = reservationRecords;
+    }
+
+    /**
+     * @return the cars
+     */
+    public List<Cars> getCars() {
+        return cars;
+    }
+
+    /**
+     * @param cars the cars to set
+     */
+    public void setCars(List<Cars> cars) {
+        this.cars = cars;
     }
     
     

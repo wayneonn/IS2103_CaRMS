@@ -144,4 +144,11 @@ public class ModelSessionBean implements ModelSessionBeanLocal, ModelSessionBean
         query.getResultList().size();
         return query.getResultList();
     }
+    
+    @Override
+    public List<Category> retrieveCarsByCategoryId(Long categoryId) {
+        Query query = em.createQuery("SELECT c FROM Cars c WHERE c.model.category.categoryId = :inCategoryId AND c.isEnabled = TRUE");
+        query.setParameter("inCategoryId", categoryId);
+        return query.getResultList();
+    }
 }

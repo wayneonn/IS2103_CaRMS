@@ -5,10 +5,13 @@
  */
 package carmsreservationclient;
 
+import ejb.session.stateless.CarSessionBeanRemote;
 import javax.ejb.EJB;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
+import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationRecordSessionBeanRemote;
 import entity.MCRCustomer;
 import exception.InputDataValidationException;
@@ -20,6 +23,15 @@ import exception.RentalReservationNotFoundException;
  */
 public class Main {
 
+    @EJB
+    private static RentalRateSessionBeanRemote rentalRateSessionBean;
+
+    @EJB
+    private static CarSessionBeanRemote carSessionBean;
+
+    @EJB
+    private static OutletSessionBeanRemote outletSessionBean;
+    
     @EJB
     private static CustomerSessionBeanRemote customerSessionBeanRemote;
 
@@ -44,7 +56,7 @@ public class Main {
         //System.out.println(modelSessionBean.retrieveAllModels());
         //System.out.println(customerSessionBeanRemote.retrieveAllCustomers());
         //System.out.println(categorySessionBean.retrieveAllCategories());
-        MainApp mainApp = new MainApp(categorySessionBeanRemote, customerSessionBeanRemote, modelSessionBeanRemote, reservationRecordSessionBeanRemote, mcrCustomerEntity);
+        MainApp mainApp = new MainApp(categorySessionBeanRemote, customerSessionBeanRemote, modelSessionBeanRemote, reservationRecordSessionBeanRemote, mcrCustomerEntity, outletSessionBean, carSessionBean, rentalRateSessionBean);
         mainApp.runApp();
     }
     

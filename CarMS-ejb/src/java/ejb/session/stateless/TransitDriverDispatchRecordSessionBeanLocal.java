@@ -8,10 +8,12 @@ package ejb.session.stateless;
 import entity.TransitDriverDispatchRecord;
 import exception.EmployeeIsNotFromAssignedOutletException;
 import exception.EmployeeNotFoundException;
+import exception.InputDataValidationException;
 import exception.OutletNotFoundException;
 import exception.RentalReservationNotFoundException;
 import exception.TransitAlreadyCompletedException;
 import exception.TransitDriverDispatchRecordNotFoundException;
+import exception.UnknownPersistenceException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
@@ -23,7 +25,7 @@ import javax.ejb.Local;
 @Local
 public interface TransitDriverDispatchRecordSessionBeanLocal {
 
-    public Long createNewTransitDriverDispatchRecord(TransitDriverDispatchRecord reservationRecord);
+    public Long createNewTransitDriverDispatchRecord(TransitDriverDispatchRecord reservationRecord) throws InputDataValidationException, UnknownPersistenceException ;
 
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecord();
 

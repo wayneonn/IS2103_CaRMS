@@ -154,5 +154,47 @@ public class Customer implements Serializable {
     public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
     }
+
+    /**
+     * @return the partner
+     */
+    public Partner getPartner() {
+        return partner;
+    }
+
+    /**
+     * @param partner the partner to set
+     */
+    public void setPartner(Partner partner) {
+        this.partner = partner;
+    }
+
+    /**
+     * @return the reservationRecords
+     */
+    public List<ReservationRecord> getReservationRecords() {
+        return reservationRecords;
+    }
+
+    /**
+     * @param reservationRecords the reservationRecords to set
+     */
+    public void setReservationRecords(List<ReservationRecord> reservationRecords) {
+        this.reservationRecords = reservationRecords;
+    }
+
+    /**
+     * @return the car
+     */
+    public Cars getCar() {
+        return car;
+    }
+
+    /**
+     * @param car the car to set
+     */
+    public void setCar(Cars car) {
+        this.car = car;
+    }
     
 }
