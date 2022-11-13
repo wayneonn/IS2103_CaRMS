@@ -221,6 +221,7 @@ public class MainApp {
                 } else if (response == 4) {
                     doViewMyReservations();
                 } else if (response == 5) {
+                    System.out.println("You are logged out!\n");
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
@@ -233,96 +234,6 @@ public class MainApp {
         }
     }
 
-    /*    
-     private void searchCar() 
-     {
-        try
-        {
-            Scanner scanner = new Scanner(System.in);
-            Integer choice = 0;
-            DateTimeFormatter sdf = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
-            Date pickUpDateTime;
-            String pickUpOutlet;
-            Date returnDateTime;
-            String outlet;
-
-            System.out.println("*** CarMS :: Search Car ***\n");
-            System.out.print("Enter Pickup Date and Time (dd/mm/yyyy hh:mm)> ");
-            pickUpDateTime = sdf.parse(scanner.nextLine().trim());           
-            System.out.print("Enter Pickup Outlet> ");
-            pickUpOutlet = scanner.nextLine().trim();
-            System.out.print("Enter Return Date and Time (dd/mm/yyyy hh:mm)> ");
-            returnDateTime = sdf.parse(scanner.nextLine().trim());
-            System.out.print("Enter Return Outlet> ");
-            outlet = scanner.nextLine().trim();
-            
-            List<Cars> itineraryItems = carSessionBeanRemote.searchCars(pickUpDateTime, pickUpOutlet, returnDateTime, outlet);
-            
-            System.out.printf("%8s%22s   %s\n", "Seq. No.", "Date/Time", "Itinerary");
-            
-            for(ItineraryItem itineraryItem:itineraryItems)
-            {
-                System.out.printf("%8s%22s   %s\n", itineraryItem.getSequenceNumber(), outputDateFormat.format(itineraryItem.getDateTime()), itineraryItem.getActivity());
-            }
-            
-            System.out.println("------------------------");
-            System.out.println("1: Make Reservation");
-            System.out.println("2: Back\n");
-            System.out.print("> ");
-            choice = scanner.nextInt();
-            
-            if(choice == 1)
-            {
-                if(currentCustomer != null)
-                {
-                    PaymentModeEnum paymentMode;
-                    String creditCardNumber;
-                    
-                    System.out.println("\nTotal Amount Payable is " + BigDecimalHelper.formatCurrency(holidayReservationSessionBeanRemote.getTotalAmount()));
-                    
-                    while(true)
-                    {
-                        System.out.print("Select Payment Mode (1: VISA, 2: MasterCard, 3: AMEX)> ");
-                        Integer paymentModeInt = scanner.nextInt();
-
-                        if(paymentModeInt >= 1 && paymentModeInt <= 3)
-                        {
-                            paymentMode = PaymentModeEnum.values()[paymentModeInt-1];
-                            break;
-                        }
-                        else
-                        {
-                            System.out.println("Invalid option, please try again!\n");
-                        }
-                    }
-                    
-                    scanner.nextLine();
-                    System.out.print("Enter Credit Card Number> ");
-                    creditCardNumber = scanner.nextLine().trim();
-                    
-                    try 
-                    {
-                        Long newTransactionId = holidayReservationSessionBeanRemote.reserveHoliday(currentCustomer.getCustomerId(), paymentMode, creditCardNumber);
-                        
-                        System.out.println("Reservation of holiday completed successfully!: " + newTransactionId + "\n");
-                    } 
-                    catch (CheckoutException ex) 
-                    {
-                        System.out.println("An error has occurred while making the reservation: " + ex.getMessage() + "\n");
-                    }
-                }
-                else
-                {
-                    System.out.println("Please login first before making a reservation!\n");
-                }
-            }
-        }
-        catch(ParseException ex)
-        {
-            System.out.println("Invalid date input!\n");
-        }
-    }
-     */
     private void searchCar() {
         Scanner scanner = new Scanner(System.in);
         Integer choice = 0;
@@ -353,11 +264,11 @@ public class MainApp {
             System.out.print("\nThis is the list of outlets you are able to choose from. Please enter"
                     + " the ID you would like to choose from.\n\n");
             List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
-            System.out.printf("%4s%30s%50s%20s%20s\n", "ID", "Outlet Name", "Address", "Opening Hour", "Closing Hour");
+            System.out.printf("%4s%30s%50s%20s\n", "ID", "Outlet Name","Opening Hour", "Closing Hour");
             for (Outlet outlet : outlets) {
                 String openingHours = outlet.getOpeningHour() == null ? "24 Hours" : outlet.getOpeningHour().toString();
                 String closingHours = outlet.getClosingHour() == null ? " - " : outlet.getClosingHour().toString();
-                System.out.printf("%4s%30s%50s%20s%20s\n", outlet.getOutletId(), outlet.getOutletName(), outlet.getAddress(), openingHours, closingHours);
+                System.out.printf("%4s%30s%50s%20s\n", outlet.getOutletId(), outlet.getOutletName(), openingHours, closingHours);
             }
 
             System.out.print("Enter Pickup Outlet ID> ");
@@ -452,11 +363,11 @@ public class MainApp {
             System.out.print("This is the list of outlets you are able to choose from. Please enter"
                     + " the ID you would like to choose from.\n\n");
             List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
-            System.out.printf("%4s%30s%50s%20s%20s\n", "ID", "Outlet Name", "Address", "Opening Hour", "Closing Hour");
+            System.out.printf("%4s%30s%50s%20s\n", "ID", "Outlet Name", "Opening Hour", "Closing Hour");
             for (Outlet outlet : outlets) {
                 String openingHours = outlet.getOpeningHour() == null ? "24 Hours" : outlet.getOpeningHour().toString();
                 String closingHours = outlet.getClosingHour() == null ? " - " : outlet.getClosingHour().toString();
-                System.out.printf("%4s%30s%50s%20s%20s\n", outlet.getOutletId(), outlet.getOutletName(), outlet.getAddress(), openingHours, closingHours);
+                System.out.printf("%4s%30s%50s%20s\n", outlet.getOutletId(), outlet.getOutletName(), openingHours, closingHours);
             }
 
             System.out.print("Enter Pickup Outlet ID> ");

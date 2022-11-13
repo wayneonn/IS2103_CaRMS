@@ -353,9 +353,9 @@ public class SalesManagementModule {
         System.out.print("This is the list of outlets you are able to choose from. Please enter"
                 + " the ID you would like to choose from.\n\n");
         List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
-        System.out.printf("%4s%30s%50s\n", "ID", "Outlet Name", "Address");
+        System.out.printf("%4s%30s\n", "ID", "Outlet Name");
         for (Outlet outlet : outlets) {
-            System.out.printf("%4s%30s%50s\n", outlet.getOutletId(), outlet.getOutletName(), outlet.getAddress());
+            System.out.printf("%4s%30s\n", outlet.getOutletId(), outlet.getOutletName());
         }
         System.out.print("Enter outlet ID> ");
         Long outletId = scanner.nextLong();
@@ -464,9 +464,9 @@ public class SalesManagementModule {
         System.out.print("This is the list of outlets you are able to choose from. Please enter"
                 + " the ID you would like to choose from.\n\n");
         List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
-        System.out.printf("%4s%30s%50s\n", "ID", "Outlet Name", "Address");
+        System.out.printf("%4s%30s\n", "ID", "Outlet Name");
         for (Outlet outlet : outlets) {
-            System.out.printf("%4s%30s%50s\n", outlet.getOutletId(), outlet.getOutletName(), outlet.getAddress());
+            System.out.printf("%4s%30s\n", outlet.getOutletId(), outlet.getOutletName());
         }
         System.out.print("Enter outlet ID> ");
         Long outletId = scanner.nextLong();
