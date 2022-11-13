@@ -359,6 +359,10 @@ public class MainApp {
             if (returnDateTime.before(pickUpDateTime)) {
                 throw new PickUpDateAfterReturnDateException();
             }
+            
+            if (((returnDateTime.getYear() + 1900) < 2000) || ((pickUpDateTime.getYear() + 1900) < 2000)) {
+                throw new YearMustBeBeyond2022Exception("Year must be beyond 2000!");
+            }
 
             System.out.print("This is the list of outlets you are able to choose from. Please enter"
                     + " the ID you would like to choose from.\n\n");
@@ -477,6 +481,8 @@ public class MainApp {
         } catch (InputDataValidationException ex) {
             System.out.println(ex.getMessage());
         } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
+        } catch (YearMustBeBeyond2022Exception ex) {
             System.out.println(ex.getMessage());
         }
 
