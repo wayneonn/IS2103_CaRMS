@@ -36,10 +36,6 @@ public class Outlet implements Serializable {
     @Column(nullable = false, unique = true, length = 128)
     @NotNull
     @Size(min = 1, max = 128)
-    private String address;
-    @Column(nullable = false, unique = true, length = 128)
-    @NotNull
-    @Size(min = 1, max = 128)
     private String outletName;
     //@Temporal(TemporalType.TIME) 
     private LocalTime openingHour;
@@ -55,8 +51,7 @@ public class Outlet implements Serializable {
     public Outlet() {
     }
 
-    public Outlet(String address, String outletName, LocalTime openingHour, LocalTime closingHour) {
-        this.address = address;
+    public Outlet(String outletName, LocalTime openingHour, LocalTime closingHour) {
         this.outletName = outletName;
         this.openingHour = openingHour;
         this.closingHour = closingHour;
@@ -71,20 +66,6 @@ public class Outlet implements Serializable {
      */
     public void setOutletId(Long outletId) {
         this.outletId = outletId;
-    }
-
-    /**
-     * @return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * @param address the address to set
-     */
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     /**

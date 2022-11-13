@@ -114,9 +114,9 @@ public class DataInitSessionBean {
 
         try {
             if (em.find(Outlet.class, 1l) == null) {
-                outletAId = outletSessionBean.createNewOutlet(new Outlet("Kent Ridge Drive", "Outlet A", null, null));
-                outletBId = outletSessionBean.createNewOutlet(new Outlet("Holland Village Drive", "Outlet B", null, null));
-                outletCId = outletSessionBean.createNewOutlet(new Outlet("Lentor Plains", "Outlet C", openingHour, closingHour));
+                outletAId = outletSessionBean.createNewOutlet(new Outlet("Outlet A", null, null));
+                outletBId = outletSessionBean.createNewOutlet(new Outlet("Outlet B", null, null));
+                outletCId = outletSessionBean.createNewOutlet(new Outlet("Outlet C", openingHour, closingHour));
             }
         } catch (UnknownPersistenceException ex) {
             System.out.println(ex.getMessage());
