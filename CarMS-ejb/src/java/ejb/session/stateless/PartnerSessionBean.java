@@ -8,12 +8,14 @@ package ejb.session.stateless;
 import exception.PartnerNotFoundException;
 import entity.Partner;
 import exception.InputDataValidationException;
+import exception.InvalidLoginCredentialException;
 import exception.UnknownPersistenceException;
 import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -94,8 +96,43 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     }
 
     @Override
-    public void deleteOutlet(Long partnerId) throws PartnerNotFoundException {
+    public void deletePartner(Long partnerId) throws PartnerNotFoundException {
         Partner partnerToRemove = retrievePartnerById(partnerId);
         em.remove(partnerToRemove);
+    }
+    
+    @Override
+    public Partner retrievePartnerByUsername(String username) throws PartnerNotFoundException {
+
+        try {
+            Query query = em.createQuery("SELECT p FROM Partner p where p.partnerUsername = :inUsername");
+            query.setParameter("inUsername", username);
+
+            return (Partner) query.getSingleResult();
+        } catch (PersistenceException ex) {
+            throw new PartnerNotFoundException("Partner Username " + username + "does not exist.");
+        }
+
+    }
+    
+    @Override
+    public Partner login(String username, String password) throws InvalidLoginCredentialException {
+        try
+        {
+            Partner partner = retrievePartnerByUsername(username);
+            
+            if(partner.getPartnerPassword().equals(password))
+            {
+                return partner;
+            }
+            else
+            {
+                throw new InvalidLoginCredentialException("Invalid login credential");
+            }
+        }
+        catch(PartnerNotFoundException ex)
+        {
+            throw new InvalidLoginCredentialException("Invalid login credential");
+        }
     }
 }

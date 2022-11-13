@@ -210,7 +210,7 @@ public class SalesManagementModule {
         scanner.nextLine();
         try {
             Long modelId = modelSessionBeanRemote.createNewModel(model, categoryId);
-            System.out.println("Model ID: " + modelId + " sucessfully created!");
+            System.out.println("Model ID: " + modelId + " successfully created!");
         } catch (CategoryNotFoundException ex) {
             System.out.println("Car Category of ID: " + categoryId + " does not exist!");
         } catch (InputDataValidationException ex) {
@@ -366,7 +366,7 @@ public class SalesManagementModule {
                 throw new ModelIsDisabledException("Model is being disabled as the model is no longer in use.");
             }
             Long carId = carSessionBeanRemote.createNewCar(new Cars(licenseNumber, CarStateEnumeration.AVAILABLE, colour, true), outletId, modelId);
-            System.out.println("Car ID: " + carId + " sucessfully created!");
+            System.out.println("Car ID: " + carId + " successfully created!");
         } catch (OutletNotFoundException ex) {
             System.out.println("Outlet of ID: " + outletId + " does not exist!");
         } catch (InputDataValidationException ex) {
@@ -752,7 +752,7 @@ public class SalesManagementModule {
             }
             rentalRate.setIsEnabled(true);
             Long rentalRateId = rentalRateSessionBeanRemote.createNewRentalRate(rentalRate, categoryId);
-            System.out.println("Rental Rate ID: " + rentalRateId + " sucessfully created!");
+            System.out.println("Rental Rate ID: " + rentalRateId + " successfully created!");
         } catch (CategoryNotFoundException ex) {
             System.out.println("Car Category of ID: " + categoryId + " does not exist!");
         } catch (ParseException ex) {

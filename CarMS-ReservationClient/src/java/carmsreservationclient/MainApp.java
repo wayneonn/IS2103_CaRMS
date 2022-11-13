@@ -32,6 +32,7 @@ import exception.PickUpDateAfterReturnDateException;
 import exception.RentalReservationNotFoundException;
 import exception.ReservationNotFoundException;
 import exception.UnknownPersistenceException;
+import exception.YearMustBeBeyond2022Exception;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -329,6 +330,8 @@ public class MainApp {
         long modelId = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
+        sdf.setLenient(false);
+        hourFormat.setLenient(false);
 
         System.out.println("*** CaRMS Reservation Client || Search Car ***\n");
         Boolean ableToReserve = false;
@@ -341,6 +344,10 @@ public class MainApp {
 
             if (returnDateTime.before(pickUpDateTime)) {
                 throw new PickUpDateAfterReturnDateException();
+            }
+            
+            if (((returnDateTime.getYear() + 1900) < 2000) || ((pickUpDateTime.getYear() + 1900) < 2000)) {
+                throw new YearMustBeBeyond2022Exception("Year must be beyond 2000!");
             }
 
             System.out.print("\nThis is the list of outlets you are able to choose from. Please enter"
@@ -412,6 +419,8 @@ public class MainApp {
             System.out.println(ex.getMessage());
         } catch (PickUpDateAfterReturnDateException ex) {
             System.out.println("Return Date Is Before Pickup Date!");
+        } catch (YearMustBeBeyond2022Exception ex) {
+            System.out.println(ex.getMessage());
         }
 
         System.out.print("\nPress any key to continue...> ");
